@@ -1,0 +1,2 @@
+[global]
+  include = /var/lib/iserv/config/file-distribution/%I
