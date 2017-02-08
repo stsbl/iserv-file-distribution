@@ -1,0 +1,59 @@
+msgid "File distribution"
+msgstr "Dateiverteilung"
+
+msgid "Add host"
+msgstr "Gerät hinzufügen"
+
+msgid "Remove host"
+msgstr "Gerät entfernen"
+
+msgid "Enable file distribution"
+msgstr "Dateiverteilung aktivieren"
+
+msgid "For the user who is logging in on this host, there will created two addtional network drives for file distribution assignment and return."
+msgstr "Für den Benutzer, der sich auf diesem Gerät anmeldet, werden zwei zusätzliche Netzlaufwerke für die Dateiverteilung- und rückgabe erstellt."
+
+msgid "The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>."
+msgstr "Der Ordnerpfad wo Sie den Verteilungsordner und die Rückgaben finden, ist Dateien/File-Distribution/<Titel>."
+
+msgid "Enter a title for this file distribution..."
+msgstr "Geben Sie einen Titel für diese Dateiverteilung ein..."
+
+msgid "Select a host for file distribution..."
+msgstr "Wählen Sie ein Gerät für die Dateiverteilung..."
+
+msgid "Enable"
+msgstr "Aktivieren"
+
+msgid "Stop"
+msgstr "Beenden"
+
+msgid "The files for the distribution \"%s\" must resided in the following folder:"
+msgstr "Die Dateien für die Verteilung \"%s\" werden in folgenden Ordner abgelegt:"
+
+msgid "Files/File-Distribution/%s"
+msgstr "Dateien/File-Distribution/%s"
+
+msgid "File distribution is already enabled for this host."
+msgstr "Dateiverteilung ist bereits für dieses Gerät aktiviert."
+
+msgid "Disabled file distribution for %s."
+msgstr "Dateiverteilung für %s deaktiviert."
+
+msgid "You are not allowed to disable file distirbution for %s."
+msgstr "Sie dürfen die Dateiverteilung für %s nicht deaktivieren."
+
+msgid "Enabled file distribution for %s."
+msgstr "Dateiverteilung für %s aktiviert."
+
+msgid "No hosts selected!"
+msgstr "Keine Geräte ausgewählt!"
+
+msgid "Only hosts which are member of the Windows Domain are supported."
+msgstr "Nur Geräte, die Mitglied der Windows-Domäne sind, werden unterstützt."
+
+msgid "The title contains invalid characters."
+msgstr "Der Titel enthält ungültige Zeichen."
+
+msgid "Use file distribution"
+msgstr "Dateiverteilung verwenden"

@@ -1,0 +1,78 @@
+#!/usr/bin/perl -T -CSDAL
+
+use warnings;
+use strict;
+use IServ::DB;
+use IServ::IO;
+
+my $m_ip = qr/\d{1,3}(?:\.\d{1,3}){3}/;
+my $m_title = qr/^([ !#&()*+,\-.0-9:<=>?\@A-Z\[\]^_a-z{|}~\P{ascii}]{1,64})$/;
+# forbidden: 00-1f " $ % ' / ; \ ` 7f
+
+undef %ENV;
+$ENV{PATH} = "/bin:/sbin:/usr/bin:/usr/sbin";
+$< = $>;
+
+chdir "/var/lib/iserv/config/file-distribution" or die $!;
+
+my %reload;
+my %del = map {($_, 1)} glob "*";
+my @fn;
+for (@{ IServ::DB::DBH->selectall_arrayref("SELECT IP, Act, Home, Title FROM file_distribution f JOIN users u USING (Act) ORDER BY IP") or die $! }) {
+  my ($ip, $act, $home, $title) = @$_;
+  $title =~ $m_title or die "invalid title\n";
+
+  my $cfg = 
+    "[file_assignment]\n".
+    "  path = $home/File-Distribution/$title/Assignment\n".
+    "  force group = $act\n".
+    "  writeable = no\n".
+    "  follow symlinks = no\n".
+    "\n".
+    "[file_return]\n".
+    "  path = $home/File-Distribution/$title/Return/%U @ %m\n".
+    "  preexec = /bin/mkdir -pm02770 '%P'\n".
+    "  force user = $act\n".
+    "  force group = $act\n".
+    "  follow symlinks = no\n".
+    "  writeable = yes\n".
+    "  veto files = /desktop.ini/\n".
+    "  delete veto files = yes\n".
+    "\n";
+    
+  delete $del{$ip};
+  unless (-f $ip and IServ::IO::getfile $ip eq $cfg)
+  {
+    IServ::IO::putfile $ip, $cfg;
+    $reload{$ip} = 1;
+  }
+}
+
+foreach my $file (keys %del) {
+  # Truncate, but don't unlink the config file here.
+  # If we'd unlink it to soon, Samba would still use the configuration which
+  # would cause erroneous "This computer is file distribution mode" messages, especially
+  # on Windows XP computers.
+  # A cronjob will take care of these 0 byte files later.
+
+  # Ignore empty stub file which prevents iservchk errors.
+  unless ("$file" eq "0.0.0.0") {
+    open my $fh, '>', $file or warn $!;
+    close $fh;
+  
+    $reload{$file} = 1;
+  }
+}
+
+if (%reload) {
+  system qw(smbcontrol smbd reload-config);
+  sleep 1;
+
+  open FP, "-|", "/usr/bin/smbstatus", "-p" or die $!;
+  while (<FP>) {
+    my ($pid, $ip) = /^\s*(\d{1,7})\s.*\s\((?:ipv4:)?($m_ip)(?::\d{1,5})?\)\s/ or next;
+    kill 15, $pid if $reload{$ip};
+  }
+  close FP;
+}
+

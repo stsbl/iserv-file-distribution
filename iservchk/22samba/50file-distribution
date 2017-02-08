@@ -1,0 +1,5 @@
+# Directory for file distribution config
+MkDir 0755 root:root "/var/lib/iserv/config/file-distribution"
+
+# Create empty file to prevent configtest fail
+Touch "/var/lib/iserv/config/file-distribution/0.0.0.0"

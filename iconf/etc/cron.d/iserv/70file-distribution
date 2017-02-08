@@ -1,0 +1,3 @@
+# Disable forgotten exam mode
+00 0	* * *	root	/usr/lib/iserv/exam_off
+

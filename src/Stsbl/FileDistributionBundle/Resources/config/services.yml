@@ -1,0 +1,20 @@
+# src/Stsbl/FileDistributionBundle/Resources/config/services.yml
+services:
+    stsbl.filedistribution.crud.file_distribution:
+        class: Stsbl\FileDistributionBundle\Crud\FileDistributionCrud
+        arguments: [Stsbl\FileDistributionBundle\Entity\FileDistribution]
+        calls:
+           - [ setShell, ["@iserv.shell"]]
+        tags:
+            - { name: iserv.crud }
+
+    stsbl.filedistribution.form.file_distribution:
+        class: Stsbl\FileDistributionBundle\Form\Type\FileDistributionType
+        arguments: ["@iserv.security_handler"]
+        tags:
+            - {name: form.type }
+
+    stsbl.filedistribution.menu:
+        class: Stsbl\FileDistributionBundle\EventListener\MenuListener # Out MenuListener Class
+        tags:
+          - { name: kernel.event_listener, event: iserv_portal.menu_main, method: onBuildMainMenu } # Tells IServ about the main menu method

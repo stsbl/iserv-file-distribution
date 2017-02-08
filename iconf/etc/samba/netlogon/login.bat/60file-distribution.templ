@@ -1,0 +1,10 @@
+rem File Distribution
+net use U: /delete /yes
+net use V: /delete /yes
+
+if not exist \\\\$(hostname -s)\file_assignment goto fi
+  \\\\$(hostname -s)\netlogon\exe\iserv-msg -f \\\\$(hostname -s)\netlogon\file-distribution.txt
+  net use U: \\\\$(hostname -s)\file_assignment
+  net use V: \\\\$(hostname -s)\file_return
+:fi
+

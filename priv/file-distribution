@@ -1,0 +1,5 @@
+priv.file_distribution:
+module		Computers
+description	Use file distribution
+assign		admins
+assignroles     admin teacher

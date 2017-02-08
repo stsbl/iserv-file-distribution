@@ -1,0 +1,13 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig #}
+{% extends "IServCrudBundle:Crud:index.html.twig" %}
+
+{% block content %}
+    {% if display_msg %}
+        {% for path in paths %}
+            <div class="alert alert-info">
+                {{ __('The files for the distribution "%s" must resided in the following folder:', path.title) }} <a href="{{ path('file_list', {'path': path.encoded }) }}">{{ icon('legacy-folder')|raw }} {{ __('Files/File-Distribution/%s', path.title) }}</a>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {{ parent() }}
+{% endblock %}

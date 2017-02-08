@@ -1,0 +1,22 @@
+Source: stsbl-iserv-file-distribution
+Section: misc
+Priority: extra
+Maintainer: Stadtteilschule Blankenese <repository@stsbl.de>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+Homepage: https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution
+
+Package: stsbl-iserv-file-distribution
+Architecture: all
+Depends: iserv-portal, stsbl-iserv3-maintenance, iserv3-school
+Description: Dateiverteilung für IServ
+ Ausgewählte Benutzer können Dateiverteilungen erstellen, dies sind spezielle Ordner innerhalb des eigenen Home-Verzeichnisses.
+ .
+ Die Dateiverteilungen werden gerätebasiert konfiguriert, Benutzer die sich an einem Gerät anmelden, welches an einer Dateiverteilung teilnimmt, erhalten zwei zusätzliche Netzlaufwerke (U: und V:).
+ Die Zuteilung gestaltet sich dabei wie folgt:
+ .
+ * Laufwerk U: dient zur Ausgabe der Dateien, es stellt einen Ordner im Homeverzeichnis des Benutzers dar, der die Dateiverteilung erstellt hat, hier werden zum Beispiel Aufgabenstellungen für Schüler hinterlegt.
+ * Laufwerk V: ist das sogenannte Rückgabelaufwerk, hier speichert der Benutzer sein Ergebnis hin, dieses wird dann deutlich erkennbar aufgeschlüsselt nach Rechnername und Benutzer wieder im Homeverzeichnis desjenigen abgelegt, der die Dateiverteilung gestartet hat.
+ .
+ https://it.stsbl.de/wp-content/uploads/2017/02/stsbl-iserv-file-distribution.png
+Tag: suite::iserv:portal, role::plugin, implemented-in::php, implemented-in::perl, status::highlighted, status::recommended
