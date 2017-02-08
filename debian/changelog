@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.02.08-1) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Added missing samba config.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Wed, 08 Feb 2017 01:50:05 +0100
+
 stsbl-iserv-file-distribution (17.02.08-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
