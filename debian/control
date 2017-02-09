@@ -16,6 +16,7 @@ Description: Dateiverteilung für IServ
  Die Zuteilung gestaltet sich dabei wie folgt:
  .
  * Laufwerk U: dient zur Ausgabe der Dateien, es stellt einen Ordner im Homeverzeichnis des Benutzers dar, der die Dateiverteilung erstellt hat, hier werden zum Beispiel Aufgabenstellungen für Schüler hinterlegt.
+ .
  * Laufwerk V: ist das sogenannte Rückgabelaufwerk, hier speichert der Benutzer sein Ergebnis hin, dieses wird dann deutlich erkennbar aufgeschlüsselt nach Rechnername und Benutzer wieder im Homeverzeichnis desjenigen abgelegt, der die Dateiverteilung gestartet hat.
  .
  https://it.stsbl.de/wp-content/uploads/2017/02/stsbl-iserv-file-distribution.png
