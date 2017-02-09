@@ -1,3 +1,11 @@
+stsbl-iserv-file-distribution (17.02.09-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Added missing sudo configuration (broken since 17.02.08-0).
+  * Fixed typo.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Thu, 09 Feb 2017 19:36:06 +0100
+
 stsbl-iserv-file-distribution (17.02.08-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
