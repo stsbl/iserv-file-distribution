@@ -2,9 +2,12 @@
 services:
     stsbl.filedistribution.crud.file_distribution:
         class: Stsbl\FileDistributionBundle\Crud\FileDistributionCrud
-        arguments: [Stsbl\FileDistributionBundle\Entity\FileDistribution]
+        arguments: [Stsbl\FileDistributionBundle\Entity\Host]
         calls:
            - [ setShell, ["@iserv.shell"]]
+           - [ setHostManager, ["@iserv.host_manager"]]
+           - [ setOui, ["@iserv.host.oui"]]
+           - [ setRequestStack, ["@request_stack"]]
         tags:
             - { name: iserv.crud }
 

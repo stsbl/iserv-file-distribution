@@ -2,6 +2,7 @@
 // src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
 namespace Stsbl\FileDistributionBundle\Crud;
 
+use IServ\CoreBundle\Entity\Specification\PropertyMatchSpecification;
 use IServ\CoreBundle\Service\Shell;
 use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Entity\CrudInterface;
@@ -43,7 +44,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionCrud extends AbstractCrud 
+class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
 {
     /**
      * @var Shell
@@ -67,12 +68,14 @@ class FileDistributionCrud extends AbstractCrud
      */
     protected function configure()
     {
+        parent::configure();
+        
         $this->title = _('File distribution');
         $this->itemTitle = _('Device');
         $this->id = 'filedistribution';
         $this->routesNamePrefix = 'fd_';
         $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';
-        $this->options['sort'] = 'title';
+        $this->options['sort'] = 'fileDistribution';
         $this->templates['crud_index'] = 'StsblFileDistributionBundle:Crud:file_distribution_index.html.twig';
     }
     
@@ -120,11 +123,17 @@ class FileDistributionCrud extends AbstractCrud
     public function isAllowedToStop(CrudInterface $object, UserInterface $user = null) 
     {
         /* @var $object \Stsbl\FileDistributionBundle\Entity\FileDistribution */
-        if ($user !== $object->getUser()) {
+        /*if ($user !== $object->getUser()) {
             return false;
-        }
+        }*/
         
         return true;
+    }
+    
+    public function getFilterSpecification()
+    {
+        // Only show controllable hosts
+        //return new PropertyMatchSpecification('controllable', true);
     }
 
     /**
@@ -133,21 +142,23 @@ class FileDistributionCrud extends AbstractCrud
     public function configureListFields(ListMapper $listMapper) 
     {
         $listMapper
-            ->addIdentifier('hostname', null, [
-                'label' => _('Host'),
-                'responsive' => 'all'
+            ->addIdentifier('name', null, [
+                'label' => _('Name'),
+                'responsive' => 'all',
+                'sortType' => 'natural',
+                'template' => 'IServHostBundle:Crud:list_field_name.html.twig'
             ])
-            ->add('title', null, [
+            ->add('fileDistribution', null, [
                 'label' => _('File distribution'),
                 'group' => true,
-                'sortOrder' => [3, 1]
+                'sortOrder' => [3, 1],
+                'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig'
             ])
-            ->add('plainTitle', null, [
-                'label' => _('File distribution')
+            ->add('fileDistributionOwner', null, [
+                'label' => _('File distribution owner'),
             ])
-            ->add('user', null, [
-                'label' => _('Owner')
-            ])
+            ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
+            ->add('sambaUser', null, ['label' => _('User')])
         ;
     }
     
@@ -157,23 +168,23 @@ class FileDistributionCrud extends AbstractCrud
     public function configureShowFields(ShowMapper $showMapper) 
     {
         $showMapper
-            ->add('hostname', null, [
+            ->add('name', null, [
                 'label' => _('Host')
             ])
-            ->add('title', null, [
+            ->add('fileDistribution', null, [
                 'label' => _('Title'),
                 'group' => true
             ])
-            ->add('user', null, [
+            /*->add('user', null, [
                 'label' => _('Owner')
-            ])
+            ])*/
         ;
     }
     
     /**
      * {@inheritdoc}
      */
-    public function configureListFilter(ListHandler $listHandler)
+    /*public function configureListFilter(ListHandler $listHandler)
     {
         $qb = $this->getObjectManager()->createQueryBuilder($this->class);
                    
@@ -190,7 +201,7 @@ class FileDistributionCrud extends AbstractCrud
         
         $titles = [];
         
-        /* @var $r \Stsbl\FileDistributionBundle\Entity\FileDistribution */
+        /* @var $r \Stsbl\FileDistributionBundle\Entity\FileDistribution *//*
         foreach ($qb->getQuery()->getResult() as $r) {
             $titles[$r->getTitle()] = ['plain' => $r->getPlainTitle(), 'display' => $r->getTitle(), 'user' => $r->getUser()];
         }
@@ -206,21 +217,20 @@ class FileDistributionCrud extends AbstractCrud
         }
         
         $listHandler->setDefaultFilter('all_titles');
-    }
+    }*/
     
     /**
      * {@inheritdoc}
      */
     public function loadBatchActions()
     {
-        $res = parent::loadBatchActions();
         
         $stopAction = new StopAction($this);
         $stopAction->setShell($this->shell);
         
-        $res->add($stopAction);
+        $this->batchActions->add($stopAction);
         
-        return $res;
+        return $this->batchActions;
     }
     
     /**
