@@ -75,7 +75,7 @@ class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
         $this->id = 'filedistribution';
         $this->routesNamePrefix = 'fd_';
         $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';
-        $this->options['sort'] = 'fileDistribution';
+        $this->options['sort'] = 'room';
         $this->templates['crud_index'] = 'StsblFileDistributionBundle:Crud:file_distribution_index.html.twig';
     }
     
@@ -133,7 +133,7 @@ class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
     public function getFilterSpecification()
     {
         // Only show controllable hosts
-        //return new PropertyMatchSpecification('controllable', true);
+        return new PropertyMatchSpecification('controllable', true);
     }
 
     /**
@@ -146,16 +146,23 @@ class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
                 'label' => _('Name'),
                 'responsive' => 'all',
                 'sortType' => 'natural',
-                'template' => 'IServHostBundle:Crud:list_field_name.html.twig'
+                'template' => 'IServHostBundle:Crud:list_field_name.html.twig',
             ])
             ->add('fileDistribution', null, [
                 'label' => _('File distribution'),
                 'group' => true,
                 'sortOrder' => [3, 1],
-                'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig'
+                'sortType' => 'natural',
+                'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig',
             ])
             ->add('fileDistributionOwner', null, [
                 'label' => _('File distribution owner'),
+            ])
+            ->add('room', null, [
+                'label' => _('Room'),
+                'group' => true,
+                'sortOrder' => [3, 1],
+                'sortType' => 'natural',
             ])
             ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
             ->add('sambaUser', null, ['label' => _('User')])
