@@ -75,7 +75,7 @@ class FileDistributionType extends AbstractType
             ->add('hostname', EntityType::class, [
                 'label' => false,
                 'required' => false,
-                'class' => 'StsblFileDistributionBundle:Host',
+                'class' => 'IServHostBundle:Host',
                 'choice_label' => 'name',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('p')
