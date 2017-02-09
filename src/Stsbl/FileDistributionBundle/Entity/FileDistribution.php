@@ -4,7 +4,6 @@ namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use IServ\CrudBundle\Entity\CrudInterface;
-use IServ\HostBundle\Entity\Host;
 use IServ\CoreBundle\Entity\User;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -43,13 +42,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @DoctrineAssert\UniqueEntity("ip", message="File distribution is already enabled for this host.")
  * @DoctrineAssert\UniqueEntity("hostname", message="File distribution is already enabled for this host.")
  */
-class FileDistribution implements CrudInterface {
+class FileDistribution implements CrudInterface 
+{
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * 
-     * @var int
+     * @var integer
      */
     private $id;
     
@@ -72,11 +72,17 @@ class FileDistribution implements CrudInterface {
     private $user;
     
     /**
-     * @ORM\OneToOne(targetEntity="\IServ\HostBundle\Entity\Host", fetch="EAGER")
-     * @ORM\JoinColumn(name="hostname", referencedColumnName="name", onDelete="CASCADE")
+     * @ORM\Column(type="text", nullable=false)
+     * 
+     * @var string
+     */
+    private $act;
+    
+    /**
+     * @ORM\Column(type="text", nullable=false)
      * @Assert\NotBlank()
      * 
-     * @var \IServ\HostBundle\Entity\Host
+     * @var Host
      */
     private $hostname;
     
@@ -223,5 +229,29 @@ class FileDistribution implements CrudInterface {
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set act
+     *
+     * @param string $act
+     *
+     * @return FileDistribution
+     */
+    public function setAct($act)
+    {
+        $this->act = $act;
+
+        return $this;
+    }
+
+    /**
+     * Get act
+     *
+     * @return string
+     */
+    public function getAct()
+    {
+        return $this->act;
     }
 }
