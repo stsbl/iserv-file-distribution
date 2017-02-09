@@ -1,1 +1,1 @@
-www-data        ALL = (root) NOPASSWD: /usr/lib/iserv/file_distribution_config
+www-data        ALL = (root) NOPASSWD: /usr/lib/iserv/file_distribution_confi g
