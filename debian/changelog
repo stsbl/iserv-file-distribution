@@ -1,3 +1,24 @@
+stsbl-iserv-file-distribution (17.02.12-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed package description.
+  * Fixed filtering.
+  * Rework of IDesk ui with the host control as example.
+  * Dropped legacy form.
+  * Added missing files.
+  * Display full name of user instead of account name.
+  * Added list filters.
+  * Added Windows domain notice on conirm action.
+  * Added help text for title.
+  * Removed unused l10n.
+  * Improved confirmation batch layout.
+  * Fixed detection of current action.
+  * Added dependency on iserv-computer (for iserv-msg.exe used in login script).
+
+  iserv: Die Benutzerfreundlichkeit der Oberfläche wurde erhöht und diese ähnelt nun der Rechnersteuerung.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sun, 12 Feb 2017 00:08:48 +0100
+
 stsbl-iserv-file-distribution (17.02.09-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
