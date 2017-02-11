@@ -3,11 +3,9 @@
 
 {% block content %}
     {% if display_msg %}
-        {% for path in paths %}
-            <div class="alert alert-info">
-                {{ __('The files for the distribution "%s" must resided in the following folder:', path.title) }} <a href="{{ path('file_list', {'path': path.encoded }) }}">{{ icon('legacy-folder')|raw }} {{ __('Files/File-Distribution/%s', path.title) }}</a>
-            </div>
-        {% endfor %}
+        <div class="alert alert-info">
+            {{ __('The files for the distribution "%s" must resided in the following folder:', path.title) }} <a href="{{ path('file_list', {'path': path.encoded }) }}">{{ icon('legacy-folder')|raw }} {{ __('Files/File-Distribution/%s', path.title) }}</a>
+        </div>
     {% endif %}
     {{ parent() }}
 {% endblock %}

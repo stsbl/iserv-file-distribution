@@ -5,9 +5,9 @@ services:
         arguments: [Stsbl\FileDistributionBundle\Entity\Host]
         calls:
            - [ setShell, ["@iserv.shell"]]
-           - [ setHostManager, ["@iserv.host_manager"]]
-           - [ setOui, ["@iserv.host.oui"]]
-           - [ setRequestStack, ["@request_stack"]]
+           - [ setEntityManager, ["@doctrine.orm.entity_manager"]]
+           - [ setSecurityHandler, ["@iserv.security_handler"]]
+           - [ setSession, ["@session"]]
         tags:
             - { name: iserv.crud }
 

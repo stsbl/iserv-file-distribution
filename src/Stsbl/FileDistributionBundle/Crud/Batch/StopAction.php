@@ -68,11 +68,13 @@ class StopAction extends AbstractBatchAction
         $user = $this->crud->getUser();
         
         foreach ($entities as $entity) {
+            /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
             if ($this->isAllowedToExecute($entity, $user)) {
-                $this->crud->delete($entity);
-                $bag->addMessage('success', __('Disabled file distribution for %s.', (string)$entity->getHostname()));
+                $delete = $this->crud->getFileDistributionForHost($entity);
+                $this->crud->delete($delete);
+                $bag->addMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
             } else {
-                $bag->addMessage('error', __('You are not allowed to disable file distirbution for %s.', (string)$entity->getHostname()));
+                $bag->addMessage('error', __('You are not allowed to disable file distirbution for %s.', (string)$entity->getName()));
             }
         }
         

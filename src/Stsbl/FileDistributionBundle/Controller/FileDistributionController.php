@@ -14,6 +14,12 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use IServ\CrudBundle\Table\ListHandler;
+use IServ\CrudBundle\Doctrine\ORM\DoctrineObjectManagerInterface;
+use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
+use IServ\CrudBundle\Form\Type\CrudMultiSelect;
+
 /*
  * The MIT License
  *
@@ -56,18 +62,14 @@ class FileDistributionController extends CrudController
         if (is_array($ret)) {
             $session = $request->getSession();
             
-            $ret['display_msg'] = $session->has('fd_titles');
+            $ret['display_msg'] = $session->has('fd_title');
             
             if ($ret['display_msg']) {
-                $ret['paths'] = [];
-                
-                foreach ($session->get('fd_titles') as $title) {
-                    $ret['paths'][] = ['title' => $title, 'encoded' => base64_encode(sprintf('Files/File-Distribution/%s', $title))];
-                }
-                
-                $session->remove('fd_titles');
+                $title = $session->get('fd_title');
+                $ret['path'] = ['title' => $title, 'encoded' => base64_encode(sprintf('Files/File-Distribution/%s', $title))];
+                $session->remove('fd_title');
             } else {
-                $ret['titles'] = null;
+                $ret['title'] = null;
             }
         }
         
@@ -213,5 +215,191 @@ class FileDistributionController extends CrudController
         ;
         
         return $builder->getForm();
+    }
+    
+    /**
+     * Inits multi select batch actions
+     *
+     * @param array $items
+     * @param bool $confirm
+     * @param bool $enabled
+     * @param ListHandler $listHandler
+     * @return array|bool
+     */
+    protected function prepareBatchActions($items, $confirm = false, $enabled = null, ListHandler $listHandler = null)
+    {
+        $ret = parent::prepareBatchActions($items, $confirm, $enabled, $listHandler);
+
+        if (is_array($ret)) {
+            if ($confirm) {
+                /* @var $multiSelectForm \Symfony\Component\Form\Form */
+                $multiSelectForm = $ret['form'];
+                
+                $multiSelectForm->add('title', \Symfony\Component\Form\Extension\Core\Type\TextType::class, [
+                    'label' => false,
+                    'attr' => [
+                        'placeholder' => _('Title for this file distribution')
+                    ]
+                ]);
+                
+                $ret['form'] = $multiSelectForm;
+            }
+        }
+        
+        return $ret;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function confirmBatchAction(Request $request)
+    {
+        // FIXME: Cleanup ugly list handler injection for non-Doctrine based MultiSelect (#1251)
+        if (false === $multiSelect = $this->prepareBatchActions(null, false, null, $this->crud->getListHandler($request))) {
+            throw new \RuntimeException(sprintf('There are no batch actions defined in `%s`.', get_class($this->crud)));
+        }
+
+        // Handle multi select form action
+        /* @var $form \Symfony\Component\Form\Form */
+        $form = $multiSelect['form'];
+        $form->handleRequest($request);
+        $batchAction = null;
+
+        if ($form->isValid()) {
+            $data = $form->getData();
+            //dump($data);
+            if ((is_array($data['multi']) && !empty($data['multi']) || (is_object($data['multi']) && !$data['multi']->isEmpty()))) {
+                // Normalize items
+                $items = is_array($data['multi']) ? $data['multi'] : $data['multi']->toArray();
+
+                // Check which batch action is executed
+                /* @var $action \IServ\CrudBundle\Crud\Batch\BatchActionInterface */
+                if (!empty($data['grouped_actions'])) {
+                    $batchAction = $data['grouped_actions'];
+                }
+                else {
+                    foreach ($this->crud->getBatchActions(null) as $action) {
+                        if ($action->getName() == $form->getClickedButton()->getName()) {
+                            $batchAction = $action;
+                            break;
+                        }
+                    }
+                }
+                if (!isset($batchAction)) {
+                    throw new \RuntimeException('No valid batch action found!');
+                }
+
+                // Check for each item if user is allowed to execute the batch action on it
+                $badItems = array();
+                foreach ($data['multi'] as $key => $item) {
+                    if (!$batchAction->isAllowedToExecute($item, $this->getUser())) {
+                        $badItems[] = $item;
+                        unset($items[$key]);
+                    }
+                }
+
+                // Create a confirmation form based on the committed data based on the multi selection.
+                /* @var $confirmForm Form */
+                // TODO: Create a new MultiHiddenEntity form type
+                $confirm = $this->prepareBatchActions($items, true, null, $this->crud->getListHandler($request));
+                $confirmForm = $confirm['form'];
+
+                // Remove all currently unused batch actions from the confirmation form
+                foreach ($this->crud->getBatchActions(null) as $action) {
+                    if ($action !== $batchAction) {
+                        $confirmForm->get('actions')->remove($action->getName());
+                    }
+                }
+                
+                // display title only on enable file distribution
+                if (!$confirmForm->get('actions')->has('enable')) {
+                    $confirmForm->remove('title');
+                }
+
+            } else {
+                $this->addFlash('warning', _('No element selected!'));
+
+                return $this->redirect($this->crud->generateUrl('index'));
+            }
+        } else {
+            throw new \RuntimeException('Confirmation batch action form not valid: ' . (string)$form->getErrors(true, false));
+        }
+
+        // Execute batch action if it doesn't require confirmation
+        if (null !== $batchAction && !$batchAction->requiresConfirmation()) {
+            // Don't use forward() to ease handling!
+            return $this->batchAction($request);
+        }
+
+        // Prepare form view
+        $confirm['form'] = $confirm['form']->createView();
+
+        // Track path
+        $this->prepareBreadcrumbs();
+        $this->addBreadcrumb($this->crud->getTitle(), $this->crud->generateUrl('index'));
+        $this->addBreadcrumb(_('Confirm action'));
+
+        return array(
+            '_template' => $this->crud->getTemplate('crud_batch_confirm'),
+            'admin' => $this->crud,
+            'items' => $items,
+            'disallowedItems' => $badItems,
+            'fields' => $this->crud->getFields(),
+            'confirmForm' => $confirm,
+            'batchAction' => $batchAction,
+        );
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function batchAction(Request $request)
+    {
+        // Init multi select
+        if (false === $multiSelect = $this->prepareBatchActions(null, true, null, $this->crud->getListHandler($request))) {
+            throw new \RuntimeException(sprintf('There are no batch actions defined in `%s`.', get_class($this->crud)));
+        }
+
+        // Handle form action
+        /* @var $form \Symfony\Component\Form\Form */
+        $form = $multiSelect['form'];
+        $form->handleRequest($request);
+
+        if ($form->getClickedButton()->getName() === 'cancel') {
+            return $this->redirect($this->crud->generateUrl('index'));
+        }
+
+        if ($form->isValid()) {
+            $data = $form->getData();
+            if (is_array($data['multi'])) {
+                $data['multi'] = new ArrayCollection($data['multi']);
+            }
+            if (!$data['multi']->isEmpty()) {
+                //dump($data);
+
+                // Get batch action
+                foreach ($this->crud->getBatchActions(null) as $action) {
+                    if ($form->get('actions')->get($action->getName())->isClicked()) {
+                        if ($action->getName() === 'enable') {
+                            // set title on enable
+                            $action->setTitle($form->getData()['title']);
+                        }
+                        
+                        // Run action, collect feedback and return to list afterwards.
+                        $message = $action->execute($data['multi']);
+
+                        if ($message) {
+                            $this->addFlash($message);
+                        }
+
+                        return $this->redirect($this->crud->generateUrl('index'));
+                    }
+                }
+
+                throw new \RuntimeException('No valid batch action was found on submit!');
+            }
+        }
+
+        return $this->redirect($this->crud->generateUrl('index'));
     }
 }

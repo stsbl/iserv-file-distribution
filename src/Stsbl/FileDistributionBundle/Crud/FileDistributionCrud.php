@@ -2,7 +2,9 @@
 // src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
 namespace Stsbl\FileDistributionBundle\Crud;
 
+use Doctrine\ORM\EntityManager;
 use IServ\CoreBundle\Entity\Specification\PropertyMatchSpecification;
+use IServ\CoreBundle\Security\Core\SecurityHandler;
 use IServ\CoreBundle\Service\Shell;
 use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Entity\CrudInterface;
@@ -10,8 +12,10 @@ use IServ\CrudBundle\Mapper\ListMapper;
 use IServ\CrudBundle\Mapper\ShowMapper;
 use IServ\CrudBundle\Table\Filter;
 use IServ\CrudBundle\Table\ListHandler;
+use Stsbl\FileDistributionBundle\Crud\Batch\EnableAction;
 use Stsbl\FileDistributionBundle\Crud\Batch\StopAction;
 use Stsbl\FileDistributionBundle\Security\Privilege;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /*
@@ -44,12 +48,27 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
+class FileDistributionCrud extends AbstractCrud
 {
     /**
      * @var Shell
      */
     private $shell;
+    
+    /**
+     * @var EntityManager
+     */
+    private $em;
+    
+    /**
+     * @var SecurityHandler
+     */
+    private $securityHandler;
+    
+    /**
+     * @var Session
+     */
+    private $session;
     
     /* SETTERS */
     
@@ -61,6 +80,58 @@ class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
     public function setShell(Shell $shell)
     {
         $this->shell = $shell;
+    }
+    
+    /**
+     * Set entity manager
+     * 
+     * @param EntityManager $em
+     */
+    public function setEntityManager(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+    
+    /**
+     * Set security handler
+     * 
+     * @param SecurityHandler $securityHandler
+     */
+    public function setSecurityHandler(SecurityHandler $securityHandler)
+    {
+        $this->securityHandler = $securityHandler;
+    }
+    
+    /**
+     * Set session
+     * 
+     * @param Session $session
+     */
+    public function setSession(Session $session)
+    {
+        $this->session = $session;
+    }
+    
+    /* GETTERS */
+    
+    /**
+     * Get security handler
+     * 
+     * @return SecurityHandler|null
+     */
+    public function getSecurityHandler()
+    {
+        return $this->securityHandler;
+    }
+    
+    /**
+     * Get session
+     * 
+     * @return Session|null
+     */
+    public function getSession()
+    {
+        return $this->session;
     }
 
     /**
@@ -77,6 +148,7 @@ class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
         $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';
         $this->options['sort'] = 'room';
         $this->templates['crud_index'] = 'StsblFileDistributionBundle:Crud:file_distribution_index.html.twig';
+        $this->templates['crud_batch_confirm'] = 'StsblFileDistributionBundle:Crud:file_distribution_batch_confirm.html.twig';
     }
     
     /**
@@ -88,6 +160,8 @@ class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
         
         $this->routes[self::ACTION_INDEX]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:index';
         $this->routes[self::ACTION_SHOW]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:show';
+        $this->routes['batch_confirm']['_controller'] = 'StsblFileDistributionBundle:FileDistribution:confirmBatch';
+        $this->routes['batch']['_controller'] = 'StsblFileDistributionBundle:FileDistribution:batch';
     }
 
     /**
@@ -122,18 +196,62 @@ class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
      */
     public function isAllowedToStop(CrudInterface $object, UserInterface $user = null) 
     {
-        /* @var $object \Stsbl\FileDistributionBundle\Entity\FileDistribution */
-        /*if ($user !== $object->getUser()) {
+        $fileDistribution = $this->getFileDistributionForHost($object);
+        
+        if ($fileDistribution === null) {
             return false;
-        }*/
+        }
+        
+        if ($this->getUser() !== $fileDistribution->getUser()) {
+            return false;
+        }
         
         return true;
     }
     
+    /** 
+     * Checks if user is allowed to enable a file distribution
+     * 
+     * @param CrudInterface $object
+     * @param UserInterface $user
+     */
+    public function isAllowedToEnable(CrudInterface $object, UserInterface $user = null)
+    {
+        $fileDistribution = $this->getFileDistributionForHost($object);
+        
+        if($fileDistribution === null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
     public function getFilterSpecification()
     {
         // Only show controllable hosts
         return new PropertyMatchSpecification('controllable', true);
+    }
+    
+    /**
+     * @param CrudInterface $object
+     * @return \Stsbl\FileDistributionBundle\Entity\FileDistribution|null
+     */
+    public function getFileDistributionForHost(CrudInterface $object)
+    {
+        /* @var $object \Stsbl\FileDistributionBundle\Entity\Host */
+        /* @var $er \Doctrine\ORM\EntityRepository */
+        /* @var $fileDistribution \Stsbl\FileDistributionBundle\Entity\FileDistribution */
+        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
+        try {
+            $fileDistribution = $er->findOneBy(['ip' => $object->getIp()]);
+            
+            return $fileDistribution;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
@@ -176,61 +294,35 @@ class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
     {
         $showMapper
             ->add('name', null, [
-                'label' => _('Host')
+                'label' => _('Name')
             ])
             ->add('fileDistribution', null, [
-                'label' => _('Title'),
-                'group' => true
+                'label' => _('File distribution'),
+                'template' => 'StsblFileDistributionBundle:Show:field_filedistribution.html.twig',
             ])
-            /*->add('user', null, [
+            ->add('fileDistributionOwner', null, [
                 'label' => _('Owner')
-            ])*/
+            ])
+            ->add('room', null, [
+                'label' => _('Room'),
+            ])
+            ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
+            ->add('sambaUser', null, ['label' => _('User')])
         ;
     }
     
     /**
      * {@inheritdoc}
      */
-    /*public function configureListFilter(ListHandler $listHandler)
-    {
-        $qb = $this->getObjectManager()->createQueryBuilder($this->class);
-                   
-        $qb->select('p')
-            ->from('StsblFileDistributionBundle:FileDistribution', 'p')
-        ;
-        
-        $allFilter = new Filter\ListExpressionFilter(_('All'), $qb->expr()->exists($qb));
-        $allFilter    
-            ->setName('all_titles')
-        ;
-        
-        $listHandler->addListFilter($allFilter);
-        
-        $titles = [];
-        
-        /* @var $r \Stsbl\FileDistributionBundle\Entity\FileDistribution *//*
-        foreach ($qb->getQuery()->getResult() as $r) {
-            $titles[$r->getTitle()] = ['plain' => $r->getPlainTitle(), 'display' => $r->getTitle(), 'user' => $r->getUser()];
-        }
-        
-        foreach ($titles as $title) {
-            $titleFilter = new Filter\ListExpressionFilter($title['display'], 'parent.user = :user and parent.title = :title');
-            $titleFilter
-                ->setName('title_'. strtolower($title['plain'].'_'.$title['user']->getUsername()))
-                ->setParameters(['user' => $title['user'], 'title' => $title['plain']]);
-            ;
-            
-            $listHandler->addListFilter($titleFilter);
-        }
-        
-        $listHandler->setDefaultFilter('all_titles');
-    }*/
-    
-    /**
-     * {@inheritdoc}
-     */
     public function loadBatchActions()
     {
+        parent::loadBatchActions();
+        
+        $enableAction = new EnableAction($this);
+        $enableAction->setShell($this->shell);
+        $enableAction->setEntityManager($this->em);
+        
+        $this->batchActions->add($enableAction);
         
         $stopAction = new StopAction($this);
         $stopAction->setShell($this->shell);
@@ -238,18 +330,6 @@ class FileDistributionCrud extends \IServ\HostBundle\Admin\HostCrud
         $this->batchActions->add($stopAction);
         
         return $this->batchActions;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function getIndexActions() 
-    {
-        $links = parent::getIndexActions();
-        
-        $links['enable'] = [$this->getRouter()->generate('fd_filedistribution_enable'), _('Enable'), 'pro-folder-plus'];
-        
-        return $links;
     }
     
     /**
