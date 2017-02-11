@@ -7,6 +7,9 @@ use IServ\CoreBundle\Entity\Specification\PropertyMatchSpecification;
 use IServ\CoreBundle\Security\Core\SecurityHandler;
 use IServ\CoreBundle\Service\Shell;
 use IServ\CrudBundle\Crud\AbstractCrud;
+use IServ\CrudBundle\Table\Filter;
+use IServ\CrudBundle\Table\ListHandler;
+use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
 use IServ\CrudBundle\Mapper\ShowMapper;
@@ -348,5 +351,23 @@ class FileDistributionCrud extends AbstractCrud
     public function isAuthorized() 
     {
         return $this->isGranted(Privilege::USE_FD);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function configureListFilter(ListHandler $listHandler) 
+    {
+        $listHandler
+            ->addListFilter((new Filter\ListFilterByFilter(_p('host-has-internet', 'Internet allowed'), array('internet' => true)))->setName('has-internet')->setGroup(_p('host-filter-internet', 'Internet: all')))
+            ->addListFilter((new Filter\ListFilterByFilter(_p('host-has-no-internet', 'No internet'), array('internet' => false)))->setName('has-no-internet')->setGroup(_p('host-filter-internet', 'Internet: all')))
+        ;
+        
+        $listHandler
+            ->addListFilter((new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'name'))->setName('room')->allowAnyAndNone()->setPickerOptions(array('data-live-search' => 'true')))
+            ->addListFilter((new Filter\ListSearchFilter(_('Search'), array(
+                'name' => FilterSearch::TYPE_TEXT
+            ))))
+        ;
     }
 }
