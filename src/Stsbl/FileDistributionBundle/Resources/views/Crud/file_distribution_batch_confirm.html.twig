@@ -8,15 +8,21 @@
     {% endif %}
     {{ parent() }}
 {% endblock %}
+
+
+
 {% block crud_table_foot %}
     <tfoot>
-        <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
-            {% if confirmForm.form.title is defined %}
-                <p>
-                    {{ form_widget(confirmForm.form.title) }}
-                    <span class="help-block">{{ _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')|escape('html') }}</span>
-                </p>
-            {% endif %}
+        {% if confirmForm.form.actions.enable is defined %}
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                <span class="help-block">{{ _('For the users who are logging in on this hosts, there will created two addtional network drives for file distribution assignment and return.') }}</span>
+            </td></tr>
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_widget(confirmForm.form.title) }}
+                <span class="help-block">{{ _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')|escape('html') }}</span>
+            </td></tr>
+        {% endif %}
+        <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}> 
             <div class="batch-actions">
                 {{ form_widget(confirmForm.form.actions) }}
             </div>
