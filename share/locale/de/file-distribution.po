@@ -1,17 +1,8 @@
 msgid "File distribution"
 msgstr "Dateiverteilung"
 
-msgid "Add host"
-msgstr "Gerät hinzufügen"
-
-msgid "Remove host"
-msgstr "Gerät entfernen"
-
-msgid "Enable file distribution"
-msgstr "Dateiverteilung aktivieren"
-
-msgid "For the user who is logging in on this host, there will created two addtional network drives for file distribution assignment and return."
-msgstr "Für den Benutzer, der sich auf diesem Gerät anmeldet, werden zwei zusätzliche Netzlaufwerke für die Dateiverteilung- und rückgabe erstellt."
+msgid "For the users who are logging in on this hosts, there will created two addtional network drives for file distribution assignment and return."
+msgstr "Für die Benutzer, die sich auf diesen Geräten anmelden, werden zwei zusätzliche Netzlaufwerke für die Dateiverteilung- und rückgabe erstellt."
 
 msgid "The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>."
 msgstr "Der Ordnerpfad wo Sie den Verteilungsordner und die Rückgaben finden, ist Dateien/File-Distribution/<Titel>."
