@@ -281,7 +281,7 @@ class FileDistributionCrud extends AbstractCrud
                 'sortType' => 'natural',
             ])
             ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
-            ->add('sambaUser', null, ['label' => _('User')])
+            ->add('sambaUserDisplay', null, ['label' => _('User')])
         ;
     }
     
@@ -305,7 +305,7 @@ class FileDistributionCrud extends AbstractCrud
                 'label' => _('Room'),
             ])
             ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
-            ->add('sambaUser', null, ['label' => _('User')])
+            ->add('sambaUserDisplay', null, ['label' => _('User')])
         ;
     }
     
