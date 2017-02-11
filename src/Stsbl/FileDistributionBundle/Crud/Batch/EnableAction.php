@@ -66,6 +66,7 @@ class EnableAction extends AbstractFileDistributionAction
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
         $bag = new FlashMessageBag();
         $user = $this->crud->getUser();
+        $fileDistributions = [];
         
         foreach ($entities as $entity) {
             if (empty($this->title)) {
@@ -83,6 +84,8 @@ class EnableAction extends AbstractFileDistributionAction
                 $this->em->persist($fileDistribution);
                 $this->em->flush();
                 
+                $fileDistributions[] = $fileDistribution;
+                
                 $bag->addMessage('success', __('Enabled file distribution for %s.', (string)$entity->getName()));
             } else {
                 $bag->addMessage('error', __('You are not allowed to enable file distribution for %s.', (string)$entity->getName()));
@@ -92,6 +95,15 @@ class EnableAction extends AbstractFileDistributionAction
         $this->createDirectory();
         $this->shell->exec('sudo', ['/usr/lib/iserv/file_distribution_config']);
         
+        // rollback on fail
+        if ($this->shell->getExitCode() > 0) {
+            foreach ($fileDistributions as $fileDistribution) {
+                $this->em->remove($fileDistribution);
+                $this->em->flush();
+            }
+        }
+        
+        $bag = $this->convertShellErrorOutput($bag);
         return $bag;
     }
     

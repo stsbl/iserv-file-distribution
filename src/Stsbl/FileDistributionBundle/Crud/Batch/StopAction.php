@@ -64,6 +64,7 @@ class StopAction extends AbstractFileDistributionAction
             }
         }
         
+        $bag = $this->convertShellErrorOutput($bag);
         $this->shell->exec('sudo', ['/usr/lib/iserv/file_distribution_config']);
         
         return $bag;
