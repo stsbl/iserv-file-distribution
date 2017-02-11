@@ -1,7 +1,7 @@
 {# src/Stsbl/FileDistirbutionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig #}
 {% extends "IServCrudBundle:Crud:batch_confirm.html.twig" %}
 {% block crud_table %}
-    {% if confirmForm.form.actions.enable is defined %}
+    {% if batchAction == 'enable' %}
         <div class="alert alert-warning">
             {{ _('Only hosts which are member of the Windows Domain are supported.') }}
         </div>
@@ -34,7 +34,7 @@
 {% if not disallowedItems is empty %}
     <div class="panel panel-warning mt">
         <div class="panel-heading">
-            {% if confirmForm.form.enable is defined %}
+            {% if batchAction.getName() == 'enable' %}
                 {{ _('You can not enable file distributions for the following entries, because there it is already enabled:') }}
             {% else %}
                 {{ _('File distribution is not enabled for the following entries:') }}
