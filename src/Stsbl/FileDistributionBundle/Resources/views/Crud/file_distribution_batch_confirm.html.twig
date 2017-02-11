@@ -1,5 +1,17 @@
 {# src/Stsbl/FileDistirbutionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig #}
 {% extends "IServCrudBundle:Crud:batch_confirm.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution.css -->
+    {% endif %}
+    {% stylesheets output='css/compiled/file-distribution.css' '@StsblFileDistributionBundle/Resources/public/css/file-distribution.less' filter='cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
 {% block crud_table %}
     {% if batchAction == 'enable' %}
         <div class="alert alert-warning">
@@ -9,13 +21,11 @@
     {{ parent() }}
 {% endblock %}
 
-
-
 {% block crud_table_foot %}
     <tfoot>
         {% if confirmForm.form.actions.enable is defined %}
             <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
-                <span class="help-block">{{ _('For the users who are logging in on this hosts, there will created two addtional network drives for file distribution assignment and return.') }}</span>
+                <span class="fd-help-text">{{ _('For the users who are logging in on this hosts, there will created two addtional network drives for file distribution assignment and return.') }}</span>
             </td></tr>
             <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
                 {{ form_widget(confirmForm.form.title) }}
