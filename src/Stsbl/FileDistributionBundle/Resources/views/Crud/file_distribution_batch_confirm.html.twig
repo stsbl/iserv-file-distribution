@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block crud_table %}
-    {% if batchAction == 'enable' %}
+    {% if batchAction.getName() == 'enable' %}
         <div class="alert alert-warning">
             {{ _('Only hosts which are member of the Windows Domain are supported.') }}
         </div>
