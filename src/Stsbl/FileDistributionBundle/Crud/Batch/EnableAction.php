@@ -6,9 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use IServ\CoreBundle\Service\Shell;
 use IServ\CoreBundle\Util\Sudo;
-use IServ\CrudBundle\Crud\Batch\AbstractBatchAction;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /*
@@ -41,42 +41,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class EnableAction extends AbstractBatchAction 
+class EnableAction extends AbstractFileDistributionAction 
 {
     /**
      * @var string
      */
     private $title; 
-    
-    /**
-     * @var Shell
-     */
-    private $shell;
-    
-    /**
-     * @var EntityManager
-     */
-    private $em;
-    
-    /**
-     * Set entity manager
-     * 
-     * @param EntityManager $em
-     */
-    public function setEntityManager(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-    
-    /**
-     * Set shell
-     * 
-     * @param Shell $shell
-     */
-    public function setShell(Shell $shell)
-    {
-        $this->shell = $shell;
-    }
     
     /**
      * Set file distribution title
@@ -92,11 +62,7 @@ class EnableAction extends AbstractBatchAction
      * {@inheritodc}
      */
     public function execute(ArrayCollection $entities) 
-    {
-        if (is_null($this->shell)) {
-            throw new \RuntimeException(sprintf('shell was not injected into %s, you need to set it via %s.', get_class($this), get_class($this),'::setShell()'));
-        }
-        
+    {      
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
         $bag = new FlashMessageBag();
         $user = $this->crud->getUser();
@@ -107,7 +73,7 @@ class EnableAction extends AbstractBatchAction
                return $bag;
             } else if ($this->isAllowedToExecute($entity, $user)) {
                 /* @var $em \Doctrine\ORM\EntityManager */
-                $fileDistribution = new \Stsbl\FileDistributionBundle\Entity\FileDistribution();
+                $fileDistribution = new FileDistribution();
                 $fileDistribution->setHostname($entity);
                 $fileDistribution->setUser($this->crud->getUser());
                 $fileDistribution->setAct($this->crud->getUser()->getUsername());
@@ -133,15 +99,13 @@ class EnableAction extends AbstractBatchAction
      * Call sudo for creating assignment and return folder
      */
     private function createDirectory()
-    {
-        /* @var $crud \Stsbl\FileDistributionBundle\Crud\FileDistributionCrud */
-        $crud = $this->crud;
-        Sudo::_init($crud->getUser()->getUsername(), $crud->getSecurityHandler()->getSessionPassword());
+    {;
+        Sudo::_init($this->crud->getUser()->getUsername(), $this->securityHandler->getSessionPassword());
         
         // adjust umask
         Sudo::umask(007);
                 
-        $home = $crud->getUser()->getHome().'/';
+        $home = $this->crud->getUser()->getHome().'/';
         $directory = $home.'File-Distribution/'.$this->title.'/';
         $assignDirectory = $directory.'Assignment/';
         $returnDirectory = $directory.'Return/';
@@ -167,9 +131,7 @@ class EnableAction extends AbstractBatchAction
             Sudo::symlink('../File-Distribution', $symlink);
         }
         
-        $session = $crud->getSession();
-        
-        $session->set('fd_title', $this->title);
+        $this->session->set('fd_title', $this->title);
     }
 
     /**
