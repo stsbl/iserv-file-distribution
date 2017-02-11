@@ -1,6 +1,13 @@
 {# src/Stsbl/FileDistirbutionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig #}
 {% extends "IServCrudBundle:Crud:batch_confirm.html.twig" %}
-
+{% block crud_table %}
+    {% if confirmForm.form.actions.enable is defined %}
+        <div class="alert alert-warning">
+            {{ _('Only hosts which are member of the Windows Domain are supported.') }}
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
 {% block crud_table_foot %}
     <tfoot>
         <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
