@@ -4,7 +4,6 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CoreBundle\Service\Shell;
-use IServ\CrudBundle\Crud\Batch\AbstractBatchAction;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -39,21 +38,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class StopAction extends AbstractBatchAction
+class StopAction extends AbstractFileDistributionAction
 {
-    /**
-     * @var Shell
-     */
-    private $shell;
-    
-    /**
-     * Set shell
-     */
-    public function setShell(Shell $shell)
-    {
-        $this->shell = $shell;
-    }
-    
     /**
      * {@inheritodc}
      */
@@ -78,6 +64,7 @@ class StopAction extends AbstractBatchAction
             }
         }
         
+        $bag = $this->convertShellErrorOutput($bag);
         $this->shell->exec('sudo', ['/usr/lib/iserv/file_distribution_config']);
         
         return $bag;

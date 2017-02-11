@@ -116,6 +116,26 @@ class FileDistributionCrud extends AbstractCrud
     /* GETTERS */
     
     /**
+     * Get shell
+     * 
+     * @return Shell|null
+     */
+    public function getShell()
+    {
+        return $this->shell;
+    }
+    
+    /**
+     * Get entity manager
+     * 
+     * @return EntityManager|null
+     */
+    public function getEntityManager()
+    {
+        return $this->em;
+    }
+    
+    /**
      * Get security handler
      * 
      * @return SecurityHandler|null
@@ -320,14 +340,9 @@ class FileDistributionCrud extends AbstractCrud
         parent::loadBatchActions();
         
         $enableAction = new EnableAction($this);
-        $enableAction->setShell($this->shell);
-        $enableAction->setEntityManager($this->em);
-        
         $this->batchActions->add($enableAction);
         
         $stopAction = new StopAction($this);
-        $stopAction->setShell($this->shell);
-        
         $this->batchActions->add($stopAction);
         
         return $this->batchActions;
