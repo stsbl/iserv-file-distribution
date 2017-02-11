@@ -1,0 +1,39 @@
+{# src/Stsbl/FileDistirbutionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig #}
+{% extends "IServCrudBundle:Crud:batch_confirm.html.twig" %}
+
+{% block crud_table_foot %}
+    <tfoot>
+        <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+            {% if confirmForm.form.title is defined %}
+                <p>
+                    {{ form_widget(confirmForm.form.title) }}
+                </p>
+            {% endif %}
+            <div class="batch-actions">
+                {{ form_widget(confirmForm.form.actions) }}
+            </div>
+        </td></tr>
+    </tfoot>
+{% endblock crud_table_foot %}
+
+{% block crud_disallowed_table %}
+{% if not disallowedItems is empty %}
+    <div class="panel panel-warning mt">
+        <div class="panel-heading">
+            {% if confirmForm.form.enable is defined %}
+                {{ _('You can not enable file distributions for the following entries, because there it is already enabled:') }}
+            {% else %}
+                {{ _('File distribution is not enabled for the following entries:') }}
+            {% endif %}
+        </div>
+        <table class="table table-bordered">
+            {% block crud_disallowed_table_body %}
+                {{ parent() }}
+            {% endblock %}
+            {% block crud_disallowed_table_foot %}
+                {{ parent() }}
+            {% endblock %}
+        </table>
+    </div>
+{% endif %}
+{% endblock crud_disallowed_table %}
