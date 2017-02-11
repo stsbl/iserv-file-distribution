@@ -10,13 +10,7 @@ services:
            - [ setSession, ["@session"]]
         tags:
             - { name: iserv.crud }
-
-    stsbl.filedistribution.form.file_distribution:
-        class: Stsbl\FileDistributionBundle\Form\Type\FileDistributionType
-        arguments: ["@iserv.security_handler"]
-        tags:
-            - {name: form.type }
-
+            
     stsbl.filedistribution.menu:
         class: Stsbl\FileDistributionBundle\EventListener\MenuListener # Out MenuListener Class
         tags:
