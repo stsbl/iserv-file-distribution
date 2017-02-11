@@ -16,12 +16,6 @@ msgstr "Für den Benutzer, der sich auf diesem Gerät anmeldet, werden zwei zus�
 msgid "The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>."
 msgstr "Der Ordnerpfad wo Sie den Verteilungsordner und die Rückgaben finden, ist Dateien/File-Distribution/<Titel>."
 
-msgid "Enter a title for this file distribution..."
-msgstr "Geben Sie einen Titel für diese Dateiverteilung ein..."
-
-msgid "Select a host for file distribution..."
-msgstr "Wählen Sie ein Gerät für die Dateiverteilung..."
-
 msgid "Enable"
 msgstr "Aktivieren"
 
@@ -34,13 +28,10 @@ msgstr "Die Dateien für die Verteilung \"%s\" werden in folgenden Ordner abgele
 msgid "Files/File-Distribution/%s"
 msgstr "Dateien/File-Distribution/%s"
 
-msgid "File distribution is already enabled for this host."
-msgstr "Dateiverteilung ist bereits für dieses Gerät aktiviert."
-
 msgid "Disabled file distribution for %s."
 msgstr "Dateiverteilung für %s deaktiviert."
 
-msgid "You are not allowed to disable file distirbution for %s."
+msgid "You are not allowed to disable file distribution for %s."
 msgstr "Sie dürfen die Dateiverteilung für %s nicht deaktivieren."
 
 msgid "Enabled file distribution for %s."

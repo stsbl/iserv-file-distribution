@@ -78,7 +78,8 @@ class FileDistributionController extends CrudController
                 $multiSelectForm->add('title', TextType::class, [
                     'label' => false,
                     'attr' => [
-                        'placeholder' => _('Title for this file distribution')
+                        'placeholder' => _('Title for this file distribution'),
+                        'help_text' => _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')
                     ]
                 ]);
                 

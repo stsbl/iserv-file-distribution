@@ -14,6 +14,7 @@
             {% if confirmForm.form.title is defined %}
                 <p>
                     {{ form_widget(confirmForm.form.title) }}
+                    <span class="help-block">{{ _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')|escape('html') }}</span>
                 </p>
             {% endif %}
             <div class="batch-actions">
