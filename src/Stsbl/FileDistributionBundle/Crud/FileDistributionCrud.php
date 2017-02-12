@@ -13,6 +13,7 @@ use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
 use IServ\CrudBundle\Mapper\ShowMapper;
+use IServ\HostBundle\Util\Config;
 use Stsbl\FileDistributionBundle\Crud\Batch\EnableAction;
 use Stsbl\FileDistributionBundle\Crud\Batch\StopAction;
 use Stsbl\FileDistributionBundle\Security\Privilege;
@@ -287,6 +288,11 @@ class FileDistributionCrud extends AbstractCrud
                 'sortType' => 'natural',
                 'template' => 'IServHostBundle:Crud:list_field_name.html.twig',
             ])
+            ->add('type', null, [
+                'label' => _('Type'),
+                'template' => 'IServHostBundle:Crud:list_field_type.html.twig', 
+                'responsive' => 'desktop'
+            ])
             ->add('fileDistribution', null, [
                 'label' => _('File distribution'),
                 'group' => true,
@@ -316,6 +322,10 @@ class FileDistributionCrud extends AbstractCrud
         $showMapper
             ->add('name', null, [
                 'label' => _('Name')
+            ])
+            ->add('type', null, [
+                'label' => _('Type'),
+                'template' => 'IServHostBundle:Crud:show_field_type.html.twig'
             ])
             ->add('fileDistribution', null, [
                 'label' => _('File distribution'),
@@ -384,5 +394,16 @@ class FileDistributionCrud extends AbstractCrud
                 'name' => FilterSearch::TYPE_TEXT
             ))))
         ;
+    }
+    
+    /**
+     * Get host type by id
+     *
+     * @param string $type
+     * @return HostType
+     */
+    public function getHostType($type)
+    {
+        return Config::getHostType($type);
     }
 }
