@@ -1,3 +1,17 @@
+stsbl-iserv-file-distribution (17.02.12-2) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Display host type in list.
+  * Fixed package description.
+  * Display host online status in file distribution management.
+  * Fixed displaying of only one login if a user is logged in on multiple hosts.
+  * Bug fix: Disable browser validation of title field, if the cancel button is pressed.
+  * Fixed grouping if the list is sorted by room.
+  * Group hosts if sorted by internet access.
+  * Revert "Group hosts if sorted by internet access."
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sun, 12 Feb 2017 06:18:55 +0100
+
 stsbl-iserv-file-distribution (17.02.12-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
