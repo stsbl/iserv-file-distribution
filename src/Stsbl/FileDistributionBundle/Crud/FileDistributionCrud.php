@@ -296,8 +296,6 @@ class FileDistributionCrud extends AbstractCrud
             ->add('fileDistribution', null, [
                 'label' => _('File distribution'),
                 'group' => true,
-                'sortOrder' => [3, 1],
-                'sortType' => 'natural',
                 'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig',
             ])
             ->add('fileDistributionOwner', null, [
@@ -306,7 +304,6 @@ class FileDistributionCrud extends AbstractCrud
             ->add('room', null, [
                 'label' => _('Room'),
                 'group' => true,
-                'sortOrder' => [3, 1],
                 'sortType' => 'natural',
             ])
             ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
