@@ -8,6 +8,8 @@ services:
            - [ setEntityManager, ["@doctrine.orm.entity_manager"]]
            - [ setSecurityHandler, ["@iserv.security_handler"]]
            - [ setSession, ["@session"]]
+           - [ setConfig, ["@iserv.config"]]
+           - [ setRequest, ["@request_stack"]]
         tags:
             - { name: iserv.crud }
             

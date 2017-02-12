@@ -5,6 +5,7 @@ namespace Stsbl\FileDistributionBundle\Crud;
 use Doctrine\ORM\EntityManager;
 use IServ\CoreBundle\Entity\Specification\PropertyMatchSpecification;
 use IServ\CoreBundle\Security\Core\SecurityHandler;
+use IServ\CoreBundle\Service\Config;
 use IServ\CoreBundle\Service\Shell;
 use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Table\Filter;
@@ -13,11 +14,14 @@ use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
 use IServ\CrudBundle\Mapper\ShowMapper;
-use IServ\HostBundle\Util\Config;
+use IServ\HostBundle\Util\Config as HostConfig;
+use IServ\HostBundle\Util\Network;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Crud\Batch\EnableAction;
 use Stsbl\FileDistributionBundle\Crud\Batch\StopAction;
 use Stsbl\FileDistributionBundle\Security\Privilege;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -73,6 +77,16 @@ class FileDistributionCrud extends AbstractCrud
      */
     private $session;
     
+    /**
+     * @var Config
+     */
+    private $config;
+    
+    /**
+     * @var Request
+     */
+    private $request;
+    
     /* SETTERS */
     
     /**
@@ -115,6 +129,27 @@ class FileDistributionCrud extends AbstractCrud
         $this->session = $session;
     }
     
+    /**
+     * Set config
+     * 
+     * @param Config $config
+     */
+    public function setConfig(Config $config)
+    {
+        $this->config = $config;
+    }
+    
+    /**
+     * Set request via stack
+     * 
+     * @param RequestStack $stack
+     */
+    public function setRequest(RequestStack $stack)
+    {
+        $this->request = $stack->getCurrentRequest();
+    }
+    
+    
     /* GETTERS */
     
     /**
@@ -155,6 +190,26 @@ class FileDistributionCrud extends AbstractCrud
     public function getSession()
     {
         return $this->session;
+    }
+    
+    /**
+     * Get config
+     * 
+     * @return Config|config
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+    
+    /**
+     * Get request
+     * 
+     * @return Request|null
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 
     /**
@@ -276,7 +331,16 @@ class FileDistributionCrud extends AbstractCrud
             return null;
         }
     }
-
+    
+    /**
+     * Checks if current request comes from LAN
+     * 
+     * @return bool
+     */
+    private function isInLan()
+    {
+        return Network::ipInLan(null, $this->getConfig()->get('LAN'), $this->getRequest());
+    }
     /**
      * {@inheritdoc}
      */
@@ -297,7 +361,7 @@ class FileDistributionCrud extends AbstractCrud
             ->add('fileDistribution', null, [
                 'label' => _('File distribution'),
                 'group' => true,
-                // sort in the following order: name, fileDistribution, room \o/
+                // sort in the following order: fileDistribution, name, room \o/
                 'sortOrder' => [3, 1, 5],
                 'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig',
             ])
@@ -307,13 +371,17 @@ class FileDistributionCrud extends AbstractCrud
             ->add('room', null, [
                 'label' => _('Room'),
                 'group' => true,
-                // sort in the following order: name, room, fileDistribution
+                // sort in the following order: room, name, fileDistribution \o/
                 'sortOrder' => [5, 1, 3],
                 'sortType' => 'natural',
             ])
             ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
-            ->add('sambaUserDisplay', null, ['label' => _('User')])
         ;
+        
+        // privacy: only allow to view the logged-in user if you are come from LAN
+        if ($this->isInLan()) {
+            $listMapper->add('sambaUserDisplay', null, ['label' => _('User')]);
+        }
     }
     
     /**
@@ -340,8 +408,13 @@ class FileDistributionCrud extends AbstractCrud
                 'label' => _('Room'),
             ])
             ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
-            ->add('sambaUserDisplay', null, ['label' => _('User')])
+            
         ;
+         
+        // privacy: only allow to view the logged-in user if you are come from LAN
+        if ($this->isInLan()) {
+            $showMapper->add('sambaUserDisplay', null, ['label' => _('User')]);
+        }
     }
     
     /**
@@ -406,6 +479,6 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getHostType($type)
     {
-        return Config::getHostType($type);
+        return HostConfig::getHostType($type);
     }
 }
