@@ -1,3 +1,22 @@
+stsbl-iserv-file-distribution (17.02.12-3) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Almost fixed sorting.
+  * Added tooltips.
+  * Fixed not allowed message.
+  * Updated l10n.
+  * Also require computer_boot privilege for the file distribution. (Without that the online status lookup does not work)
+  * Added dependency on iserv3-host.
+  * Removed dependency on stsbl-iserv3-js-libs.
+  * Added iserv-computer advice.
+  * Privacy: Hide user column if request comes from outside of lan.
+
+  iserv: Datenschutz: Auch über die Oberfläche der Dateiverteilung ist nicht mehr von zuhause einsehbar, wer an welchen Rechner angemeldet ist.
+
+  iserv: Das Sonderrecht "Computer starten und herunterfahren" aus Rechnersteuerung wird nun benötigt, um das Modul nutzen zu können, damit die Anzeige des Online-Status der Rechner funktioniert, bitte passen Sie in der Rechteverwaltung die Rechte bei Bedarf an.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sun, 12 Feb 2017 17:22:50 +0100
+
 stsbl-iserv-file-distribution (17.02.12-2) experimental; urgency=medium
 
   [ Felix Jacobi ]
