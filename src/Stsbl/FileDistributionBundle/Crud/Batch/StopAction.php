@@ -85,6 +85,14 @@ class StopAction extends AbstractFileDistributionAction
     {
         return _('Stop');
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getTooltip() 
+    {
+        return _('Stop the running file distribution for the selected hosts.');
+    }
 
     /**
      * {@inheritdoc}

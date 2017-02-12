@@ -161,6 +161,14 @@ class EnableAction extends AbstractFileDistributionAction
     {
         return _('Enable');
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getTooltip() 
+    {
+        return _('Start a file distribution for the selected hosts.');
+    }
 
     /**
      * {@inheritdoc}
