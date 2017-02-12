@@ -46,11 +46,17 @@ msgstr "Titel für diese Dateiverteilung"
 msgid "You can not enable file distributions for the following entries, because there it is already enabled:"
 msgstr "Sie können die Dateiverteilung für die folgenden Einträge nicht aktivieren, da Sie dort bereits aktiviert ist:"
 
-msgid "File distribution is not enabled for the following entries:"
-msgstr "Dateiverteilung ist für die folgenden Einträge nicht aktiviert:"
+msgid "File distribution is not enabled for the following entries or are not are allowed to stop the file distribution there:"
+msgstr "Dateiverteilung ist für die folgenden Einträge nicht aktiviert oder Sie dürfen die Dateiverteilung dort nicht beenden:"
 
 msgid "File distribution owner"
 msgstr "Besitzer der Dateiverteilung"
 
 msgid "Title should not be empty!"
 msgstr "Titel sollte nicht leer sein!"
+
+msgid "Start a file distribution for the selected hosts."
+msgstr "Eine Dateiverteilung für die ausgewählten Geräte beginnen."
+
+msgid "Stop the running file distribution for the selected hosts."
+msgstr "Eine laufende Dateiverteilung für die ausgewählten Geräte beenden."
