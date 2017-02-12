@@ -306,7 +306,10 @@ class FileDistributionCrud extends AbstractCrud
                 'group' => true,
                 'sortType' => 'natural',
             ])
-            ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
+            ->add('internet', 'boolean', [
+                'label' => _p('host', 'Internet'),
+                'group' => true
+            ])
             ->add('sambaUserDisplay', null, ['label' => _('User')])
         ;
     }
