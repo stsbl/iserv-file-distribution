@@ -61,3 +61,16 @@
     </div>
 {% endif %}
 {% endblock crud_disallowed_table %}
+
+{% block javascripts %}
+    {{  parent() }}
+    
+    <script type="text/javascript">
+        // prevent requirement of title on cancel
+        $('#iserv_crud_multi_select_actions_cancel').click(function() {
+            $('#iserv_crud_multi_select_title').removeAttr('required');
+            
+            return true;
+        });
+    </script>
+{% endblock %}
