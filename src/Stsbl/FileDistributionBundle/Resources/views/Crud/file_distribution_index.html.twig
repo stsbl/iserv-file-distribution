@@ -1,20 +1,5 @@
 {# src/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig #}
 {% extends "IServCrudBundle:Crud:index.html.twig" %}
-{% block stylesheets %}
-    {{ parent() }}
-    
-    {% if app.environment != 'prod' %}
-        <!-- {{ _self }} => vendor/glyphicons-social.css -->
-    {% endif %}
-    <link rel="stylesheet" href="{{ asset('/css/vendor/glyphicons-social.css') }}"/>
-
-    {% if app.environment != 'prod' %}
-        <!-- {{ _self }} => host.css -->
-    {% endif %}
-    {% stylesheets '@IServHostBundle/Resources/public/host.css' filter='cssrewrite' filter='?uglifycss' output='css/compiled/host.css' %}
-     <link rel="stylesheet" href="{{ asset_url }}">
-    {% endstylesheets %}
-{% endblock %}
 
 {% block content %}
     {% if display_msg %}
@@ -23,18 +8,4 @@
         </div>
     {% endif %}
     {{ parent() }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    
-    {% if app.environment != 'prod' %}
-        <!-- {{ _self }} => host.js -->
-    {% endif %}
-    {% javascripts '@IServHostBundle/Resources/public/host.js' filter='?uglifyjs2' output='js/compiled/host.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-    <script type="text/javascript">
-        IServ.Host.updateStatus({{ status|json_encode|raw }});
-    </script>
 {% endblock %}

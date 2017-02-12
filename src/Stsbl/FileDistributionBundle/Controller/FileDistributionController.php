@@ -58,8 +58,6 @@ class FileDistributionController extends CrudController
             } else {
                 $ret['title'] = null;
             }
-            
-            $ret['status'] = $this->get('iserv.host.status')->get();
         }
         
         return $ret;
