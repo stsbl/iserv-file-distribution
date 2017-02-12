@@ -19,5 +19,7 @@ Description: Dateiverteilung für IServ
  .
  - Laufwerk V: ist das sogenannte Rückgabelaufwerk, hier speichert der Benutzer sein Ergebnis hin, dieses wird dann deutlich erkennbar aufgeschlüsselt nach Rechnername und Benutzer wieder im Homeverzeichnis desjenigen abgelegt, der die Dateiverteilung gestartet hat.
  .
+ Dieses Modul setzt die IServ Rechnersteuerung voraus, da einige Komponenten dieser verwenden werden.
+ .
  https://it.stsbl.de/wp-content/uploads/2017/02/stsbl-iserv-file-distribution.png
 Tag: suite::iserv:portal, role::plugin, implemented-in::php, implemented-in::perl, status::highlighted, status::recommended
