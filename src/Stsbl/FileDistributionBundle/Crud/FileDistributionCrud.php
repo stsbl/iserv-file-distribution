@@ -14,6 +14,7 @@ use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
 use IServ\CrudBundle\Mapper\ShowMapper;
 use IServ\HostBundle\Util\Config;
+use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Crud\Batch\EnableAction;
 use Stsbl\FileDistributionBundle\Crud\Batch\StopAction;
 use Stsbl\FileDistributionBundle\Security\Privilege;
@@ -376,7 +377,7 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function isAuthorized() 
     {
-        return $this->isGranted(Privilege::USE_FD);
+        return $this->isGranted(Privilege::USE_FD) && $this->isGranted(HostPrivilege::BOOT);
     }
     
     /**
