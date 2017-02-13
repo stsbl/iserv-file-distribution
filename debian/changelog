@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.02.13-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed cardinality violation.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 13 Feb 2017 23:57:58 +0100
+
 stsbl-iserv-file-distribution (17.02.12-3) experimental; urgency=medium
 
   [ Felix Jacobi ]
