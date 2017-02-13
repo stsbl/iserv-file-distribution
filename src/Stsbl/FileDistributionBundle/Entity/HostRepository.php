@@ -3,6 +3,7 @@
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use IServ\HostBundle\Entity\HostRepository as BaseHostRepository;
+
 /*
  * The MIT License
  *
@@ -28,8 +29,6 @@ use IServ\HostBundle\Entity\HostRepository as BaseHostRepository;
  */
 
 /**
- * Description of HostRepository
- *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
@@ -39,9 +38,9 @@ class HostRepository extends BaseHostRepository
     {
         $ret = parent::getDecoratorColumns();
         
-        $ret['fileDistributionOwner'] = '(SELECT CONCAT(u2.firstname, \' \', u2.lastname) FROM IServCoreBundle:User u2 WHERE u2.username IN (SELECT f2.act FROM StsblFileDistributionBundle:FileDistribution f2 WHERE f2.hostname = parent.name))';
+        $ret['fileDistributionOwner'] = '(SELECT CONCAT(u2.firstname, \' \', u2.lastname) FROM IServCoreBundle:User u2 WHERE u2.username = (SELECT f2.act FROM StsblFileDistributionBundle:FileDistribution f2 WHERE f2.hostname = parent.name))';
         $ret['fileDistribution'] = '(SELECT f.title FROM StsblFileDistributionBundle:FileDistribution f WHERE f.hostname = parent.name)';
-        $ret['sambaUserDisplay'] = '(SELECT CONCAT(u3.firstname, \' \', u3.lastname) FROM IServCoreBundle:User u3 WHERE u3.username = (SELECT s2.act FROM IServHostBundle:SambaUser s2 WHERE s2.ip=parent.ip)';
+        $ret['sambaUserDisplay'] = '(SELECT CONCAT(u3.firstname, \' \', u3.lastname) FROM IServCoreBundle:User u3 WHERE u3.username = (SELECT MAX(s2.act) FROM IServHostBundle:SambaUser s2 WHERE s2.ip = parent.ip AND s2.since = (SELECT MAX(v2.since) FROM IServHostBundle:SambaUser v2)))';
         return $ret;
     }
 }
