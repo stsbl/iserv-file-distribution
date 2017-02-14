@@ -60,3 +60,9 @@ msgstr "Eine Dateiverteilung für die ausgewählten Geräte beginnen."
 
 msgid "Stop the running file distribution for the selected hosts."
 msgstr "Eine laufende Dateiverteilung für die ausgewählten Geräte beenden."
+
+msgid "Existing file distribution directory"
+msgstr "Existierendes Dateiverteilungsverzeichnis"
+
+msgid "Running file distribution"
+msgstr "Laufende Dateiverteilung"

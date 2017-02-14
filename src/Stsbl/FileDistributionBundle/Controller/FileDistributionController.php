@@ -2,9 +2,13 @@
 // src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
 namespace Stsbl\FileDistributionBundle\Controller;
 
+use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Controller\CrudController;
 use IServ\CrudBundle\Table\ListHandler;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /*
@@ -244,5 +248,74 @@ class FileDistributionController extends CrudController
         }
 
         return $this->redirect($this->crud->generateUrl('index'));
+    }
+    
+    /**
+     * Looksup for existing file distributions owned by user
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     * @Route("filedistribution/lookup", name="fd_filedistribution_lookup", options={"expose": true})
+     * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
+     */
+    public function lookupAction(Request $request)
+    {
+        $query = $request->get('query');
+        
+        if (empty($query)) {
+            throw new \RuntimeException('query should not be empty.');
+        }
+        
+        $this->get('iserv.sudo');
+        
+        $suggestions = [];
+        $home = $this->getUser()->getHome();
+        $directory = $home.'/File-Distribution/';
+        
+        $directories = Sudo::glob($directory.'*/');
+        
+        // add existing direxctories to suggestions
+        foreach ($directories as $directory) {
+            $basename = basename($directory);
+            if (Sudo::is_dir($directory.'Assignment') && Sudo::is_dir($directory.'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
+                $suggestions[] = [
+                    'type' => 'existing',
+                    'label' => $basename,
+                    'value' => $basename,
+                    'extra' => _('Existing file distribution directory')
+                ];
+            }
+        }
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        /* @var $qb \Doctrine\ORM\QueryBuilder */
+        $qb = $em->createQueryBuilder(self::class);
+        
+        // get current file distirbutions from database
+        $qb
+            ->select('f')
+            ->from('StsblFileDistributionBundle:FileDistribution', 'f')
+            ->where('f.user = :user')
+            ->andWhere('f.title LIKE :query ')
+            ->setParameter(':user', $this->getUser())
+            ->setParameter(':query', '%'.$query.'%')
+        ;
+        
+        /* @var $results \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
+        $results = $qb->getQuery()->getResult();
+        
+        foreach ($results as $result) {
+            $suggestions[] = [
+                'type' => 'running',
+                'label' => $result->getPlainTitle(),
+                'value' => $result->getPlainTitle(),
+                'extra' => _('Running file distribution')
+            ];
+        }
+        
+        asort($suggestions);
+        
+        return new JsonResponse($suggestions);
     }
 }

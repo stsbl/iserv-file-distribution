@@ -65,6 +65,13 @@
 {% block javascripts %}
     {{  parent() }}
     
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution.js -->
+    {% endif %}
+    {% javascripts '@StsblFileDistributionBundle/Resources/public/js/file-distribution.js' filter='?uglifyjs2' output='js/compiled/file-distribution.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    
     <script type="text/javascript">
         // prevent requirement of title on cancel
         $('#iserv_crud_multi_select_actions_cancel').click(function() {
