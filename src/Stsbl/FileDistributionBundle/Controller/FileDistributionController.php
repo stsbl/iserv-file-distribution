@@ -278,7 +278,7 @@ class FileDistributionController extends CrudController
         foreach ($directories as $directory) {
             $basename = basename($directory);
             if (Sudo::is_dir($directory.'Assignment') && Sudo::is_dir($directory.'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
-                $suggestions[] = [
+                $suggestions[$basename] = [
                     'type' => 'existing',
                     'label' => $basename,
                     'value' => $basename,
@@ -306,7 +306,7 @@ class FileDistributionController extends CrudController
         $results = $qb->getQuery()->getResult();
         
         foreach ($results as $result) {
-            $suggestions[] = [
+            $suggestions[$result->getPlainTitle()] = [
                 'type' => 'running',
                 'label' => $result->getPlainTitle(),
                 'value' => $result->getPlainTitle(),
