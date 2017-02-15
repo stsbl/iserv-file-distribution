@@ -1,3 +1,14 @@
+stsbl-iserv-file-distribution (17.02.15-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Added autocmpletion of title.
+  * Do not show extings directory and running distribution at the same time.
+  * Fixed typo.
+
+  iserv: Beim Aktivieren von Dateiverteilungen werden bei der Eingabe des Titels nun bereits laufende Dateiverteilungen als auch Ordner, die sich bereits im Dateiverteilungsverzeichnis befinden, vorgeschlagen.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Wed, 15 Feb 2017 04:03:23 +0100
+
 stsbl-iserv-file-distribution (17.02.13-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
