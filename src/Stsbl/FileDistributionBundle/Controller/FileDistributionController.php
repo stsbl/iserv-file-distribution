@@ -274,7 +274,7 @@ class FileDistributionController extends CrudController
         
         $directories = Sudo::glob($directory.'*/');
         
-        // add existing direxctories to suggestions
+        // add existing directories to suggestions
         foreach ($directories as $directory) {
             $basename = basename($directory);
             if (Sudo::is_dir($directory.'Assignment') && Sudo::is_dir($directory.'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
