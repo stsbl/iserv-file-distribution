@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.02.25-0) experimental; urgency=medium
+  
+  [ Felix Jacobi ]
+  * Replaced wrong cron job definition.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sun, 26 Feb 2017 00:03:41 +0100
+
 stsbl-iserv-file-distribution (17.02.15-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
