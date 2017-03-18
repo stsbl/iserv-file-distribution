@@ -4,8 +4,6 @@ use warnings;
 use strict;
 use IServ::DB;
 
-undef %{ENV};
-
 my (@IPs) = IServ::DB::SelectCol "SELECT IP FROM file_distribution;";
 
 # disable file distribution for hosts where it is still enabled
