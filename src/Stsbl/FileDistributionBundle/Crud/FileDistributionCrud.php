@@ -220,7 +220,7 @@ class FileDistributionCrud extends AbstractCrud
         parent::configure();
         
         $this->title = _('File distribution');
-        $this->itemTitle = _('Device');
+        $this->itemTitle = _p('file-distribution', 'Device');
         $this->id = 'filedistribution';
         $this->routesNamePrefix = 'fd_';
         $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';

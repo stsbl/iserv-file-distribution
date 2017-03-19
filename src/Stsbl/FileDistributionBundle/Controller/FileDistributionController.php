@@ -164,7 +164,7 @@ class FileDistributionController extends CrudController
                 }
 
             } else {
-                $this->addFlash('warning', _('No element selected!'));
+                $this->addFlash('warning', _('No host selected!'));
 
                 return $this->redirect($this->crud->generateUrl('index'));
             }

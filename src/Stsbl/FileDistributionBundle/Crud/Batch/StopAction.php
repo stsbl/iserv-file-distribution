@@ -60,7 +60,7 @@ class StopAction extends AbstractFileDistributionAction
                 $this->crud->delete($delete);
                 $bag->addMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
             } else {
-                $bag->addMessage('error', __('You are not allowed to disable file distirbution for %s.', (string)$entity->getName()));
+                $bag->addMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
             }
         }
         

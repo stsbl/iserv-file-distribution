@@ -83,7 +83,7 @@ abstract class AbstractFileDistributionAction extends AbstractBatchAction
     }
     
     /**
-     * Convert shell error output into an flash message
+     * Convert shell error output into a flash message
      * 
      * @param FlashMessageBag $bag
      */
