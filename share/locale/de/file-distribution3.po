@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-20 00:46+0100\n"
+"POT-Creation-Date: 2017-03-20 00:51+0100\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -53,7 +53,9 @@ msgstr "Geräteisolation aktivieren"
 msgid ""
 "Enable host isolation if you want to prevent that users can exchange files "
 "by sharing their accounts."
-msgstr "Aktivieren Sie die Gerätenisolation, wenn Sie verhindern wollen, dass Benutzer Dateien austatuschen können durch das Teilen ihrer Accounts."
+msgstr ""
+"Aktivieren Sie die Gerätenisolation, wenn Sie verhindern wollen, dass "
+"Benutzer Dateien austatuschen können durch das Teilen ihrer Accounts."
 
 #: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:736
 msgid ""
@@ -92,7 +94,9 @@ msgstr "Geräteisolation standardmäßig auswählen"
 msgid ""
 "If enabled, the checkbox \"host isolation\" will be selected by default if a "
 "new file distribution will be enabled."
-msgstr "Wenn aktiviert, wird das Auswahlfeld \"Geräteisolierung\" standardmäßig angewählt, wenn eine neue Dateiverteilung aktiviert wird."
+msgstr ""
+"Wenn aktiviert, wird das Auswahlfeld \"Geräteisolierung\" standardmäßig "
+"angewählt, wenn eine neue Dateiverteilung aktiviert wird."
 
 #: src/Stsbl/FileDistributionBundle/Resources/translation/messages.php:37
 msgid "Module: File Distribution"
@@ -186,7 +190,6 @@ msgid "File distribution owner"
 msgstr "Besitzer der Dateiverteilung"
 
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:397
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:437
 msgid "Host isolation activated"
 msgstr "Geräteisolierung aktiviert"
 
@@ -210,6 +213,10 @@ msgstr "Benutzer"
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:434
 msgid "Owner"
 msgstr "Besitzer"
+
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:437
+msgid "Host isolation"
+msgstr "Geräteisolierung"
 
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:495
 msgctxt "host-has-internet"
