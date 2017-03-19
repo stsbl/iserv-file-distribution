@@ -1,0 +1,26 @@
+#!/usr/bin/perl -CSDAL
+
+use warnings;
+use strict;
+use IServ::DB;
+use IServ::RPC;
+
+# run asynchronously
+fork and exit;
+open STDIN, "/dev/null" or die $!;
+open STDOUT, ">/dev/null" or die $!;
+open STDERR, ">/dev/null" or die $!;
+
+my ($act, $ip) = @ARGV;
+
+# we're async, so winexe can take as long as it wants
+winexe_set_timeout 180;
+
+if (IServ::DB::Do "SELECT * FROM exam WHERE IP = ?", $ip)
+{
+    winexe $ip, netlogon "file-distribution.bat", "start";
+}
+else
+{
+    winexe $ip, netlogon "file-distribution.bat", "stop";
+}
