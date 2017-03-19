@@ -7,6 +7,7 @@ use IServ\CrudBundle\Controller\CrudController;
 use IServ\CrudBundle\Table\ListHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,13 +82,20 @@ class FileDistributionController extends CrudController
                 /* @var $multiSelectForm \Symfony\Component\Form\Form */
                 $multiSelectForm = $ret['form'];
                 
-                $multiSelectForm->add('title', TextType::class, [
-                    'label' => false,
-                    'attr' => [
-                        'placeholder' => _('Title for this file distribution'),
-                        'help_text' => _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')
-                    ]
-                ]);
+                $multiSelectForm
+                    ->add('title', TextType::class, [
+                        'label' => false,
+                        'attr' => [
+                            'placeholder' => _('Title for this file distribution'),
+                            'help_text' => _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')
+                        ]
+                    ])
+                    ->add('isolation', CheckboxType::class, [
+                        'label' => _('Enable host isolation'),
+                        'attr' => [
+                            'help_text' => _('Enable host isolation if you want to prevent that users can exchange files by sharing their accounts.')
+                        ]
+                    ]);
                 
                 $ret['form'] = $multiSelectForm;
             }
@@ -158,9 +166,10 @@ class FileDistributionController extends CrudController
                     }
                 }
                 
-                // display title only on enable file distribution
+                // display title and isolation only on enable file distribution
                 if (!$confirmForm->get('actions')->has('enable')) {
                     $confirmForm->remove('title');
+                    $confirmForm->remove('isolation');
                 }
 
             } else {
@@ -230,6 +239,13 @@ class FileDistributionController extends CrudController
                         if ($action->getName() === 'enable') {
                             // set title on enable
                             $action->setTitle($form->getData()['title']);
+                            // set isolation on enable
+                            $isolation = (boolean)$form->getData()['isolation'];
+                            // assume false on empty return value
+                            if (empty($isolation)) {
+                                $isolation = false;
+                            }
+                            $action->setIsolation($isolation);
                         }
                         
                         // Run action, collect feedback and return to list afterwards.

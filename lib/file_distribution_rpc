@@ -48,6 +48,18 @@ my (undef, undef, $uid, $gid, undef, undef, undef, $home) = getpwnam $act
 my $arg;
 ($arg) = grep { utf8::decode $_ } $ENV{ARG} =~ /(.*)/s if exists $ENV{ARG};
 
+my $isolation;
+if (defined $ENV{FD_ISOLATION}) 
+{
+  $isolation = $ENV{FD_ISOLATION} if $ENV{FD_ISOLATION} =~ /^0|1$/;
+}
+
+# convert to perl boolean
+if (defined $isolation) {
+  $isolation = 0 if $isolation eq '0';
+  $isolation = 1 if $isolation eq '1';
+}
+
 undef %ENV;
 $ENV{PATH} = "/usr/sbin:/usr/bin:/sbin:/bin";
 
@@ -126,7 +138,7 @@ if ($cmd eq "fdon")
   
   foreach (@ips) { 
     my $exists = IServ::DB::Do "SELECT 1 FROM file_distribution WHERE ip = ?", $_;
-    IServ::DB::Do "INSERT INTO file_distribution (Title, Act, IP) VALUES (?, ?, ?)", $arg, $act, $_ if not $exists;
+    IServ::DB::Do "INSERT INTO file_distribution (Title, Act, IP, Isolation) VALUES (?, ?, ?, ?)", $arg, $act, $_, $isolation if not $exists;
     warn "Cannot enable file distribution for $_ twice!" if $exists;
   }
   system "/usr/lib/iserv/file_distribution_cfg";

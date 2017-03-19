@@ -393,6 +393,10 @@ class FileDistributionCrud extends AbstractCrud
             ->add('fileDistributionOwner', null, [
                 'label' => _('File distribution owner'),
             ])
+            ->add('fileDistributionIsolation', null, [
+                'label' => _('Host isolation activated'),
+                'template' => 'IServCrudBundle:List:field_boolean.html.twig',
+            ])
             ->add('room', null, [
                 'label' => _('Room'),
                 'group' => true,
@@ -428,6 +432,10 @@ class FileDistributionCrud extends AbstractCrud
             ])
             ->add('fileDistributionOwner', null, [
                 'label' => _('Owner')
+            ])
+            ->add('fileDistributionIsolation', null, [
+                'label' => _('Host isolation activated'),
+                'template' => 'IServCrudBundle:Show:field_boolean.html.twig',
             ])
             ->add('room', null, [
                 'label' => _('Room'),

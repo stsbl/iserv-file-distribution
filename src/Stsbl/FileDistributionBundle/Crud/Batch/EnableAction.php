@@ -46,7 +46,12 @@ class EnableAction extends AbstractFileDistributionAction
     /**
      * @var string
      */
-    private $title; 
+    private $title;
+    
+    /**
+     * @var boolean
+     */
+    private $isolation;
     
     /**
      * Set file distribution title
@@ -56,6 +61,16 @@ class EnableAction extends AbstractFileDistributionAction
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+    
+    /**
+     * Set file distribution isolation
+     * 
+     * @param boolean $isolation
+     */
+    public function setIsolation($isolation)
+    {
+        $this->isolation = $isolation;
     }
     
     /**
@@ -81,6 +96,7 @@ class EnableAction extends AbstractFileDistributionAction
             }
         }
         
+        $this->rpc->setIsolation($this->isolation);
         $this->rpc->enable();
         $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
         $this->session->set('fd_title', $this->title);

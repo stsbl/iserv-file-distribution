@@ -18,8 +18,8 @@ chdir "/var/lib/iserv/config/file-distribution" or die $!;
 my %reload;
 my %del = map {($_, 1)} glob "*";
 my @fn;
-for (@{ IServ::DB::DBH->selectall_arrayref("SELECT IP, Act, Home, Title FROM file_distribution f JOIN users u USING (Act) ORDER BY IP") or die $! }) {
-  my ($ip, $act, $home, $title) = @$_;
+for (@{ IServ::DB::DBH->selectall_arrayref("SELECT IP, Act, Home, Title, Isolation FROM file_distribution f JOIN users u USING (Act) ORDER BY IP") or die $! }) {
+  my ($ip, $act, $home, $title, $isolation) = @$_;
   $title =~ $m_title or die "invalid title\n";
 
   my $cfg = 
@@ -29,8 +29,17 @@ for (@{ IServ::DB::DBH->selectall_arrayref("SELECT IP, Act, Home, Title FROM fil
     "  writeable = no\n".
     "  follow symlinks = no\n".
     "\n".
-    "[file_return]\n".
-    "  path = $home/File-Distribution/$title/Return/%U @ %m\n".
+    "[file_return]\n";
+
+    if ($isolation) {
+      $cfg .=
+      "  path = $home/File-Distribution/$title/Return/%U @ %m\n";
+    } else {
+      $cfg .=
+      "  path = $home/File-Distribution/$title/Return/%U\n";
+    }
+
+    $cfg .=
     "  preexec = /bin/mkdir -pm02770 '%P'\n".
     "  force user = $act\n".
     "  force group = $act\n".

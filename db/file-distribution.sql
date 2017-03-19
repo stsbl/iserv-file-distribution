@@ -13,8 +13,9 @@ CREATE TABLE file_distribution (
     IP                  INET            NOT NULL REFERENCES hosts(IP)
                                             ON UPDATE CASCADE
                                             ON DELETE CASCADE,
+    ISOLATION           BOOLEAN         NOT NULL,
     UNIQUE(IP)
 );
 
 GRANT USAGE, SELECT ON "file_distribution_id_seq" TO "symfony";
-GRANT SELECT ON "file_distribution" TO "symfony";
+GRANT SELECT, INSERT, UPDATE, DELETE ON "file_distribution" TO "symfony";

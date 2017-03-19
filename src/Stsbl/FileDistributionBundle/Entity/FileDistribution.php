@@ -79,6 +79,13 @@ class FileDistribution implements CrudInterface
     private $act;
     
     /**
+     * @ORM\Column(type="boolean", nullable=false)
+     * 
+     * @var boolean
+     */
+    private $isolation;
+    
+    /**
      * DO NOT ADD ANY REFERENCES to Host here, because Symfony do not like it!
      * 
      * //@ORM\OneToOne(targetEntity="\IServ\HostBundle\Entity\Host", fetch="EAGER")
@@ -211,5 +218,29 @@ class FileDistribution implements CrudInterface
     public function getAct()
     {
         return $this->act;
+    }
+
+    /**
+     * Set isolation
+     *
+     * @param boolean $isolation
+     *
+     * @return FileDistribution
+     */
+    public function setIsolation($isolation)
+    {
+        $this->isolation = $isolation;
+
+        return $this;
+    }
+
+    /**
+     * Get isolation
+     *
+     * @return boolean
+     */
+    public function getIsolation()
+    {
+        return $this->isolation;
     }
 }

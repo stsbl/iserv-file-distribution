@@ -31,6 +31,14 @@
                 {{ form_widget(confirmForm.form.title) }}
                 <span class="help-block">{{ _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')|escape('html') }}</span>
             </td></tr>
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                    <div class="checkbox">
+                        <label for="iserv_crud_multi_select_isolation">
+                            {{ form_widget(confirmForm.form.isolation) }}&nbsp;{{ _('Enable host isolation') }}
+                        </label>
+                    </div>
+                <span class="help-block">{{ _('Enable host isolation if you want to prevent that users can exchange files by sharing their accounts.') }}</span>
+            </td></tr>
         {% endif %}
         <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}> 
             <div class="batch-actions">

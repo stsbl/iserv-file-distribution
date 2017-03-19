@@ -50,6 +50,11 @@ class Rpc
     private $title;
     
     /**
+     * @var boolean
+     */
+    private $isolation;
+    
+    /**
      * @var array<Host>
      */
     private $hosts;
@@ -72,6 +77,16 @@ class Rpc
     public function setTitle($title)
     {
         $this->title = $title;
+    }
+
+    /**
+     * Set isolation for the next operation
+     *
+     * @param boolean $isolation 
+     */
+    public function setIsolation($isolation)
+    {
+        $this->isolation = $isolation;
     }
     
     /**
@@ -128,7 +143,21 @@ class Rpc
             $args[] = $h->getIp();
         }
         
-        $this->shell->exec('closefd setsid sudo', $args, null, ['ARG' => $this->title, 'SESSPW' => $this->securityHandler->getSessionPassword()]);
+        if (!is_bool($this->isolation)) {
+            throw new \InvalidArgumentException(sprintf('Isolation must be a booelan value, %s given.', gettype($this->isolation)));
+        }
+            
+        if (true === $this->isolation) {
+            $isolation = 1;
+        } else {
+            $isolation = 0;
+        }
+        
+        $this->shell->exec('closefd setsid sudo', $args, null, [
+            'ARG' => $this->title, 
+            'FD_ISOLATION' => $isolation, 
+            'SESSPW' => $this->securityHandler->getSessionPassword()
+        ]);
     }
     
     /**
