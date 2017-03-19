@@ -10,14 +10,11 @@ CREATE TABLE file_distribution (
     Act                 TEXT            NOT NULL REFERENCES users(Act)
                                             ON UPDATE CASCADE
                                             ON DELETE CASCADE,
-    Hostname            TEXT            NOT NULL REFERENCES hosts(Name)
-                                            ON UPDATE CASCADE
-                                            ON DELETE CASCADE,
     IP                  INET            NOT NULL REFERENCES hosts(IP)
                                             ON UPDATE CASCADE
                                             ON DELETE CASCADE,
-    UNIQUE(IP, Hostname)
+    UNIQUE(IP)
 );
 
 GRANT USAGE, SELECT ON "file_distribution_id_seq" TO "symfony";
-GRANT SELECT, INSERT, UPDATE, DELETE ON "file_distribution" TO "symfony";
+GRANT SELECT ON "file_distribution" TO "symfony";

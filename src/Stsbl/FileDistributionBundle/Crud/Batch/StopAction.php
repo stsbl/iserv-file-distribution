@@ -56,16 +56,15 @@ class StopAction extends AbstractFileDistributionAction
         foreach ($entities as $entity) {
             /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
             if ($this->isAllowedToExecute($entity, $user)) {
-                $delete = $this->crud->getFileDistributionForHost($entity);
-                $this->crud->delete($delete);
+                $this->rpc->addHost($entity);
                 $bag->addMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
             } else {
                 $bag->addMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
             }
         }
         
-        $bag = $this->convertShellErrorOutput($bag);
-        $this->shell->exec('sudo', ['/usr/lib/iserv/file_distribution_config']);
+        $this->rpc->disable();
+        $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
         
         return $bag;
     }

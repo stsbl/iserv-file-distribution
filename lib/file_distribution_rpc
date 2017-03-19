@@ -1,0 +1,149 @@
+#!/usr/bin/perl -T -CSDAL
+
+use warnings;
+use strict;
+use IPC::Run;
+use IServ::Conf;
+use IServ::DB;
+use IServ::Locale;
+use IServ::RPC;
+use Parallel::ForkManager;
+use sessauth;
+umask 0002;
+
+POSIX::setlocale(POSIX::LC_CTYPE, $conf->{DefLang} . ".UTF-8");
+POSIX::setlocale(POSIX::LC_MESSAGES, $conf->{DefLang} . ".UTF-8");
+IServ::Locale::UseDefLang();
+
+die "usage: file_distribution_netrpc account command ip [ip...]\n" if @ARGV < 3;
+
+my $m_title = qr/^([ !#&()*+,\-.0-9:<=>?\@A-Z\[\]^_a-z{|}~\P{ascii}]{1,64})$/;
+# forbidden: 00-1f " $ % ' / ; \ ` 7f
+
+my ($act) = (shift @ARGV) =~ /^([\w.-]+)$/ or die "Account invalid!\n";
+my ($cmd) = (shift @ARGV) =~ /^(\w+)$/ or die "Command invalid!\n";
+
+my (@ips, @ips_online_win, %ips_online_lin);
+for (@ARGV)
+{
+  my ($ip) = /^\+?\+?([\d.]+)$/ or die "ip invalid\n";
+  push @ips, $ip;
+  $ips_online_lin{$ip} = 1 if /^\+\+/;
+}
+die "No IPs!\n" unless @ips;
+
+if (%ENV and defined $ENV{'SUDO_UID'} and $ENV{'SUDO_UID'})
+{
+  # run as unprivileged user
+  my ($sesspw) = $ENV{SESSPW} =~ /^(\w{1,256})$/ or die "SESSPW invalid!\n";
+  my (undef, $encpwd, $uid) = getpwnam $act or die "Authentication failed\n";
+  $uid >= 500 or die "UID too low\n";
+
+  sessauth::login $act, $sesspw, "file_distribution_rpc" or die "Authentication failed\n";
+}
+
+my (undef, undef, $uid, $gid, undef, undef, undef, $home) = getpwnam $act
+  or die "User not found: $act\n";
+
+my $arg;
+($arg) = grep { utf8::decode $_ } $ENV{ARG} =~ /(.*)/s if exists $ENV{ARG};
+
+undef %ENV;
+$ENV{PATH} = "/usr/sbin:/usr/bin:/sbin:/bin";
+
+my $pm = new Parallel::ForkManager(100);
+
+sub msg(@)
+{
+  my ($ip) = $_;
+  warn "$ip: $_" for @_;
+}
+
+sub req_priv($)
+{
+  my ($priv) = @_;
+  return if $act eq "root";
+  die "need privilege $priv"
+    unless IServ::DB::Do "SELECT 1 FROM users_priv WHERE (Act = ? AND Privilege = ?) 
+      OR EXISTS (SELECT 1 FROM role_privileges r WHERE Privilege = ?
+      AND EXISTS (SELECT 1 FROM user_roles u WHERE u.Act = ? AND u.Role = r.Role)) 
+      LIMIT 1", $act, $priv, $priv, $act;
+}
+
+sub req_ownership($)
+{
+  my ($ip) = @_;
+  return if $act eq "root";
+  return if not IServ::DB::Do "SELECT 1 FROM file_distribution WHERE ip = ?", $ip;
+  my ($curAct) =  IServ::DB::SelectRow "SELECT Act FROM file_distribution WHERE ip = ?", $ip; 
+  die "need ownership of file distribution for ip $ip" 
+    unless $curAct eq $act;
+} 
+
+sub run_parallel(&@)
+{
+  my ($func, @ips) = @_;
+  IPS:
+  for (@ips) {
+    $pm->start and next IPS;
+    &$func();
+    $pm->finish;
+  }
+  $pm->wait_all_children;
+}
+
+# determine online IPs
+IPC::Run::run ["nmap", "-n", "-sP", "-oG", "-", "--", @ips],
+  ">", IPC::Run::new_chunker("\n"),
+  sub
+  {
+    local $_ = shift;
+    if (/^Host:\s+([\d\.]+)\s+\(\)\s+Status:\s+Up.*$/i)
+    {
+      push @ips_online_win, $1 if !$ips_online_lin{$1};
+    }
+  };
+
+if ($cmd eq "fdon")
+{
+  req_priv "file_distribution";
+  req_priv "computer_boot";
+
+  die "File distribution title invalid!" unless defined $arg and $arg =~ $m_title;
+
+  # prepare data folders
+  for ("$home/File-Distribution", "$home/File-Distribution/$arg", 
+    "$home/File-Distribution/$arg/Assignment", "$home/File-Distribution/$arg/Return")
+  {
+    -d or mkdir $_, 02770 or die "Cannot create directory $_: $!\n";
+    chmod 02770, $_ or die "Cannot chmod directory $_: $!\n";
+    chown $uid, $gid, $_ or die "Cannot chown directory $_: $!\n";
+  }
+
+  my $symlink = "$home/Files/File-Distribution";
+  unlink $symlink if -l $symlink;
+  symlink "../File-Distribution", $symlink or warn "Cannot create symlink $symlink: $!\n";
+  
+  foreach (@ips) { 
+    my $exists = IServ::DB::Do "SELECT 1 FROM file_distribution WHERE ip = ?", $_;
+    IServ::DB::Do "INSERT INTO file_distribution (Title, Act, IP) VALUES (?, ?, ?)", $arg, $act, $_ if not $exists;
+    warn "Cannot enable file distribution for $_ twice!" if $exists;
+  }
+  system "/usr/lib/iserv/file_distribution_cfg";
+
+  my $notice = _("Someone started a file distribution for your host. To access the files,".
+    ' click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.');
+  run_parallel { msg IServ::RPC::rpc_message $_, $notice } @ips_online_win;
+  run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "start"; } @ips_online_win;
+
+} 
+elsif ($cmd eq "fdoff") 
+{
+  req_priv "file_distribution";
+  req_priv "computer_boot";
+  req_ownership $_ for @ips;
+
+  IServ::DB::Do "DELETE FROM file_distribution WHERE ip = ?", $_ for @ips;
+  run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "stop" } @ips_online_win;
+  system "/usr/lib/iserv/file_distribution_cfg"; 
+}

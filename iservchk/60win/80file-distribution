@@ -1,1 +1,2 @@
-Check "/etc/samba/netlogon/file-distribution.txt"
+Check /etc/samba/netlogon/file-distribution.{txt,bat}
+Check /etc/samba/netlogon/file-distribution-access-shares.bat

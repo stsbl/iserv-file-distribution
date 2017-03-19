@@ -9,6 +9,7 @@ use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Crud\Batch\AbstractBatchAction;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
+use Stsbl\FileDistributionBundle\Service\Rpc;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /*
@@ -62,6 +63,11 @@ abstract class AbstractFileDistributionAction extends AbstractBatchAction
      * @var Session
      */
     protected $session;
+    
+    /**
+     * @var Rpc
+     */
+    protected $rpc;
 
     /**
      * {@inheritdoc}
@@ -80,16 +86,17 @@ abstract class AbstractFileDistributionAction extends AbstractBatchAction
         $this->em = $crud->getEntityManager();
         $this->securityHandler = $crud->getSecurityHandler();
         $this->session = $crud->getSession();
+        $this->rpc = $crud->getRpc();
     }
     
     /**
      * Convert shell error output into a flash message
      * 
      * @param FlashMessageBag $bag
+     * @param array $errors
      */
-    protected function convertShellErrorOutput(FlashMessageBag $bag)
+    protected function handleShellErrorOutput(FlashMessageBag $bag, array $errors)
     {
-        $errors = $this->shell->getError();
         if (count($errors) > 0) {
             $bag->addMessage('error', implode("\n", $errors));
         }

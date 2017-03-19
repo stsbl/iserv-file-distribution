@@ -5,7 +5,7 @@ namespace Stsbl\FileDistributionBundle\Security;
 /*
  * The MIT License
  *
- * Copyright 2017 felix.
+ * Copyright 2017 Felix Jacobi.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

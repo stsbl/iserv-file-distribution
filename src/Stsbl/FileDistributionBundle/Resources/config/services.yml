@@ -10,6 +10,7 @@ services:
            - [ setSession, ["@session"]]
            - [ setConfig, ["@iserv.config"]]
            - [ setRequest, ["@request_stack"]]
+           - [ setRpc, ["@stsbl.filedistribution.rpc"]]
         tags:
             - { name: iserv.crud }
             
@@ -17,3 +18,8 @@ services:
         class: Stsbl\FileDistributionBundle\EventListener\MenuListener # Out MenuListener Class
         tags:
           - { name: kernel.event_listener, event: iserv_portal.menu_main, method: onBuildMainMenu } # Tells IServ about the main menu method
+    
+    stsbl.filedistribution.rpc:
+        class: Stsbl\FileDistributionBundle\Service\Rpc
+        arguments: ["@iserv.shell", "@iserv.security_handler"]
+        

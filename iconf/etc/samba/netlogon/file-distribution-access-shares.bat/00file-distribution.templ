@@ -1,0 +1,8 @@
+@echo off
+
+net use U: /delete /yes
+net use U: \\\\$(hostname -s)\\file_assignment
+net use V: /delete /yes
+net use V: \\\\$(hostname -s)\\file_return
+
+\\\\$(hostname -s)\\netlogon\\exe\\iserv-msg -f \\\\$(hostname -s)\\netlogon\\file-distribution.txt

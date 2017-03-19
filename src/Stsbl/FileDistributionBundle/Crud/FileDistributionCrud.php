@@ -20,6 +20,7 @@ use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Crud\Batch\EnableAction;
 use Stsbl\FileDistributionBundle\Crud\Batch\StopAction;
 use Stsbl\FileDistributionBundle\Security\Privilege;
+use Stsbl\FileDistributionBundle\Service\Rpc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -87,6 +88,11 @@ class FileDistributionCrud extends AbstractCrud
      */
     private $request;
     
+    /**
+     * @var Rpc
+     */
+    private $rpc;
+    
     /* SETTERS */
     
     /**
@@ -149,6 +155,15 @@ class FileDistributionCrud extends AbstractCrud
         $this->request = $stack->getCurrentRequest();
     }
     
+    /**
+     * Set rpc
+     * 
+     * @param Rpc $rpc
+     */
+    public function setRpc(Rpc $rpc)
+    {
+        $this->rpc = $rpc;
+    }
     
     /* GETTERS */
     
@@ -210,6 +225,16 @@ class FileDistributionCrud extends AbstractCrud
     public function getRequest()
     {
         return $this->request;
+    }
+    
+    /**
+     * Get rpc
+     * 
+     * @return Rpc|null
+     */
+    public function getRpc()
+    {
+        return $this->rpc;
     }
 
     /**

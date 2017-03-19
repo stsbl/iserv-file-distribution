@@ -4,12 +4,11 @@ use warnings;
 use strict;
 use IServ::DB;
 
-my (@IPs) = IServ::DB::SelectCol "SELECT IP FROM file_distribution;";
+my (@ips) = IServ::DB::SelectCol "SELECT IP FROM file_distribution;";
 
 # disable file distribution for hosts where it is still enabled
-foreach my $IP (@IPs) {
-  print "Disabled forgotten file distribution for $IP.\n";
-  IServ::DB::Do "DELETE FROM file_distribution WHERE IP = ?", $IP;
+if (@ips > 0) {
+  system "/usr/lib/iserv/file_distribution_rpc", "root", "fdoff", @ips;
 }
 
 chdir "/var/lib/iserv/config/file-distribution" or die $!;

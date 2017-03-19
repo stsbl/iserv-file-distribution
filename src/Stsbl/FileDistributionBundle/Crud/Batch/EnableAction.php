@@ -66,25 +66,14 @@ class EnableAction extends AbstractFileDistributionAction
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
         $bag = new FlashMessageBag();
         $user = $this->crud->getUser();
-        $fileDistributions = [];
+        $this->rpc->setTitle($this->title);
         
         foreach ($entities as $entity) {
             if (empty($this->title)) {
                $bag->addMessage('error', _('Title should not be empty!'));
                return $bag;
             } else if ($this->isAllowedToExecute($entity, $user)) {
-                /* @var $em \Doctrine\ORM\EntityManager */
-                $fileDistribution = new FileDistribution();
-                $fileDistribution->setHostname($entity);
-                $fileDistribution->setUser($this->crud->getUser());
-                $fileDistribution->setAct($this->crud->getUser()->getUsername());
-                $fileDistribution->setIp($entity->getIp());
-                $fileDistribution->setTitle($this->title);
-                
-                $this->em->persist($fileDistribution);
-                $this->em->flush();
-                
-                $fileDistributions[] = $fileDistribution;
+                $this->rpc->addHost($entity);
                 
                 $bag->addMessage('success', __('Enabled file distribution for %s.', (string)$entity->getName()));
             } else {
@@ -92,58 +81,11 @@ class EnableAction extends AbstractFileDistributionAction
             }
         }
         
-        $this->createDirectory();
-        $this->shell->exec('sudo', ['/usr/lib/iserv/file_distribution_config']);
-        
-        // rollback on fail
-        if ($this->shell->getExitCode() > 0) {
-            foreach ($fileDistributions as $fileDistribution) {
-                $this->em->remove($fileDistribution);
-                $this->em->flush();
-            }
-        }
-        
-        $bag = $this->convertShellErrorOutput($bag);
-        return $bag;
-    }
-    
-    /**
-     * Call sudo for creating assignment and return folder
-     */
-    private function createDirectory()
-    {;
-        Sudo::_init($this->crud->getUser()->getUsername(), $this->securityHandler->getSessionPassword());
-        
-        // adjust umask
-        Sudo::umask(007);
-                
-        $home = $this->crud->getUser()->getHome().'/';
-        $directory = $home.'File-Distribution/'.$this->title.'/';
-        $assignDirectory = $directory.'Assignment/';
-        $returnDirectory = $directory.'Return/';
-        $symlink = $home.'Files/File-Distribution';
-                
-        // main directory
-        if (!Sudo::file_exists($directory)) {
-            Sudo::mkdir($directory, 0777, true);
-        }
-                
-        // assign directory
-        if (!Sudo::file_exists($assignDirectory)) {
-            Sudo::mkdir($assignDirectory, 0777, true);
-        }
-                
-        // return directory
-        if (!Sudo::file_exists($returnDirectory)) {
-            Sudo::mkdir($returnDirectory, 0777, true);
-        }
-                
-        // create symlink if neccessary
-        if (!Sudo::file_exists($symlink)) {
-            Sudo::symlink('../File-Distribution', $symlink);
-        }
-        
+        $this->rpc->enable();
+        $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
         $this->session->set('fd_title', $this->title);
+        
+        return $bag;
     }
 
     /**

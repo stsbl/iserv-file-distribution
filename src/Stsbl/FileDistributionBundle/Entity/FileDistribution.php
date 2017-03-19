@@ -79,14 +79,6 @@ class FileDistribution implements CrudInterface
     private $act;
     
     /**
-     * @ORM\Column(type="text", nullable=false)
-     * @Assert\NotBlank()
-     * 
-     * @var Host
-     */
-    private $hostname;
-    
-    /**
      * DO NOT ADD ANY REFERENCES to Host here, because Symfony do not like it!
      * 
      * //@ORM\OneToOne(targetEntity="\IServ\HostBundle\Entity\Host", fetch="EAGER")
@@ -113,40 +105,6 @@ class FileDistribution implements CrudInterface
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set hostname
-     *
-     * @param \IServ\HostBundle\Entity\Host $hostname
-     *
-     * @return FileDistribution
-     */
-    public function setHostname(Host $hostname = null)
-    {
-        $this->hostname = $hostname;
-
-        return $this;
-    }
-
-    /**
-     * Get hostname
-     *
-     * @return Host
-     */
-    public function getHostname()
-    {
-        return $this->hostname;
-    }
-    
-    /**
-     * Get displayable hostname
-     * 
-     * @return string
-     */
-    public function getHostnameDisplay()
-    {
-        return $this->hostname->getName();
     }
 
     /**
