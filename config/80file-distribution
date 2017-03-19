@@ -1,0 +1,6 @@
+FileDistributionHostIsolationDefault:
+name            Select host isolation by default
+description     If enabled, the checkbox "host isolation" will be selected by default if a new file distribution will be enabled.
+group           Module: File Distribution
+type            bool
+default         true

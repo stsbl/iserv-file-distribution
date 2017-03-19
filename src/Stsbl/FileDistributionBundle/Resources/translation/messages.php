@@ -30,3 +30,8 @@ _('Use file distribution');
 
 // Rpc message
 _('Someone started a file distribution for your host. To access the files, click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.');
+
+// iservcfg
+_('Select host isolation by default');
+_('If enabled, the checkbox "host isolation" will be selected by default if a new file distribution will be enabled.');
+_('Module: File Distribution');

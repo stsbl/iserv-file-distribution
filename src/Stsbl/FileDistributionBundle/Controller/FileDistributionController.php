@@ -89,12 +89,18 @@ class FileDistributionController extends CrudController
                             'placeholder' => _('Title for this file distribution'),
                             'help_text' => _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')
                         ]
-                    ])
+                    ]);
+                    
+                $isolationAttr = [];   
+                if ($this->get('iserv.config')->get('FileDistributionHostIsolationDefault')) {
+                    $isolationAttr['checked'] = 'checked';
+                }
+                $isolationAttr['help_text'] = _('Enable host isolation if you want to prevent that users can exchange files by sharing their accounts.');
+                
+                $multiSelectForm
                     ->add('isolation', CheckboxType::class, [
                         'label' => _('Enable host isolation'),
-                        'attr' => [
-                            'help_text' => _('Enable host isolation if you want to prevent that users can exchange files by sharing their accounts.')
-                        ]
+                        'attr' => $isolationAttr,
                     ]);
                 
                 $ret['form'] = $multiSelectForm;
