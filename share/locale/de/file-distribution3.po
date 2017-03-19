@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-19 17:35+0100\n"
+"POT-Creation-Date: 2017-03-20 00:46+0100\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -35,7 +35,7 @@ msgstr ""
 "zusätzliche Netzlaufwerke für die Dateiverteilung- und rückgabe erstellt."
 
 #: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:664
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:88
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:90
 msgid ""
 "The folder path where you will find the assignment folder and the returns "
 "will be Files/File-Distribution/<Title>."
@@ -43,7 +43,19 @@ msgstr ""
 "Der Ordnerpfad wo Sie den Verteilungsordner und die Rückgaben finden, ist "
 "Dateien/File-Distribution/<Titel>."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:713
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:681
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:102
+msgid "Enable host isolation"
+msgstr "Geräteisolation aktivieren"
+
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:687
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:98
+msgid ""
+"Enable host isolation if you want to prevent that users can exchange files "
+"by sharing their accounts."
+msgstr "Aktivieren Sie die Gerätenisolation, wenn Sie verhindern wollen, dass Benutzer Dateien austatuschen können durch das Teilen ihrer Accounts."
+
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:736
 msgid ""
 "You can not enable file distributions for the following entries, because "
 "there it is already enabled:"
@@ -51,7 +63,7 @@ msgstr ""
 "Sie können die Dateiverteilung für die folgenden Einträge nicht aktivieren, "
 "da Sie dort bereits aktiviert ist:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:719
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:742
 msgid ""
 "File distribution is not enabled for the following entries or are not are "
 "allowed to stop the file distribution there:"
@@ -59,133 +71,162 @@ msgstr ""
 "Dateiverteilung ist für die folgenden Einträge nicht aktiviert oder Sie "
 "dürfen die Dateiverteilung dort nicht beenden:"
 
+#: src/Stsbl/FileDistributionBundle/Resources/translation/messages.php:29
+msgid "Use file distribution"
+msgstr "Dateiverteilung verwenden"
+
+#: src/Stsbl/FileDistributionBundle/Resources/translation/messages.php:32
+msgid ""
+"Someone started a file distribution for your host. To access the files, "
+"click on the symbol \"Auf bereitgestellte Dateien zugreifen\" on the desktop."
+msgstr ""
+"Jemand hat eine Dateiverteilung für dieses Gerät gestartet. Um auf die "
+"Dateien zuzugreifen, klicken Sie auf das Symbol \"Auf bereitgestellte "
+"Dateien zugreifen\" auf dem Desktop."
+
+#: src/Stsbl/FileDistributionBundle/Resources/translation/messages.php:35
+msgid "Select host isolation by default"
+msgstr "Geräteisolation standardmäßig auswählen"
+
+#: src/Stsbl/FileDistributionBundle/Resources/translation/messages.php:36
+msgid ""
+"If enabled, the checkbox \"host isolation\" will be selected by default if a "
+"new file distribution will be enabled."
+msgstr "Wenn aktiviert, wird das Auswahlfeld \"Geräteisolierung\" standardmäßig angewählt, wenn eine neue Dateiverteilung aktiviert wird."
+
+#: src/Stsbl/FileDistributionBundle/Resources/translation/messages.php:37
+msgid "Module: File Distribution"
+msgstr "Modul: Dateiverteilung"
+
 #: src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:51
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:222
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:362
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:401
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:247
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:387
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:430
 msgid "File distribution"
 msgstr "Dateiverteilung"
 
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:87
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:89
 msgid "Title for this file distribution"
 msgstr "Titel für diese Dateiverteilung"
 
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:167
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:182
 msgid "No host selected!"
 msgstr "Kein Gerät ausgewählt!"
 
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:187
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:202
 msgid "Confirm action"
 msgstr "Aktion bestätigen"
 
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:285
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:307
 msgid "Existing file distribution directory"
 msgstr "Existierendes Dateiverteilungsverzeichnis"
 
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:313
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:335
 msgid "Running file distribution"
 msgstr "Laufende Dateiverteilung"
 
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:61
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:60
 #, php-format
 msgid "Disabled file distribution for %s."
 msgstr "Dateiverteilung für %s deaktiviert."
 
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:63
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:62
 #, php-format
 msgid "You are not allowed to disable file distribution for %s."
-msgstr ""
+msgstr "Sie dürfen die Dateiverteilung für %s nicht deaktivieren"
 
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:86
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:85
 msgid "Stop"
 msgstr "Beenden"
 
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:94
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:93
 msgid "Stop the running file distribution for the selected hosts."
 msgstr "Eine laufende Dateiverteilung für die ausgewählten Geräte beenden."
 
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:73
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:88
 msgid "Title should not be empty!"
 msgstr "Titel sollte nicht leer sein!"
 
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:89
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:93
 #, php-format
 msgid "Enabled file distribution for %s."
 msgstr "Dateiverteilung für %s aktiviert."
 
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:91
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:95
 #, php-format
 msgid "You are not allowed to enable file distribution for %s."
 msgstr "Sie dürfen die Dateiverteilung für %s nicht aktivieren."
 
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:162
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:120
 msgid "Enable"
 msgstr "Aktivieren"
 
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:170
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:128
 msgid "Start a file distribution for the selected hosts."
 msgstr "Eine Dateiverteilung für die ausgewählten Geräte beginnen."
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:223
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:248
 msgctxt "file-distribution"
 msgid "Device"
 msgstr "Gerät"
 
 # sprintf
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:351
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:394
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:376
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:423
 msgid "Name"
 msgstr "Name"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:357
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:397
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:382
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:426
 msgid "Type"
 msgstr "Typ"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:369
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:394
 msgid "File distribution owner"
 msgstr "Besitzer der Dateiverteilung"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:372
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:408
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:467
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:397
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:437
+msgid "Host isolation activated"
+msgstr "Geräteisolierung aktiviert"
+
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:401
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:441
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:500
 msgid "Room"
 msgstr "Raum"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:378
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:410
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:407
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:443
 msgctxt "host"
 msgid "Internet"
 msgstr "Internet"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:383
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:416
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:412
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:449
 msgid "User"
 msgstr "Benutzer"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:405
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:434
 msgid "Owner"
 msgstr "Besitzer"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:462
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:495
 msgctxt "host-has-internet"
 msgid "Internet allowed"
 msgstr "Internet erlaubt"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:462
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:463
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:495
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:496
 msgctxt "host-filter-internet"
 msgid "Internet: all"
 msgstr "Internet: alle"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:463
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:496
 msgctxt "host-has-no-internet"
 msgid "No internet"
 msgstr "Kein Internet"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:468
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:501
 msgid "Search"
 msgstr "Suchen"
-
-#~ msgid "Use file distribution"
-#~ msgstr "Dateiverteilung verwenden"
