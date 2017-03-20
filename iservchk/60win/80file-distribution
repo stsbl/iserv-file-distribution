@@ -1,2 +1,4 @@
 Check /etc/samba/netlogon/file-distribution.{txt,bat}
 Check /etc/samba/netlogon/file-distribution-access-shares.bat
+
+Link /usr/share/iserv/samba/ico /etc/samba/netlogon/

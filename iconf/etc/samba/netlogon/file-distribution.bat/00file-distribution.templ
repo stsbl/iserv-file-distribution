@@ -6,7 +6,7 @@ if exist %SystemDrive%\\tmp goto fi
   mkdir "%SystemDrive%\\tmp"
 :fi
 
-copy \\\\$(hostname -s)\\netlogon\\file-distribution-iserv-icon.ico %SystemDrive%\\tmp\\ > NUL
+copy \\\\$(hostname -s)\\netlogon\\ico\\file-distribution-iserv-icon.ico %SystemDrive%\\tmp\\ > NUL
 
 if not "%mode%"=="start" goto fi
   rem Create script for shortcut

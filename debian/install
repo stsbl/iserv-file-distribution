@@ -15,4 +15,3 @@ share/*		usr/share/iserv
 src/*		usr/share/iserv/src
 #srv/*		srv
 #install/*	srv/deploy/install
-netlogon/*	etc/samba/netlogon
