@@ -1,3 +1,21 @@
+stsbl-iserv-file-distribution (17.03.21-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Made forgotten cronjob verbose again (broken since 17.03.19-0).
+  * Added support for configurable host isolation.
+  * Added iservcfg setting to make default isolation checkbox behaviour configurable.
+  * Updated l10n.
+  * Minor design fixes.
+  * Added samba server-side login script.
+  * Moved icon file from netlogon directory to samba directory.
+  * Encode rpc messages in iso-8859-2.
+  * Added workaround for umlauts in rpc messages.
+  * Fixed displaying of logged-in users.
+
+  iserv: Die Isolation der einzelnen Geräte untereinander kann nun bei Bedarf abgeschaltet werden, dann wird innerhalb der Dateiverteilung bei der Abgabe nur noch nach Benutzer untertschieden. Ob die Geräteisolierung standardmäßig beim Aktivieren einer Dateiverteilung aktiviert wird oder nicht, kann als Administrator in der Systemkonfiguration eingestellt werden.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Tue, 21 Mar 2017 22:57:37 +0100
+
 stsbl-iserv-file-distribution (17.03.19-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
