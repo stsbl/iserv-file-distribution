@@ -105,6 +105,27 @@ sub run_parallel(&@)
   $pm->wait_all_children;
 }
 
+sub rpc_message_umlauts($$)
+{
+  my ($ip, $msg) = @_;
+  $msg =~ s/\r?\n/\r/g;
+  my @err;
+  # NO decoding here, it already breaks special chars like umlauts!
+  # Just encode to iso-8859-2 here and set the code page of
+  # cmd on client to utf-8 (code page 65001).
+  $msg = encode("iso-8859-2", $msg);
+  # real limit seems to be at about 4320 chars:
+  if (length $msg > 4096)
+  {
+    @err = "rpc_message_unicode: message too long\n";
+  }
+  else
+  {
+    @err = IServ::RPC::winexe $ip, "cmd", "/c", "chcp 65001", ">NUL", "&", netlogon "exe\\start", "iserv-msg", $msg;
+  }
+  wantarray? @err: print STDERR @err;
+}
+
 # determine online IPs
 IPC::Run::run ["nmap", "-n", "-sP", "-oG", "-", "--", @ips],
   ">", IPC::Run::new_chunker("\n"),
@@ -144,9 +165,9 @@ if ($cmd eq "fdon")
   }
   system "/usr/lib/iserv/file_distribution_cfg";
 
-  my $notice = encode('iso-8859-2', _("Someone started a file distribution for your host. To access the files,".
-	    ' click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.'));
-  run_parallel { msg IServ::RPC::rpc_message $_, $notice } @ips_online_win;
+  my $notice = _("Someone started a file distribution for your host. To access the files,".
+    ' click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.');
+  run_parallel { msg rpc_message_umlauts $_, $notice } @ips_online_win;
   run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "start"; } @ips_online_win;
 
 } 

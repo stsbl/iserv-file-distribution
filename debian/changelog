@@ -1,3 +1,22 @@
+stsbl-iserv-file-distribution (17.03.19-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * file_distribution_off: Disabled tainting.
+  * Updated i18n.
+  * Added rpc command:
+    - Disabled direct write access to database table by web interface. This 
+      is now handled by the file_distribution_rpc command which includes 
+      a privilege check.
+    - Users on PCs which are online now gets a notification about the file
+      distribution.
+    - If file distribution is enabled, a shortcut to access the files is
+      created on the desktop of the hosts.
+  * Updated i18n.
+
+  iserv: Nach dem Aktivieren einer Dateiverteilung wird nun eine Desktopverknüpfung auf den entsprechenden Geräten angelegt. An Geräte, die bereits laufen, wird eine Benachrichtigung geschickt, dass eine Dateiverteilung aktiviert wurde.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sun, 19 Mar 2017 22:21:37 +0100
+
 stsbl-iserv-file-distribution (17.02.25-0) experimental; urgency=medium
   
   [ Felix Jacobi ]
