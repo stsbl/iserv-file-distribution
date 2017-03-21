@@ -2,6 +2,7 @@
 
 use warnings;
 use strict;
+use Encode qw(encode);
 use IPC::Run;
 use IServ::Conf;
 use IServ::DB;
@@ -143,8 +144,8 @@ if ($cmd eq "fdon")
   }
   system "/usr/lib/iserv/file_distribution_cfg";
 
-  my $notice = _("Someone started a file distribution for your host. To access the files,".
-    ' click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.');
+  my $notice = encode('iso-8859-2', _("Someone started a file distribution for your host. To access the files,".
+	    ' click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.'));
   run_parallel { msg IServ::RPC::rpc_message $_, $notice } @ips_online_win;
   run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "start"; } @ips_online_win;
 
