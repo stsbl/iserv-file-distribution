@@ -394,7 +394,7 @@ class FileDistributionCrud extends AbstractCrud
                 'label' => _('File distribution owner'),
             ])
             ->add('fileDistributionIsolation', null, [
-                'label' => _('Host isolation activated'),
+                'label' => _('Host isolation'),
                 'template' => 'IServCrudBundle:List:field_boolean.html.twig',
             ])
             ->add('room', null, [

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-20 00:51+0100\n"
+"POT-Creation-Date: 2017-03-30 17:53+0200\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -190,8 +190,9 @@ msgid "File distribution owner"
 msgstr "Besitzer der Dateiverteilung"
 
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:397
-msgid "Host isolation activated"
-msgstr "Geräteisolierung aktiviert"
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:437
+msgid "Host isolation"
+msgstr "Geräteisolierung"
 
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:401
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:441
@@ -213,10 +214,6 @@ msgstr "Benutzer"
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:434
 msgid "Owner"
 msgstr "Besitzer"
-
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:437
-msgid "Host isolation"
-msgstr "Geräteisolierung"
 
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:495
 msgctxt "host-has-internet"
