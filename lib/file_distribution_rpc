@@ -24,12 +24,11 @@ my $m_title = qr/^([ !#&()*+,\-.0-9:<=>?\@A-Z\[\]^_a-z{|}~\P{ascii}]{1,64})$/;
 my ($act) = (shift @ARGV) =~ /^([\w.-]+)$/ or die "Account invalid!\n";
 my ($cmd) = (shift @ARGV) =~ /^(\w+)$/ or die "Command invalid!\n";
 
-my (@ips, @ips_online_win, %ips_online_lin);
+my (@ips, @ips_online, @ips_online_win, @ips_online_lin);
 for (@ARGV)
 {
   my ($ip) = /^\+?\+?([\d.]+)$/ or die "ip invalid\n";
   push @ips, $ip;
-  $ips_online_lin{$ip} = 1 if /^\+\+/;
 }
 die "No IPs!\n" unless @ips;
 
@@ -127,16 +126,30 @@ sub rpc_message_umlauts($$)
 }
 
 # determine online IPs
-IPC::Run::run ["nmap", "-n", "-sP", "-oG", "-", "--", @ips],
-  ">", IPC::Run::new_chunker("\n"),
-  sub
-  {
-    local $_ = shift;
-    if (/^Host:\s+([\d\.]+)\s+\(\)\s+Status:\s+Up.*$/i)
+IPC::Run::run ["nmap", "-n", "-p22,445", "-oG", "-", "--", @ips],
+    ">", IPC::Run::new_chunker("\n"),
+    sub
     {
-      push @ips_online_win, $1 if !$ips_online_lin{$1};
-    }
-  };
+      local $_ = shift;
+      if (/^Host:\s+([\d\.]+)\s+\(\)\s+Status:\s+Up.*$/i)
+      {
+        push @ips_online, $1;
+      }
+
+      # FIXME Is that a save way to detect the type? How strong is the possibility that port 22 is opened on Windows System (installed OpenSSH port?!)
+      # if we have port 445 (SMB) and port 22 (SSH) opened, assume we have a Linux client ...
+      if (/^Host:\s+([\d\.]+)\s+\(\)\s+Ports:\s+22\/open\/tcp\/\/ssh\/\/\/,\s+445\/open\/tcp\/\/microsoft-ds\/\/\/*$/i)
+      {
+	push @ips_online_lin, $1;
+      }
+
+      # ... , but if port 22 is closed and we just have port 445 assume a Windows Client.
+      # filtered|closed is required because if the Windows firewall is enabled by default it filters access to this port.
+      elsif (/^Host:\s+([\d\.]+)\s+\(\)\s+Ports:\s+22\/(closed|filtered)\/tcp\/\/ssh\/\/\/,\s+445\/open\/tcp\/\/microsoft-ds\/\/\/*$/i)
+      {
+	push @ips_online_win, $1;
+      }
+    };
 
 if ($cmd eq "fdon")
 {
@@ -180,4 +193,7 @@ elsif ($cmd eq "fdoff")
   IServ::DB::Do "DELETE FROM file_distribution WHERE ip = ?", $_ for @ips;
   run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "stop" } @ips_online_win;
   system "/usr/lib/iserv/file_distribution_cfg"; 
+}
+else {
+  die "Unknown command $cmd!";
 }
