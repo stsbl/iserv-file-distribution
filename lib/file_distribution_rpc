@@ -136,7 +136,7 @@ IPC::Run::run ["nmap", "-n", "-p22,445", "-oG", "-", "--", @ips],
         push @ips_online, $1;
       }
 
-      # FIXME Is that a save way to detect the type? How strong is the possibility that port 22 is opened on a Windows system (installed OpenSSH portation?!)?
+      # FIXME Is that a save way to detect the type? How strong is the possibility that port 22 is opened on a Windows system (installed OpenSSH porting?!)?
       # if we have port 445 (SMB) and port 22 (SSH) opened, assume we have a Linux client ...
       if (/^Host:\s+([\d\.]+)\s+\(\)\s+Ports:\s+22\/open\/tcp\/\/ssh\/\/\/,\s+445\/open\/tcp\/\/microsoft-ds\/\/\/*$/i)
       {
