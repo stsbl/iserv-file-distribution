@@ -2,7 +2,6 @@
 
 use warnings;
 use strict;
-use Encode qw(encode);
 use IPC::Run;
 use IServ::Conf;
 use IServ::DB;
@@ -10,6 +9,7 @@ use IServ::Locale;
 use IServ::RPC;
 use Parallel::ForkManager;
 use sessauth;
+use Stsbl::IServ::RPC;
 umask 0002;
 
 POSIX::setlocale(POSIX::LC_CTYPE, $conf->{DefLang} . ".UTF-8");
@@ -104,27 +104,6 @@ sub run_parallel(&@)
   $pm->wait_all_children;
 }
 
-sub rpc_message_umlauts($$)
-{
-  my ($ip, $msg) = @_;
-  $msg =~ s/\r?\n/\r/g;
-  my @err;
-  # NO decoding here, it already breaks special chars like umlauts!
-  # Just encode to iso-8859-2 here and set the code page of
-  # cmd on client to utf-8 (code page 65001).
-  $msg = encode("iso-8859-2", $msg);
-  # real limit seems to be at about 4320 chars:
-  if (length $msg > 4096)
-  {
-    @err = "rpc_message_unicode: message too long\n";
-  }
-  else
-  {
-    @err = IServ::RPC::winexe $ip, "cmd", "/c", "chcp 65001", ">NUL", "&", netlogon "exe\\start", "iserv-msg", $msg;
-  }
-  wantarray? @err: print STDERR @err;
-}
-
 # determine online IPs
 IPC::Run::run ["nmap", "-n", "-p22,445", "-oG", "-", "--", @ips],
     ">", IPC::Run::new_chunker("\n"),
@@ -180,7 +159,7 @@ if ($cmd eq "fdon")
 
   my $notice = _("Someone started a file distribution for your host. To access the files,".
     ' click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.');
-  run_parallel { msg rpc_message_umlauts $_, $notice } @ips_online_win;
+  run_parallel { msg Stsbl::IServ::RPC::rpc_message_unicode $_, $notice } @ips_online_win;
   run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "start"; } @ips_online_win;
 
 } 
@@ -193,6 +172,21 @@ elsif ($cmd eq "fdoff")
   IServ::DB::Do "DELETE FROM file_distribution WHERE ip = ?", $_ for @ips;
   run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "stop" } @ips_online_win;
   system "/usr/lib/iserv/file_distribution_cfg"; 
+}
+elsif ($cmd eq "soundoff")
+{
+  req_priv "computer_boot";
+  req_priv "file_distribution";
+  IServ::DB::Do "DELETE FROM computer_sound_lock WHERE ip = ?", $_ for @ips;
+  IServ::DB::Do "INSERT INTO computer_sound_lock (IP) VALUES (?)", $_ for @ips;
+  run_parallel { msg IServ::RPC::winexe $_, "cmd /c", "net", "stop", "audiosrv", ">NUL" } @ips_online_win;
+}
+elsif ($cmd eq "soundon")
+{
+  req_priv "computer_boot";
+  req_priv "file_distribution";
+  IServ::DB::Do "DELETE FROM computer_sound_lock WHERE ip = ?", $_ for @ips;
+  run_parallel { msg IServ::RPC::winexe $_, "cmd /c", "net", "start", "audiosrv", ">NUL" } @ips_online_win;
 }
 else {
   die "Unknown command $cmd!";
