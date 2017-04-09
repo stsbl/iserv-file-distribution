@@ -1,12 +1,9 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+// src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CoreBundle\Service\Shell;
-use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /*
  * The MIT License
@@ -33,56 +30,45 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 
 /**
- * FileDistribution stop batch
+ * FileDistribution soundlock batch
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class StopAction extends AbstractFileDistributionAction
+class SoundLockAction extends AbstractFileDistributionAction
 {
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function execute(ArrayCollection $entities) 
     {
-        if (is_null($this->shell)) {
-            throw new \RuntimeException(sprintf('shell was not injected into %s, you need to set it via %s.', get_class($this), get_class($this),'::setShell()'));
-        }
-        
-        /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
+        /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
         $bag = new FlashMessageBag();
-        $user = $this->crud->getUser();
         
         foreach ($entities as $entity) {
-            /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
-            if ($this->isAllowedToExecute($entity, $user)) {
-                $this->rpc->addHost($entity);
-                $bag->addMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
-            } else {
-                $bag->addMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
-            }
+            $this->rpc->addHost($entity);
+            
+            $bag->addMessage('success', __('Disabled sound for %s.', (string)$entity->getName()));
         }
         
-        $this->rpc->disable();
+        $this->rpc->soundLock();
         $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
-        
         return $bag;
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
-    public function getName()
+    public function getName() 
     {
-        return 'stop';
+        return 'soundlock';
     }
-    
-    /**
+ /**
      * {@inheritodc}
      */
     public function getLabel() 
     {
-        return _('Stop file distribution');
+        return _('Disable sound');
     }
     
     /**
@@ -90,7 +76,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getTooltip() 
     {
-        return _('Stop the running file distribution for the selected hosts.');
+        return _('Disable sound on the selected hosts.');
     }
 
     /**
@@ -98,7 +84,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getListIcon()
     {
-        return 'pro-stop-sign';
+        return 'pro-mute';
     }
     
     /**
@@ -106,15 +92,6 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getConfirmClass()
     {
-        return 'danger';
-    }
-
-    /**
-     * @param CrudInterface $fileDistribution
-     * @param UserInterface $user
-     */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
-    {
-        return $this->crud->isAllowedToStop($object, $user);
+        return 'primary';
     }
 }

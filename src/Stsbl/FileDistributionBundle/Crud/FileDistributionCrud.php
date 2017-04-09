@@ -17,8 +17,7 @@ use IServ\CrudBundle\Mapper\ShowMapper;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
-use Stsbl\FileDistributionBundle\Crud\Batch\EnableAction;
-use Stsbl\FileDistributionBundle\Crud\Batch\StopAction;
+use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\Rpc;
 use Symfony\Component\HttpFoundation\Request;
@@ -266,6 +265,15 @@ class FileDistributionCrud extends AbstractCrud
         $this->routes['batch_confirm']['_controller'] = 'StsblFileDistributionBundle:FileDistribution:confirmBatch';
         $this->routes['batch']['_controller'] = 'StsblFileDistributionBundle:FileDistribution:batch';
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isAllowedToView(CrudInterface $object = null, UserInterface $user = null) 
+    {
+        // disable show action, it is useless here
+        return false;
+    }
 
     /**
      * {@inheritdoc}
@@ -372,7 +380,7 @@ class FileDistributionCrud extends AbstractCrud
     public function configureListFields(ListMapper $listMapper) 
     {
         $listMapper
-            ->addIdentifier('name', null, [
+            ->add('name', null, [
                 'label' => _('Name'),
                 'responsive' => 'all',
                 'sortType' => 'natural',
@@ -396,7 +404,20 @@ class FileDistributionCrud extends AbstractCrud
             ->add('fileDistributionIsolation', null, [
                 'label' => _('Host isolation'),
                 'template' => 'IServCrudBundle:List:field_boolean.html.twig',
-            ])
+            ]);
+        
+        // check for existing sound locks
+        $soundLockRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock');
+        
+        // only add soundlock column if we have a sound lock
+        if (count($soundLockRepository->findAll()) > 0) {
+            $listMapper->add('soundLock', null, [
+                'label' => '', // no title in table
+                'template' => 'StsblFileDistributionBundle:List:field_soundlock.html.twig',
+            ]);
+        }
+         
+        $listMapper
             ->add('room', null, [
                 'label' => _('Room'),
                 'group' => true,
@@ -457,11 +478,17 @@ class FileDistributionCrud extends AbstractCrud
     {
         parent::loadBatchActions();
         
-        $enableAction = new EnableAction($this);
+        $enableAction = new Batch\EnableAction($this);
         $this->batchActions->add($enableAction);
         
-        $stopAction = new StopAction($this);
+        $stopAction = new Batch\StopAction($this);
         $this->batchActions->add($stopAction);
+
+        $soundUnlockAction = new Batch\SoundUnlockAction($this);
+        $this->batchActions->add($soundUnlockAction);
+        
+        $soundLockAction = new Batch\SoundLockAction($this);
+        $this->batchActions->add($soundLockAction);
         
         return $this->batchActions;
     }

@@ -117,7 +117,7 @@ class EnableAction extends AbstractFileDistributionAction
      */
     public function getLabel() 
     {
-        return _('Enable');
+        return _('Start file distribution');
     }
     
     /**

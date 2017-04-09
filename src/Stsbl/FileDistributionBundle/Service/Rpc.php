@@ -43,6 +43,8 @@ class Rpc
     // Constants for file_distribution_rpc
     const ON = 'fdon';
     const OFF = 'fdoff';
+    const SOUNDON = 'soundon';
+    const SOUNDOFF = 'soundoff';
     
     /**
      * @var string
@@ -110,6 +112,61 @@ class Rpc
     }
     
     /**
+     * Returns base command line.
+     * 
+     * @param $args
+     * @return array
+     */
+    private function getBaseCommandLine()
+    {
+        return [
+            self::COMMAND,
+            $this->securityHandler->getUser()->getUsername()
+        ];
+    }
+    
+    /**
+     * Prepare hosts for command line
+     * 
+     * @param array $args
+     * @return array
+     */
+    private function addHostsToCommandLine(array $args)
+    {
+        if (count($this->hosts) < 1) {
+            throw new \InvalidArgumentException('No hosts specified!');
+        }
+        
+        foreach ($this->hosts as $h) {
+            $args[] = $h->getIp();
+        }
+        
+        return $args;
+    }
+    
+    /**
+     * Executes `file_distribution_rpc` with given arguments
+     * 
+     * @param array $args
+     * @param mixed $arg
+     * @param integer $isolation
+     */
+    private function execute(array $args, $arg = null, $isolation = null)
+    {
+        $env = ['SESSPW' => $this->securityHandler->getSessionPassword()];
+        
+        if (!is_null($arg)) {
+            $env['ARG'] = $arg;
+        }
+        
+        if (!is_null($isolation)) {
+            $env['FD_ISOLATION'] = $isolation;
+        }
+        
+        $this->shell->exec('closefd setsid sudo', $args, null, $env);
+    }
+    
+    /**
      * The constructor
      * 
      * @param Shell $shell
@@ -126,21 +183,12 @@ class Rpc
      */
     public function enable()
     {
-        $args = [];
-        $args[] = self::COMMAND;
-        $args[] = $this->securityHandler->getUser()->getUsername();
+        $args = $this->getBaseCommandLine();
         $args[] = self::ON;
-        
-        if (count($this->hosts) < 1) {
-            throw new \InvalidArgumentException('No hosts specified!');
-        }
+        $args = $this->addHostsToCommandLine($args);
         
         if (empty($this->title)) {
             throw new \InvalidArgumentException('No title specified!');
-        }
-        
-        foreach ($this->hosts as $h) {
-            $args[] = $h->getIp();
         }
         
         if (!is_bool($this->isolation)) {
@@ -153,11 +201,7 @@ class Rpc
             $isolation = 0;
         }
         
-        $this->shell->exec('closefd setsid sudo', $args, null, [
-            'ARG' => $this->title, 
-            'FD_ISOLATION' => $isolation, 
-            'SESSPW' => $this->securityHandler->getSessionPassword()
-        ]);
+        $this->execute($args, $this->title, $isolation);
     }
     
     /**
@@ -165,20 +209,35 @@ class Rpc
      */
     public function disable()
     {
-        $args = [];
-        $args[] = self::COMMAND;
-        $args[] = $this->securityHandler->getUser()->getUsername();
+        $args = $this->getBaseCommandLine();
         $args[] = self::OFF;
+        $this->addHostsToCommandLine($args);
         
-        if (count($this->hosts) < 1) {
-            throw new \InvalidArgumentException('No hosts specified!');
-        }
+        $this->execute($args);
+    }
+    
+    /**
+     * Lock sound sound for the hosts which were previously set via <tt>setHosts</tt>.
+     */
+    public function soundLock()
+    {
+        $args = $this->getBaseCommandLine();
+        $args[] = self::SOUNDOFF;
+        $args = $this->addHostsToCommandLine($args);
         
-        foreach ($this->hosts as $h) {
-            $args[] = $h->getIp();
-        }
+        $this->execute($args);
+    }
+
+    /**
+     * Unlock sound sound for the hosts which were previously set via <tt>setHosts</tt>.
+     */
+    public function soundUnlock()
+    {
+        $args = $this->getBaseCommandLine();
+        $args[] = self::SOUNDON;
+        $args = $this->addHostsToCommandLine($args);
         
-        $this->shell->exec('closefd setsid sudo', $args, null, ['SESSPW' => $this->securityHandler->getSessionPassword()]);
+        $this->execute($args);
     }
     
     /**

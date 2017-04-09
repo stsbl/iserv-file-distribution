@@ -45,6 +45,8 @@ class HostRepository extends BaseHostRepository
             '(SELECT MAX(s2.act) FROM IServHostBundle:SambaUser s2 WHERE s2.ip = parent.ip AND s2.since = '.
             '(SELECT MAX(v2.since) FROM IServHostBundle:SambaUser v2 WHERE v2.ip = parent.ip))';
         $ret['fileDistributionIsolation'] = '(SELECT f3.isolation FROM StsblFileDistributionBundle:FileDistribution f3 WHERE f3.ip = parent.ip)';
+        $ret['soundLock'] = '(SELECT sl FROM StsblFileDistributionBundle:SoundLock sl WHERE sl.ip = parent.ip)';
+        
         return $ret;
     }
 }
