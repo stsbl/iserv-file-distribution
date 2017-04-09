@@ -19,15 +19,12 @@ if not "%mode%"=="start" goto fi
   echo oLink.Save >> "%SystemDrive%\\tmp\\file-distribution-create-shortcut.vbs"
   rem Execute script
   cscript "%SystemDrive%\\tmp\\file-distribution-create-shortcut.vbs" > NUL
-  rem Delete script
-  goto exit
+  exit
 :fi
 
 if not "%mode%"=="stop" goto fi
   if exist "%Public%\\Desktop\\Auf bereitgestellte Dateien zugreifen.lnk" del "%Public%\\Desktop\\Auf bereitgestellte Dateien zugreifen.lnk"
-  goto exit
+  exit
 :fi
 
-echo file-distribution.bat called with unkwown mode!
-
-:exit
+echo file-distribution.bat called with unkwown mode!t
