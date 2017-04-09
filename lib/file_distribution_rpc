@@ -177,16 +177,16 @@ elsif ($cmd eq "soundoff")
 {
   req_priv "computer_boot";
   req_priv "file_distribution";
-  IServ::DB::Do "DELETE FROM computer_sound_lock WHERE ip = ?", $_ for @ips;
-  IServ::DB::Do "INSERT INTO computer_sound_lock (IP) VALUES (?)", $_ for @ips;
-  run_parallel { msg IServ::RPC::winexe $_, "cmd /c", "net", "stop", "audiosrv", ">NUL" } @ips_online_win;
+  IServ::DB::Do "DELETE FROM computer_sound_lock WHERE IP = ?", $_ for @ips;
+  IServ::DB::Do "INSERT INTO computer_sound_lock (IP, Act) VALUES (?, ?)", $_, $act for @ips;
+  run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "stop", "audiosrv", ">NUL", "2>&1" } @ips_online_win;
 }
 elsif ($cmd eq "soundon")
 {
   req_priv "computer_boot";
   req_priv "file_distribution";
   IServ::DB::Do "DELETE FROM computer_sound_lock WHERE ip = ?", $_ for @ips;
-  run_parallel { msg IServ::RPC::winexe $_, "cmd /c", "net", "start", "audiosrv", ">NUL" } @ips_online_win;
+  run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "start", "audiosrv", ">NUL", "2>&1" } @ips_online_win;
 }
 else {
   die "Unknown command $cmd!";

@@ -21,7 +21,10 @@ CREATE TABLE computer_sound_lock (
     ID                  SERIAL          PRIMARY KEY,
     IP                  INET            NOT NULL REFERENCES hosts(IP)
                                             ON UPDATE CASCADE
-					    ON DELETE CASCADE    
+					    ON DELETE CASCADE,    
+    Act                 TEXT            NOT NULL REFERENCES users(Act)
+                                            ON UPDATE CASCADE
+				            ON DELETE CASCADE
 );
 
 GRANT USAGE, SELECT ON "file_distribution_id_seq", "computer_sound_lock_id_seq" TO "symfony";
