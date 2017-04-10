@@ -173,7 +173,7 @@ msgstr "Nachricht"
 
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:111
 msgid "Enter a message..."
-msgstr ""
+msgstr "Geben Sie eine Nachricht ein..."
 
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:198
 msgid "No host selected!"
