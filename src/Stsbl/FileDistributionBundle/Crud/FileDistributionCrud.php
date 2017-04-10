@@ -738,6 +738,24 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
+     * Get user who locked the sound on a computer.
+     * 
+     * @param string $name
+     * @return \IServ\CoreBundle\Entity\User
+     */
+    public function getSoundLockUser($ip)
+    {  
+        /* @var $lock \Stsbl\FileDistributionBundle\Entity\SoundLock */
+        $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock')->findOneByIp($ip);
+        
+        if (is_null($lock)) {
+            return false;
+        }
+        
+        return $lock->getUser();
+    }
+    
+    /**
      * Checks wether the user is coming from the host with given name or not.
      * 
      * @param string $name
