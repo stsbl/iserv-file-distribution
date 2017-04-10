@@ -69,7 +69,7 @@ class MessageAction extends AbstractFileDistributionAction
         foreach ($entities as $entity) {
             $this->rpc->addHost($entity);
             
-            $bag->addMessage('success', __('Send message to %s.', (string)$entity->getName()));
+            $bag->addMessage('success', __('Sent message to %s.', (string)$entity->getName()));
         }
         
         $this->rpc->sendMessage();
