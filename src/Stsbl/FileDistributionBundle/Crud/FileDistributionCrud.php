@@ -13,7 +13,6 @@ use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
-use IServ\CrudBundle\Mapper\ShowMapper;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
@@ -479,43 +478,6 @@ class FileDistributionCrud extends AbstractCrud
                 'sortType' => 'natural',
             ]);
         ;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function configureShowFields(ShowMapper $showMapper) 
-    {
-        $showMapper
-            ->add('name', null, [
-                'label' => _('Name')
-            ])
-            ->add('type', null, [
-                'label' => _('Type'),
-                'template' => 'IServHostBundle:Crud:show_field_type.html.twig'
-            ])
-            ->add('fileDistribution', null, [
-                'label' => _('File distribution'),
-                'template' => 'StsblFileDistributionBundle:Show:field_filedistribution.html.twig',
-            ])
-            ->add('fileDistributionOwner', null, [
-                'label' => _('Owner')
-            ])
-            ->add('fileDistributionIsolation', null, [
-                'label' => _('Host isolation'),
-                'template' => 'IServCrudBundle:Show:field_boolean.html.twig',
-            ])
-            ->add('room', null, [
-                'label' => _('Room'),
-            ])
-            //->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
-            
-        ;
-         
-        // privacy: only allow to view the logged-in user if you are come from LAN
-        if ($this->isInLan()) {
-            $showMapper->add('sambaUserDisplay', null, ['label' => _('User')]);
-        }
     }
     
     /**
