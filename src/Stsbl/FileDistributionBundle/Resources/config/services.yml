@@ -22,4 +22,8 @@ services:
     stsbl.filedistribution.rpc:
         class: Stsbl\FileDistributionBundle\Service\Rpc
         arguments: ["@iserv.shell", "@iserv.security_handler"]
-        
+    
+    stsbl.filedistribution.twig.extension.base64:
+        class: Stsbl\FileDistributionBundle\Twig\Extension\Base64
+        tags :
+          - { name: twig.extension }

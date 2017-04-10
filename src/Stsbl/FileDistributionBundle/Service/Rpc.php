@@ -1,5 +1,5 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Service/RPC.php
+// src/Stsbl/FileDistributionBundle/Service/Rpc.php
 namespace Stsbl\FileDistributionBundle\Service;
 
 use IServ\CoreBundle\Security\Core\SecurityHandler;
@@ -31,7 +31,7 @@ use Stsbl\FileDistributionBundle\Entity\Host;
  */
 
 /**
- * FileDistribution RPC service
+ * FileDistribution rpc service
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
@@ -211,7 +211,7 @@ class Rpc
     {
         $args = $this->getBaseCommandLine();
         $args[] = self::OFF;
-        $this->addHostsToCommandLine($args);
+        $args = $this->addHostsToCommandLine($args);
         
         $this->execute($args);
     }

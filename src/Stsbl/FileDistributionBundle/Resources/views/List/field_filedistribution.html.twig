@@ -1,10 +1,14 @@
-{# src/Stsbl/FileDistributionBundle/Resources/views/List/field_soundlock.html.twig #}
+{# src/Stsbl/FileDistributionBundle/Resources/views/List/field_filedistribution.html.twig #}
 {% extends admin.getTemplate('list_field_base') %}
 
 {% block field %}
-    {% if value is not null %}
-        {{ value }}
-    {% else %}
-        ({{ _('none') }})
+    {% set fd = admin.getFileDistributionInfoById(value) %}
+    
+    {% if fd is not null %}
+        <span title="{{ __('By: %s', fd.user) }}">{{ fd.plainTitle }}</span>
+        {% if fd.user == app.user %}
+            {% set path = 'Files/File-Distribution/' ~ fd.plainTitle %}
+            &nbsp;<a href="{{ path('file_list', {'format': 'html', 'path': path|base64_encode}) }}" title="{{ _('Open folder of this file distribution')  }}">{{ icon('legacy-folder') }}</a> 
+        {% endif %}
     {% endif %}
 {% endblock %}

@@ -48,7 +48,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction
         foreach ($entities as $entity) {
             $this->rpc->addHost($entity);
             
-            $bag->addMessage('success', __('Enabled sound for %s.', (string)$entity->getName()));
+            $bag->addMessage('success', __('Enabled sound on %s.', (string)$entity->getName()));
         }
         
         $this->rpc->soundUnlock();
@@ -93,5 +93,13 @@ class SoundUnlockAction extends AbstractFileDistributionAction
     public function getConfirmClass()
     {
         return 'primary';
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function requiresConfirmation() 
+    {
+        return false;
     }
 }

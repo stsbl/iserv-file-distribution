@@ -1,0 +1,10 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/List/field_name.html.twig #}
+{% extends 'IServHostBundle:Crud:list_field_name.html.twig' %}
+
+{% block field %}
+    {% if admin.isCurrentHost(value) %}
+        <strong>{{ parent() }}</strong>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
