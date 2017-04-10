@@ -39,6 +39,7 @@ use Stsbl\FileDistributionBundle\Entity\Host;
 class Rpc 
 {
     const COMMAND = '/usr/lib/iserv/file_distribution_rpc';
+    const COMMAND_NETRPC = '/usr/lib/iserv/netrpc';
     
     // Constants for file_distribution_rpc
     const ON = 'fdon';
@@ -46,10 +47,13 @@ class Rpc
     const SOUNDON = 'soundon';
     const SOUNDOFF = 'soundoff';
     
+    // Constants for netrpc
+    const NETRPC_MESSAGE = 'msg';
+    
     /**
      * @var string
      */
-    private $title;
+    private $arg;
     
     /**
      * @var boolean
@@ -72,13 +76,26 @@ class Rpc
     private $securityHandler;
     
     /**
-     * Set title for the next operation
+     * Set arg for the next operation
+     * 
+     * @param string $arg
+     */
+    public function setArg($arg)
+    {
+        $this->arg = $arg;
+    }
+    
+    /**
+     * Legacy title function
      * 
      * @param string $title
+     * @deprecated
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        @trigger_error('setTitle is deprecated, use setArg instead!', E_USER_DEPRECATED);
+        
+        $this->setArg($title);
     }
 
     /**
@@ -124,7 +141,20 @@ class Rpc
             $this->securityHandler->getUser()->getUsername()
         ];
     }
-    
+
+    /**
+     * Returns base command line.
+     * 
+     * @param $args
+     * @return array
+     */
+    private function getNetrpcBaseCommandLine()
+    {
+        return [
+            self::COMMAND_NETRPC,
+            $this->securityHandler->getUser()->getUsername()
+        ];
+    }
     /**
      * Prepare hosts for command line
      * 
@@ -145,7 +175,7 @@ class Rpc
     }
     
     /**
-     * Executes `file_distribution_rpc` with given arguments
+     * Executes command with given arguments
      * 
      * @param array $args
      * @param mixed $arg
@@ -187,8 +217,8 @@ class Rpc
         $args[] = self::ON;
         $args = $this->addHostsToCommandLine($args);
         
-        if (empty($this->title)) {
-            throw new \InvalidArgumentException('No title specified!');
+        if (empty($this->arg)) {
+            throw new \InvalidArgumentException('No argument specified!');
         }
         
         if (!is_bool($this->isolation)) {
@@ -201,7 +231,7 @@ class Rpc
             $isolation = 0;
         }
         
-        $this->execute($args, $this->title, $isolation);
+        $this->execute($args, $this->arg, $isolation);
     }
     
     /**
@@ -217,7 +247,7 @@ class Rpc
     }
     
     /**
-     * Lock sound sound for the hosts which were previously set via <tt>setHosts</tt>.
+     * Lock sound for the hosts which were previously set via <tt>setHosts</tt>.
      */
     public function soundLock()
     {
@@ -229,7 +259,7 @@ class Rpc
     }
 
     /**
-     * Unlock sound sound for the hosts which were previously set via <tt>setHosts</tt>.
+     * Unlock sound for the hosts which were previously set via <tt>setHosts</tt>.
      */
     public function soundUnlock()
     {
@@ -238,6 +268,22 @@ class Rpc
         $args = $this->addHostsToCommandLine($args);
         
         $this->execute($args);
+    }
+    
+    /**
+     * Send message to hosts the hosts which were previouśly set via <tt>setHosts</tt> via IServ netrpc.
+     */
+    public function sendMessage()
+    {
+        $args = $this->getNetrpcBaseCommandLine();
+        $args[] = self::NETRPC_MESSAGE;
+        $args = $this->addHostsToCommandLine($args);
+        
+        if (empty($this->arg)) {
+            throw new \InvalidArgumentException('No argument specified!');
+        }
+        
+        $this->execute($args, $this->arg);
     }
     
     /**

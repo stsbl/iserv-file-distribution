@@ -8,6 +8,7 @@ use IServ\CrudBundle\Table\ListHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,7 +102,17 @@ class FileDistributionController extends CrudController
                     ->add('isolation', CheckboxType::class, [
                         'label' => _('Enable host isolation'),
                         'attr' => $isolationAttr,
-                    ]);
+                    ])
+                    ->add('rpc_message', TextareaType::class, [
+                        'label' => _('Message'),
+                        'attr' => [
+                            'rows' => 10,
+                            'cols' => 230,
+                            'placeholder' => _('Enter a message...')
+                        ]
+                    ])
+                ;
+                
                 
                 $ret['form'] = $multiSelectForm;
             }
@@ -176,6 +187,11 @@ class FileDistributionController extends CrudController
                 if (!$confirmForm->get('actions')->has('enable')) {
                     $confirmForm->remove('title');
                     $confirmForm->remove('isolation');
+                }
+                
+                // display rpc_message only on sending message
+                if (!$confirmForm->get('actions')->has('message')) {
+                    $confirmForm->remove('rpc_message');
                 }
 
             } else {
@@ -252,6 +268,9 @@ class FileDistributionController extends CrudController
                                 $isolation = false;
                             }
                             $action->setIsolation($isolation);
+                        } else if ($action->getName() === 'message') {
+                            // set message
+                            $action->setMessage($form->getData()['rpc_message']);
                         }
                         
                         // Run action, collect feedback and return to list afterwards.

@@ -1,5 +1,5 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+// src/Stsbl/FileDistributionBundle/Crud/Batch/Message.php
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,30 +30,51 @@ use IServ\CrudBundle\Entity\FlashMessageBag;
  */
 
 /**
- * FileDistribution soundlock batch
+ * file distribution rpc message batch
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class SoundLockAction extends AbstractFileDistributionAction
+class MessageAction extends AbstractFileDistributionAction 
 {
+    /**
+     * @var string
+     */
+    private $message;
+    
+    /**
+     * Set message
+     * 
+     * @param string $message
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+    
     /**
      * {@inheritdoc}
      */
     public function execute(ArrayCollection $entities) 
     {
+        if (is_null($this->message)) {
+            throw new \InvalidArgumentException('No message set, you need to set it via setMessage()!');
+        }
+        
+        $this->rpc->setArg($this->message);
+        
         /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
         $bag = new FlashMessageBag();
         
         foreach ($entities as $entity) {
             $this->rpc->addHost($entity);
             
-            $bag->addMessage('success', __('Disabled sound on %s.', (string)$entity->getName()));
+            $bag->addMessage('success', __('Send message to %s.', (string)$entity->getName()));
         }
         
-        $this->rpc->soundLock();
+        $this->rpc->sendMessage();
         $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
-        return $bag;
+        return $bag;        
     }
 
     /**
@@ -61,7 +82,7 @@ class SoundLockAction extends AbstractFileDistributionAction
      */
     public function getName() 
     {
-        return 'soundlock';
+        return 'message';
     }
     
     /**
@@ -69,7 +90,7 @@ class SoundLockAction extends AbstractFileDistributionAction
      */
     public function getLabel() 
     {
-        return _('Disable sound');
+        return _('Send message');
     }
     
     /**
@@ -77,7 +98,7 @@ class SoundLockAction extends AbstractFileDistributionAction
      */
     public function getTooltip() 
     {
-        return _('Disable sound on the selected hosts.');
+        return _('Send message to the selected hosts.');
     }
 
     /**
@@ -85,7 +106,7 @@ class SoundLockAction extends AbstractFileDistributionAction
      */
     public function getListIcon()
     {
-        return 'pro-mute';
+        return 'pro-message-flag';
     }
     
     /**
@@ -94,13 +115,5 @@ class SoundLockAction extends AbstractFileDistributionAction
     public function getConfirmClass()
     {
         return 'primary';
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function requiresConfirmation() 
-    {
-        return false;
     }
 }

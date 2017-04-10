@@ -499,6 +499,9 @@ class FileDistributionCrud extends AbstractCrud
         $soundLockAction = new Batch\SoundLockAction($this);
         $this->batchActions->add($soundLockAction);
         
+        $messageAction = new Batch\MessageAction($this);
+        $this->batchActions->add($messageAction);
+        
         return $this->batchActions;
     }
     
