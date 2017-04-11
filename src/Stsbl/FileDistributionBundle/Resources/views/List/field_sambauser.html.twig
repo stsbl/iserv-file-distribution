@@ -8,3 +8,11 @@
         {{ value }}
     {% endif %}
 {% endblock %}
+
+{% block value %}
+    {% if not admin.isInLan() and value is not null %}
+        {{ _('Yes') }}
+    {% else %}
+        {{ value|lower }}
+    {% endif %}
+{% endblock %}

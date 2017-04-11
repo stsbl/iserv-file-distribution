@@ -2,8 +2,8 @@
 {% extends admin.getTemplate('list_field_base') %}
 
 {% block field %}
-    {% set state = admin.getInternetStateByName(value) %}
-    {% set explaination = admin.getInternetExplainationByName(value) %}
+    {% set state = admin.getInternetStateByIp(value) %}
+    {% set explaination = admin.getInternetExplainationByIp(value) %}
     {% if state == 'forbidden' %}
         <span title="{{ __('Until: %s', explaination.until|ltime) ~ ', ' ~ __('By: %s', explaination.user) }}" class="fd-internet-forbidden">{{ _('Forbidden') }}</span>
     {% elseif state == 'granted' %}
@@ -14,5 +14,20 @@
         {{ _('No') }}
     {% elseif state == 'exam' %}
         <span title="{{ __('Title: %s', explaination.title) ~ ', ' ~ __('By: %s', explaination.user) }}" class="fd-internet-exam-mode">{{ _('Exam Mode') }}</span>
+    {% endif %}
+{% endblock %}
+
+{% block value %}
+    {% set state = admin.getInternetStateByIp(value) %}
+    {% if state == 'forbidden' %}
+        {{ _('Forbidden') }}
+    {% elseif state == 'granted' %}
+        {{ _('Granted') }}
+    {% elseif state == 'yes' %}
+        {{ _('Yes') }}
+    {% elseif state == 'no' %}
+        {{ _('No') }}
+    {% elseif state == 'exam' %}
+        {{ _('Exam Mode') }}
     {% endif %}
 {% endblock %}

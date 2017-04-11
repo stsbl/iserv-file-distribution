@@ -4,13 +4,14 @@ services:
         class: Stsbl\FileDistributionBundle\Crud\FileDistributionCrud
         arguments: [Stsbl\FileDistributionBundle\Entity\Host]
         calls:
-           - [ setShell, ["@iserv.shell"]]
-           - [ setEntityManager, ["@doctrine.orm.entity_manager"]]
-           - [ setSecurityHandler, ["@iserv.security_handler"]]
-           - [ setSession, ["@session"]]
-           - [ setConfig, ["@iserv.config"]]
-           - [ setRequest, ["@request_stack"]]
-           - [ setRpc, ["@stsbl.filedistribution.rpc"]]
+#           - [ setShell, ["@iserv.shell"]]
+#           - [ setEntityManager, ["@doctrine.orm.entity_manager"]]
+#           - [ setSecurityHandler, ["@iserv.security_handler"]]
+#           - [ setSession, ["@session"]]
+#           - [ setConfig, ["@iserv.config"]]
+#           - [ setRequest, ["@request_stack"]]
+#           - [ setRpc, ["@stsbl.filedistribution.rpc"]]
+            - [ setContainer, ["@service_container"]]
         tags:
             - { name: iserv.crud }
             

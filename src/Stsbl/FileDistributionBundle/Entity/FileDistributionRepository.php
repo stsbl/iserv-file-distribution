@@ -1,8 +1,9 @@
 <?php
-
+// src/Stsbl/FileDistributionBundle/Entity/FileDistributionRepository.php
 namespace Stsbl\FileDistributionBundle\Entity;
 
-use IServ\HostBundle\Entity\HostRepository as BaseHostRepository;
+use Doctrine\ORM\NoResultException;
+use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
 
 /*
  * The MIT License
@@ -29,27 +30,30 @@ use IServ\HostBundle\Entity\HostRepository as BaseHostRepository;
  */
 
 /**
+ * Repository class for FileDistribution
+ *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class HostRepository extends BaseHostRepository
+class FileDistributionRepository extends EntitySpecificationRepository
 {
-    public function getDecoratorColumns() 
+    /**
+     * Checks if there's at least on file distribution.
+     * 
+     * @return boolean
+     */
+    public function exists()
     {
-        $ret = parent::getDecoratorColumns();
+        $qb = $this->createQueryBuilder('c')
+            ->select('1')
+            ->setMaxResults(1)
+        ;
         
-        $ret['ipInternet'] = '(parent.ip)';
-        $ret['fileDistribution'] = '(SELECT f.id FROM StsblFileDistributionBundle:FileDistribution f WHERE f.ip = parent.ip)';
-        $ret['sambaUserDisplay'] = '(SELECT CONCAT(u3.firstname, \' \', u3.lastname) FROM IServCoreBundle:User u3 WHERE u3.username = '.
-            '(SELECT MAX(s2.act) FROM IServHostBundle:SambaUser s2 WHERE s2.ip = parent.ip AND s2.since = '.
-            '(SELECT MAX(v2.since) FROM IServHostBundle:SambaUser v2 WHERE v2.ip = parent.ip))';
-        $ret['fileDistributionIsolation'] = '(SELECT f3.isolation FROM StsblFileDistributionBundle:FileDistribution f3 WHERE f3.ip = parent.ip)';
-        $ret['soundLock'] = '(SELECT sl.ip FROM StsblFileDistributionBundle:SoundLock sl WHERE sl.ip = parent.ip)';
-        
-        if (file_exists('/var/lib/dpkg/info/iserv-lock.list')) {
-            $ret['lock'] = '(SELECT l.ip FROM StsblFileDistributionBundle:Lock l WHERE l.ip = parent.ip)';
+        try {
+            $qb->getQuery()->getSingleScalarResult();
+            return true;
+        } catch (NoResultException $e) {
+            return false;
         }
-        
-        return $ret;
     }
 }
