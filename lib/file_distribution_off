@@ -8,8 +8,7 @@ my (@ips) = IServ::DB::SelectCol "SELECT IP FROM file_distribution;";
 
 # disable file distribution for hosts where it is still enabled
 if (@ips > 0) {
-  my $list = join ' ', @ips;
-  print "Disable forgotten file distribution for $list.\n";
+  print "disable file distribution on: @ips\n";
   system "/usr/lib/iserv/file_distribution_rpc", "root", "fdoff", @ips;
 }
 
