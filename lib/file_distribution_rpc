@@ -10,6 +10,7 @@ use IServ::RPC;
 use Parallel::ForkManager;
 use sessauth;
 use Stsbl::IServ::RPC;
+use Stsbl::IServ::Security;
 umask 0002;
 
 POSIX::setlocale(POSIX::LC_CTYPE, $conf->{DefLang} . ".UTF-8");
@@ -32,14 +33,18 @@ for (@ARGV)
 }
 die "No IPs!\n" unless @ips;
 
-if (%ENV and defined $ENV{'SUDO_UID'} and $ENV{'SUDO_UID'})
+if (Stsbl::IServ::Security::sudo_context)
 {
   # run as unprivileged user
   my ($sesspw) = $ENV{SESSPW} =~ /^(\w{1,256})$/ or die "SESSPW invalid!\n";
-  my (undef, $encpwd, $uid) = getpwnam $act or die "Authentication failed\n";
-  $uid >= 500 or die "UID too low\n";
+  Stsbl::IServ::Security::verify_uid $act;
 
-  sessauth::login $act, $sesspw, "file_distribution_rpc" or die "Authentication failed\n";
+  Stsbl::IServ::Security::set_credentials $act, $sesspw;
+  Stsbl::IServ::Security::sessauth_login "file_distribution_rpc";
+} else 
+{
+  # no password required if running directly as root
+  Stsbl::IServ::Security::set_credentials $act, undef;
 }
 
 my (undef, undef, $uid, $gid, undef, undef, undef, $home) = getpwnam $act
@@ -69,17 +74,6 @@ sub msg(@)
 {
   my ($ip) = $_;
   warn "$ip: $_" for @_;
-}
-
-sub req_priv($)
-{
-  my ($priv) = @_;
-  return if $act eq "root";
-  die "need privilege $priv"
-    unless IServ::DB::Do "SELECT 1 FROM users_priv WHERE (Act = ? AND Privilege = ?) 
-      OR EXISTS (SELECT 1 FROM role_privileges r WHERE Privilege = ?
-      AND EXISTS (SELECT 1 FROM user_roles u WHERE u.Act = ? AND u.Role = r.Role)) 
-      LIMIT 1", $act, $priv, $priv, $act;
 }
 
 sub req_ownership($)
@@ -165,8 +159,8 @@ if ($cmd eq "fdon")
 } 
 elsif ($cmd eq "fdoff") 
 {
-  req_priv "file_distribution";
-  req_priv "computer_boot";
+  req_priv_or_root "file_distribution";
+  req_priv_or_root "computer_boot";
   req_ownership $_ for @ips;
 
   IServ::DB::Do "DELETE FROM file_distribution WHERE ip = ?", $_ for @ips;
@@ -175,16 +169,16 @@ elsif ($cmd eq "fdoff")
 }
 elsif ($cmd eq "soundoff")
 {
-  req_priv "computer_boot";
-  req_priv "file_distribution";
+  req_priv_or_root "computer_boot";
+  req_priv_or_root "file_distribution";
   IServ::DB::Do "DELETE FROM computer_sound_lock WHERE IP = ?", $_ for @ips;
   IServ::DB::Do "INSERT INTO computer_sound_lock (IP, Act) VALUES (?, ?)", $_, $act for @ips;
   run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "stop", "audiosrv", ">NUL", "2>&1" } @ips_online_win;
 }
 elsif ($cmd eq "soundon")
 {
-  req_priv "computer_boot";
-  req_priv "file_distribution";
+  req_priv_or_root "computer_boot";
+  req_priv_or_root "file_distribution";
   IServ::DB::Do "DELETE FROM computer_sound_lock WHERE ip = ?", $_ for @ips;
   run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "start", "audiosrv", ">NUL", "2>&1" } @ips_online_win;
 }
