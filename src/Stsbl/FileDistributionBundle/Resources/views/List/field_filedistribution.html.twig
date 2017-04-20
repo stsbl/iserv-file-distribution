@@ -12,3 +12,14 @@
         {% endif %}
     {% endif %}
 {% endblock %}
+
+{% block value %}
+    {% set fd = admin.getFileDistributionInfoById(value) %}
+    
+    {% if fd is not null %}
+        {{ fd.plainTitle }}
+    {% else %}
+        {# Hack to move section "Weitere" to bottom #}
+        zzzz_none
+    {% endif %}
+{% endblock %}

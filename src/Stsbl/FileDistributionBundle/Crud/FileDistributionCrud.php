@@ -600,7 +600,7 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
-     * Get current internet state (yes, now, allowed, forbidden) for Host by his name.
+     * Get current internet state (yes, now, allowed, forbidden) for Host by his ip address.
      * 
      * @param string $ip
      * @return string
@@ -671,7 +671,7 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
-     * Get current internet lock explaination for Host by his name.
+     * Get current internet lock explaination for Host by his ip address.
      * 
      * @param string $ip
      * @return array
@@ -733,7 +733,7 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * Get user who locked a computer.
      * 
-     * @param string $name
+     * @param string $ip
      * @return \IServ\CoreBundle\Entity\User
      */
     public function getLockUser($ip)
@@ -742,7 +742,7 @@ class FileDistributionCrud extends AbstractCrud
         $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Lock')->find($ip);
         
         if (is_null($lock)) {
-            return false;
+            return null;
         }
         
         return $lock->getUser();
@@ -751,7 +751,7 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * Get user who locked the sound on a computer.
      * 
-     * @param string $name
+     * @param string $ip
      * @return \IServ\CoreBundle\Entity\User
      */
     public function getSoundLockUser($ip)
@@ -760,7 +760,7 @@ class FileDistributionCrud extends AbstractCrud
         $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock')->findOneByIp($ip);
         
         if (is_null($lock)) {
-            return false;
+            return null;
         }
         
         return $lock->getUser();
