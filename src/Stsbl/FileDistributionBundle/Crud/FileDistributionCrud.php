@@ -627,10 +627,42 @@ class FileDistributionCrud extends AbstractCrud
             }
         }
         
+        $qb = $this->getEntityManager()->createQueryBuilder($this->class);
+        $userCondition = '(SELECT MAX(s.act) FROM IServHostBundle:SambaUser s WHERE s.ip = :ip AND s.since=(SELECT MAX(v.since) FROM IServHostBundle:SambaUser v WHERE v.ip = :ip))';
+        
+        $qb
+            ->select('u')
+            ->from('IServCoreBundle:User', 'u')
+            ->where('u.username = '.$userCondition)
+            ->setParameter('ip', $host->getIp())
+        ;
+        
+        /* @var $currentUser \IServ\CoreBundle\Entity\User */
+        $currentUser = $qb->getQuery()->getOneOrNullResult();
+        $internetAlwaysDenied = false;
+        $internetAlwaysGranted = false;
+        
+        if (!is_null($currentUser)) {
+            foreach ($currentUser->getPrivileges() as $p) {
+                /* @var $p \IServ\CoreBundle\Entity\Privilege */
+                if ($p->getId() === 'inet_access') {
+                    $internetAlwaysGranted = true;
+                }
+                
+                if ($p->getId() === 'inet_block') {
+                    $internetAlwaysDenied = true;
+                }
+            }
+        }
+        
         if ($overrideRoute === false) {
             return 'forbidden';
+        } elseif ($internetAlwaysDenied) {
+            return 'no_priv';
         } elseif ($overrideRoute === true) {
             return 'granted';
+        } elseif ($internetAlwaysGranted) {
+            return 'yes_priv';
         } elseif ($internet === true) {
             return 'yes';
         } elseif ($internet === false) {
