@@ -126,8 +126,8 @@ IPC::Run::run ["nmap", "-n", "-p22,445", "-oG", "-", "--", @ips],
 
 if ($cmd eq "fdon")
 {
-  req_priv "file_distribution";
-  req_priv "computer_boot";
+  req_priv_or_root "file_distribution";
+  req_priv_or_root "computer_boot";
 
   die "File distribution title invalid!" unless defined $arg and $arg =~ $m_title;
 
@@ -179,7 +179,7 @@ elsif ($cmd eq "soundon")
 {
   req_priv_or_root "computer_boot";
   req_priv_or_root "file_distribution";
-  IServ::DB::Do "DELETE FROM computer_sound_lock WHERE ip = ?", $_ for @ips;
+  IServ::DB::Do "DELETE FROM computer_sound_lock WHERE IP = ?", $_ for @ips;
   run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "start", "audiosrv", ">NUL", "2>&1" } @ips_online_win;
 }
 else {
