@@ -275,13 +275,15 @@ class FileDistributionController extends CrudController
                         }
                         
                         foreach ($data['multi'] as $k => $v) {
-                            if ($v->getIp() === $request->getClientIp()) {
+                            // skip host which has the client ip, but only if there are 
+                            // more than one host selected.
+                            if ($v->getIp() === $request->getClientIp() && count($data['multi']) > 1 && $action->getName() === 'enable') {
                                 $this->addFlash('warning', _('Skipping own host!'));
                                 unset($data['multi'][$k]);
                             }
                         }
                         
-                        // if the own host was the only one, it was removed above and we would
+                        // if the own host was the only one, it was may removed above and we would
                         // have no more hosts.
                         if (count($data['multi']) > 0) {
                             // Run action, collect feedback and return to list afterwards.
