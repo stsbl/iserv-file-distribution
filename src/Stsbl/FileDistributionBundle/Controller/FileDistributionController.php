@@ -4,6 +4,7 @@ namespace Stsbl\FileDistributionBundle\Controller;
 
 use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Controller\CrudController;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\CrudBundle\Table\ListHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -273,13 +274,24 @@ class FileDistributionController extends CrudController
                             $action->setMessage($form->getData()['rpc_message']);
                         }
                         
-                        // Run action, collect feedback and return to list afterwards.
-                        $message = $action->execute($data['multi']);
-
-                        if ($message) {
-                            $this->addFlash($message);
+                        foreach ($data['multi'] as $k => $v) {
+                            if ($v->getIp() === $request->getClientIp()) {
+                                $this->addFlash('warning', _('Skipping own host!'));
+                                unset($data['multi'][$k]);
+                            }
                         }
+                        
+                        // if the own host was the only one, it was removed above and we would
+                        // have no more hosts.
+                        if (count($data['multi']) > 0) {
+                            // Run action, collect feedback and return to list afterwards.
+                            $message = $action->execute($data['multi']);
 
+                            if ($message) {
+                                $this->addFlash($message);
+                            }
+                        }
+                        
                         return $this->redirect($this->crud->generateUrl('index'));
                     }
                 }
@@ -333,7 +345,7 @@ class FileDistributionController extends CrudController
         /* @var $qb \Doctrine\ORM\QueryBuilder */
         $qb = $em->createQueryBuilder(self::class);
         
-        // get current file distirbutions from database
+        // get current file distributions from database
         $qb
             ->select('f')
             ->from('StsblFileDistributionBundle:FileDistribution', 'f')
