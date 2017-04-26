@@ -3,12 +3,8 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
-use IServ\CoreBundle\Service\Shell;
-use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
-use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /*

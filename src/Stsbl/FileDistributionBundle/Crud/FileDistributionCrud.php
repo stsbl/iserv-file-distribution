@@ -622,7 +622,7 @@ class FileDistributionCrud extends AbstractCrud
             
             $examMode = $examRepository->find($host->getIp());
             
-            if (!is_null($examMode)) {
+            if ($examMode !== null) {
                 return 'exam';
             }
         }
@@ -657,11 +657,11 @@ class FileDistributionCrud extends AbstractCrud
         
         if ($overrideRoute === false) {
             return 'forbidden';
-        } elseif ($internetAlwaysDenied) {
+        } elseif ($internetAlwaysDenied === true) {
             return 'no_priv';
         } elseif ($overrideRoute === true) {
             return 'granted';
-        } elseif ($internetAlwaysGranted) {
+        } elseif ($internetAlwaysGranted === true) {
             return 'yes_priv';
         } elseif ($internet === true) {
             return 'yes';
@@ -683,11 +683,10 @@ class FileDistributionCrud extends AbstractCrud
         $host = $er->findOneBy(['ip' => $ip]);
         
         if ($host === null) {
-            return '';
+            return null;
         }
         
         $overrideRoute = $host->getOverrideRoute();
-        $internet = $host->getInternet();
         
         if ($this->isExamModeAvailable()) {
             $examRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam');
