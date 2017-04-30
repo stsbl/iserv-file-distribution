@@ -434,7 +434,7 @@ class FileDistributionController extends CrudController
             $content = json_encode(['invert' => $mode]);
             
             file_put_contents(self::ROOM_CONFIG_FILE, $content);
-            $this->get('iserv.flash')->success(_('Room settings updated sucessfully.'));
+            $this->get('iserv.flash')->success(_('Room settings updated successful.'));
         }
         
         $ret['room_inclusion_form'] = $form->createView();

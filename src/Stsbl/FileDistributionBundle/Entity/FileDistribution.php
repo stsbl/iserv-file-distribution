@@ -40,7 +40,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="FileDistributionRepository")
  * @ORM\Table(name="file_distribution")
  * @DoctrineAssert\UniqueEntity("ip", message="File distribution is already enabled for this host.")
- * @DoctrineAssert\UniqueEntity("hostname", message="File distribution is already enabled for this host.")
  */
 class FileDistribution implements CrudInterface 
 {

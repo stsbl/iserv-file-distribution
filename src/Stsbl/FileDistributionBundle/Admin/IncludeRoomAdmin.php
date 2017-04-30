@@ -5,6 +5,7 @@ namespace Stsbl\FileDistributionBundle\Admin;
 use IServ\AdminBundle\Admin\AbstractAdmin;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\AbstractBaseMapper;
+use IServ\CrudBundle\Mapper\FormMapper;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /*
@@ -91,9 +92,31 @@ class IncludeRoomAdmin extends AbstractAdmin
      */
     public function configureFields(AbstractBaseMapper $mapper) 
     {
-        $mapper->add('room', null, [
+        $options = [
             'label' => _('Room'),
-        ]);
+        ];
+        
+        if ($mapper instanceof FormMapper) {
+            /* @var $qb \Doctrine\ORM\QueryBuilder */
+            $qb = $this->getObjectManager()->createQueryBuilder($this->class);
+            $subQb = clone $qb;
+            
+            $subQb
+                ->select('fr')
+                ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
+                ->where('fr.room = r.name')
+            ;        
+            
+            $choices = $qb
+                ->select('r')
+                ->from('IServRoomBundle:Room', 'r')
+                ->where($qb->expr()->not($qb->expr()->exists($subQb)))
+                ->getQuery()
+                ->getResult()
+            ;
+            $options['choices'] = $choices;
+        }
+        $mapper->add('room', null, $options);
     }
     
     /**
