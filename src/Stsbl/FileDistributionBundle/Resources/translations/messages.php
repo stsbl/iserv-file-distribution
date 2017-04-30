@@ -1,5 +1,5 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Resources/translation/messages.php
+// src/Stsbl/FileDistributionBundle/Resources/translations/messages.php
 
 /* 
  * The MIT License

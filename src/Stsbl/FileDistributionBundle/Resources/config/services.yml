@@ -15,6 +15,12 @@ services:
         tags:
             - { name: iserv.crud }
             
+    stsbl.filedistribution.admin.rooms:
+        class: Stsbl\FileDistributionBundle\Admin\IncludeRoomAdmin
+        arguments: [Stsbl\FileDistributionBundle\Entity\FileDistributionRoom]
+        tags:
+            - { name: iserv.crud }
+            
     stsbl.filedistribution.menu:
         class: Stsbl\FileDistributionBundle\EventListener\MenuListener # Out MenuListener Class
         tags:

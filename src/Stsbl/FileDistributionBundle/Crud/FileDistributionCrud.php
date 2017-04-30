@@ -343,6 +343,7 @@ class FileDistributionCrud extends AbstractCrud
     {
         return Network::ipInLan(null, $this->getConfig()->get('LAN'), $this->getRequest());
     }
+    
     /**
      * {@inheritdoc}
      */

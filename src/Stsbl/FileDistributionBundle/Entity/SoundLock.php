@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 
 /**
- * StsblFileDistribution:SoundLock
+ * StsblFileDistributionBundle:SoundLock
  * 
  * @license MIT license <https://opensource.org/licenses/MIT>
  * @author Felix Jacobi <felix.jacobi@stsbl.de>

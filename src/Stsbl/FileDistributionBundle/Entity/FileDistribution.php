@@ -33,7 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 
 /**
- * FileDistributionBundle:FileDistribution
+ * StsblFileDistributionBundle:FileDistribution
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>

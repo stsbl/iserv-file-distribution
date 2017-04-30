@@ -2,17 +2,19 @@
 // src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
 namespace Stsbl\FileDistributionBundle\Controller;
 
+use IServ\CoreBundle\Form\Type\BooleanType;
 use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Controller\CrudController;
-use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\CrudBundle\Table\ListHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /*
  * The MIT License
@@ -46,6 +48,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class FileDistributionController extends CrudController
 {
+    const ROOM_CONFIG_FILE = '/var/lib/stsbl/file-distribution/cfg/room-mode.json';
+    
     /**
      * {@inheritdoc}
      */
@@ -372,5 +376,69 @@ class FileDistributionController extends CrudController
         asort($suggestions);
         
         return new JsonResponse($suggestions);
+    }
+    
+    /**
+     * Get form for room inclusion mode
+     * 
+     * @return \Symfony\Component\Form\Form
+     */
+    private function getRoomInclusionForm()
+    {
+        /* @var $builder \Symfony\Component\Form\FormBuilder */
+        $builder = $this->get('form.factory')->createNamedBuilder('file_distribution_room_inclusion');
+        
+        $content = file_get_contents(self::ROOM_CONFIG_FILE);
+        $mode = json_decode($content, true)['invert'];
+
+        if ($mode === true) {
+            $mode = 1;
+        } else {
+            $mode = 0;
+        }
+        
+        $builder
+            ->add('mode', BooleanType::class, [
+                'label' => false,
+                'choices' => [
+                    _('All rooms except the following') => '1',
+                    _('The following rooms') => '0',
+                ],
+                'preferred_choices' => [(string)$mode],
+                'constraints' => [new NotBlank()],
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => _('Save'),
+                'buttonClass' => 'btn-success',
+                'icon' => 'pro-floppy-disk'
+            ])
+        ;
+        
+        return $builder->getForm();
+    }
+    
+    /**
+     * index action for room admin
+     * 
+     * @param Request $request
+     * @return array
+     */
+    public function roomIndexAction(Request $request)
+    {
+        $ret = parent::indexAction($request);
+        $form = $this->getRoomInclusionForm();
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mode = (boolean)$form->getData()['mode'];
+            $content = json_encode(['invert' => $mode]);
+            
+            file_put_contents(self::ROOM_CONFIG_FILE, $content);
+            $this->get('iserv.flash')->success(_('Room settings updated sucessfully.'));
+        }
+        
+        $ret['room_inclusion_form'] = $form->createView();
+        
+        return $ret;
     }
 }

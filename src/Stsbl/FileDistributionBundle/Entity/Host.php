@@ -5,7 +5,6 @@ namespace Stsbl\FileDistributionBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\HostBundle\Entity\Host as BaseHost;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /*
  * The MIT License
@@ -34,11 +33,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * StsblFileDistributionBundle:Host
  * 
- * @ORM\Entity(repositoryClass="Stsbl\FileDistributionBundle\Entity\HostRepository")
- * @ORM\Table(name="hosts")
- * 
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
+ * @ORM\Entity(repositoryClass="Stsbl\FileDistributionBundle\Entity\HostRepository")
+ * @ORM\Table(name="hosts")
  */
 class Host extends BaseHost implements CrudInterface
 { 
