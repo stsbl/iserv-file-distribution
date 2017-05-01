@@ -72,6 +72,7 @@ class FileDistributionController extends CrudController
             }
             
             $ret['status'] = $this->get('iserv.host.status')->get();
+            $ret['room_available'] = $this->getDoctrine()->getRepository('StsblFileDistributionBundle:FileDistributionRoom')->isRoomAvailable();
         }
         
         return $ret;

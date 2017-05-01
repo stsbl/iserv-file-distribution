@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="FileDistributionRoomRepository")
  * @ORM\Table(name="file_distribution_rooms")
  * @DoctrineAssert\UniqueEntity("room", message="The room is already in the list.")
  */

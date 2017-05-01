@@ -24,12 +24,25 @@
 {% endblock %}
 
 {% block content %}
-    {% if display_msg %}
-        <div class="alert alert-info">
-            {{ __('The files for the distribution "%s" must resided in the following folder:', path.title) }} <a href="{{ path('file_list', {'path': path.encoded }) }}">{{ icon('legacy-folder')|raw }} {{ __('Files/File-Distribution/%s', path.title) }}</a>
+    {% if not room_available %}
+        <h3>{{ _p('file-distribution', 'Configuration required') }}</h3>
+        <hr />
+        <div class="alert alert-warning">
+            {% if admin.user.hasRole('ROLE_ADMIN') and is_granted('PRIV_FILE_DISTRIBUTION_ROOMS') %}
+                <p>{{ _('You need to configure available rooms before you can use this module!') }}</p>
+                <p><a class="btn btn-default" href="{{ path('admin_filedistribution_rooms_index') }}">{{ icon('door') }} {{ _('Manage available rooms') }}</a></p>
+            {% else %}
+                {{ _('This module needs addtional configuration. Please contact your IServ Administrator!') }}
+            {% endif %}
         </div>
+    {% else %}
+        {% if display_msg %}
+            <div class="alert alert-info">
+                {{ __('The files for the distribution "%s" must resided in the following folder:', path.title) }} <a href="{{ path('file_list', {'path': path.encoded }) }}">{{ icon('legacy-folder')|raw }} {{ __('Files/File-Distribution/%s', path.title) }}</a>
+            </div>
+        {% endif %}
+        {{ parent() }}
     {% endif %}
-    {{ parent() }}
 {% endblock %}
 
 {% block crud_actions %}
