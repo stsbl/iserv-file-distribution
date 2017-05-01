@@ -1,3 +1,82 @@
+stsbl-iserv-file-distribution (17.05.01-0) experimental; urgency=medium
+
+  * Moved file distribution menu item from network to education category.
+  * Fixed grouping.
+  * Renamed column "Host isolation activated" to "Host isolation".
+  * Improved detection of Windows and Linux hosts.
+  * Improved source code comment.
+  * Fixed grammar.
+  * Enhancements:
+    Moved rpc message call to perl module.
+    Added backend for sound enabling/disabling in rpc command and database.
+  * Added dependency on stsbl-iserv-perl-lib for required perl libraries.
+  * file-distribution.bat: syntax fixes.
+  * Fixed accidentally deletion of shortcut in file-distribution.bat.
+  * file-distibution.bat:
+    Copy file-distribution-access-shares.bat to local computer and let the desktop shortcut points to the local copy, otherwhile Windows 7 will delete the shortcut directly.
+    Run shortcut generation in background to speed-up the script.
+  * Replaced wrong sql statement.
+  * Added server-side login script for sound lock.
+  * file_distribution_rpc:
+    Store which account started sound lock.
+    Hide output of windows cmd to prevent error message.
+  * Added support in ui for sound enabling/disabling.
+  * Major ui improvements:
+    Show data from host control (internet access status, lock status,exam mode).
+    Show deep link to file distribution directory next to title.
+    Show host isolation only with an icon, instead with full text which needs
+    much space.
+    Moved displaying of file distribution owner from column to a title tool
+    tip.
+    Disabled useless show action.
+    Display sound lock status with icon, too.
+  * Updated l10n.
+  * Dropped old code for show action.
+  * Show who initiated a sound lock.
+  * Added option to send messages via iserv-msg from file distribution management.
+  * Updated l10n.
+  * Updated l10n.
+  * Adjusted sorting options.
+  * file_distribution_off: Simplified output.
+  * Added disabling of forgotten sound locks.
+  * file_distribution_rpc:
+    Moved some functions to common library.
+  * Added cronjob for disabling sound lock.
+  * file_distribution_rpc: Always use req_priv_or_root instead of req_priv.
+  * Added support for displaying that internet access for a computer is granted/denied by privilege inet_access/inet_block.
+  * Move hosts which are not in an active file distribution to bottom, if list is sorted by file distribution.
+  * Added skipping of own host.
+  * Only skip own host on enabling file distributions and if multiple hosts are selected.
+  * Fixed internet state determination and added fallback to prevent twig errors.
+  * Added iservchk script for cfg directory.
+  * Added IncludeRoomAdmin.
+  * Offer only unadded rooms in IncludeRoomAdmin.
+  * Added filtering based on included rooms.
+  * Added admin menu listener.
+  * Added privilege for managing available rooms.
+  * Added l10n for privs.
+  * Added administrative logging.
+  * Added install script for database bridges.
+
+  iserv: Der Menüpunkt Dateiverteilung wurde in der Oberfläche von der
+    Kategorie "Netzwerk" in die Kategorie "Unterricht" verschoben.
+
+  iserv: Die Oberfläche der Dateiverteilung wurde vollständig überarbeitet und
+    zeigt nun diverse Informationen aus der Rechnersteuerung mit an
+    (Internetzugang, Klausurmodus, Rechnersperre), dies macht einen Wechsel
+    zwischen beiden Modulen, nur um zu sehen, ob zum Beispiel ein Rechner
+    Internetzugriff hat, nicht mehr nötig. Die häufig genutzte Funktion
+    "Nachricht senden" aus der Rechnersteuerung kann auch nun direkt aus der
+    Dateiverteilung heraus genutzt werden. Außerdem ist ein neues Modul
+    enthalten, dass es erlaubt den Ton auf einzelnen  Rechnern an- und
+    ausschalten. Weiterhin ist Administratoren möglich, unter "Verwaltung" > 
+    "Module" > "Dateiverteilung" festzulegen, welche Geräte in der
+    Dateiverteilung verfügbar sind, so können beispielsweise Schülergeräte,
+    die nicht über die Einstellung "Steuerbar" aus der Dateiverteilung
+    ausgeschlossen werden können, auf diesem Weg, aus dieser auszunehmen.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 06:33:16 +0200
+
 stsbl-iserv-file-distribution (17.03.21-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
