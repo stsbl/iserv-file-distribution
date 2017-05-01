@@ -1,16 +1,28 @@
 stsbl-iserv-file-distribution (17.05.01-2) experimental; urgency=medium
 
   [ Felix Jacobi ]
+  * Add notice if no rooms are configured.
+  * Updated l10n.
+
+  iserv: Durch das letzte Update, ist es erforderlich, die
+    verfügbaren Räume zu konfigurieren, rufen Sie das Modul auf und folgen den
+    entsprechenden Hinweisen.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 08:20:35 +0200
+
+stsbl-iserv-file-distribution (17.05.01-2) experimental; urgency=medium
+
+  [ Felix Jacobi ]
   * Added missing database table.
 
- -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 05:34:25 +0200
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 07:34:25 +0200
 
 stsbl-iserv-file-distribution (17.05.01-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
   * iservchk: Fixed neol.
 
- -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 05:14:11 +0200
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 07:14:11 +0200
 
 stsbl-iserv-file-distribution (17.05.01-0) experimental; urgency=medium
 
@@ -87,7 +99,7 @@ stsbl-iserv-file-distribution (17.05.01-0) experimental; urgency=medium
     "Module" > "Dateiverteilung" festzulegen, welche Geräte in der
     Dateiverteilung verfügbar sind, so können beispielsweise Schülergeräte,
     die nicht über die Einstellung "Steuerbar" aus der Dateiverteilung
-    ausgeschlossen werden können, auf diesem Weg, aus dieser auszunehmen.
+    ausgeschlossen werden können, auf diesem Weg ausgenommen werden.
 
  -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 06:33:16 +0200
 
