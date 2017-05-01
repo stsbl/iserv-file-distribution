@@ -1,4 +1,4 @@
-stsbl-iserv-file-distribution (17.05.01-2) experimental; urgency=medium
+stsbl-iserv-file-distribution (17.05.01-3) experimental; urgency=medium
 
   [ Felix Jacobi ]
   * Add notice if no rooms are configured.
