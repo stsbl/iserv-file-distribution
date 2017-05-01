@@ -3,7 +3,6 @@
 namespace Stsbl\FileDistributionBundle\Crud;
 
 use Doctrine\ORM\EntityManager;
-use IServ\CoreBundle\Entity\Specification\PropertyMatchSpecification;
 use IServ\CoreBundle\Security\Core\SecurityHandler;
 use IServ\CoreBundle\Service\Config;
 use IServ\CoreBundle\Service\Shell;
@@ -13,14 +12,15 @@ use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
-use IServ\CrudBundle\Mapper\ShowMapper;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
-use Stsbl\FileDistributionBundle\Crud\Batch\EnableAction;
-use Stsbl\FileDistributionBundle\Crud\Batch\StopAction;
+use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
+use Stsbl\FileDistributionBundle\Crud\Batch;
+use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\Rpc;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -93,76 +93,27 @@ class FileDistributionCrud extends AbstractCrud
      */
     private $rpc;
     
+    /**
+     * @var Container
+     */
+    private $container;
+    
+    /**
+     * @var bool
+     */
+    private static $roomMode;
+    
     /* SETTERS */
     
     /**
-     * Set shell
+     * Set container
      * 
-     * @param Shell $shell
+     * @param Container $container
      */
-    public function setShell(Shell $shell)
+    public function setContainer(Container $container) 
     {
-        $this->shell = $shell;
-    }
-    
-    /**
-     * Set entity manager
-     * 
-     * @param EntityManager $em
-     */
-    public function setEntityManager(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-    
-    /**
-     * Set security handler
-     * 
-     * @param SecurityHandler $securityHandler
-     */
-    public function setSecurityHandler(SecurityHandler $securityHandler)
-    {
-        $this->securityHandler = $securityHandler;
-    }
-    
-    /**
-     * Set session
-     * 
-     * @param Session $session
-     */
-    public function setSession(Session $session)
-    {
-        $this->session = $session;
-    }
-    
-    /**
-     * Set config
-     * 
-     * @param Config $config
-     */
-    public function setConfig(Config $config)
-    {
-        $this->config = $config;
-    }
-    
-    /**
-     * Set request via stack
-     * 
-     * @param RequestStack $stack
-     */
-    public function setRequest(RequestStack $stack)
-    {
-        $this->request = $stack->getCurrentRequest();
-    }
-    
-    /**
-     * Set rpc
-     * 
-     * @param Rpc $rpc
-     */
-    public function setRpc(Rpc $rpc)
-    {
-        $this->rpc = $rpc;
+        $this->container = $container;
+        $this->initServices();
     }
     
     /* GETTERS */
@@ -238,6 +189,30 @@ class FileDistributionCrud extends AbstractCrud
     }
 
     /**
+     * Get container
+     * 
+     * @return Container
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+    
+    /**
+     * Initializes required services using <tt>Container</tt>.
+     */
+    private function initServices()
+    {
+        $this->shell = $this->container->get('iserv.shell');
+        $this->em = $this->container->get('doctrine.orm.entity_manager');
+        $this->securityHandler = $this->container->get('iserv.security_handler');
+        $this->session = $this->container->get('session');
+        $this->config = $this->container->get('iserv.config');
+        $this->request = $this->container->get('request_stack')->getCurrentRequest();
+        $this->rpc = $this->container->get('stsbl.filedistribution.rpc');
+    }
+    
+    /**
      * {@inheritdoc}
      */
     protected function configure()
@@ -248,8 +223,7 @@ class FileDistributionCrud extends AbstractCrud
         $this->itemTitle = _p('file-distribution', 'Device');
         $this->id = 'filedistribution';
         $this->routesNamePrefix = 'fd_';
-        $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';
-        $this->options['sort'] = 'room';
+        $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';        
         $this->templates['crud_index'] = 'StsblFileDistributionBundle:Crud:file_distribution_index.html.twig';
         $this->templates['crud_batch_confirm'] = 'StsblFileDistributionBundle:Crud:file_distribution_batch_confirm.html.twig';
     }
@@ -262,9 +236,18 @@ class FileDistributionCrud extends AbstractCrud
         parent::buildRoutes();
         
         $this->routes[self::ACTION_INDEX]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:index';
-        $this->routes[self::ACTION_SHOW]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:show';
+        //$this->routes[self::ACTION_SHOW]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:show';
         $this->routes['batch_confirm']['_controller'] = 'StsblFileDistributionBundle:FileDistribution:confirmBatch';
         $this->routes['batch']['_controller'] = 'StsblFileDistributionBundle:FileDistribution:batch';
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isAllowedToView(CrudInterface $object = null, UserInterface $user = null) 
+    {
+        // disable show action, it is useless here
+        return false;
     }
 
     /**
@@ -330,12 +313,28 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
+     * Get current room filter mode
+     * 
+     * @return bool
+     */
+    public static function getRoomMode()
+    {
+        if (!is_bool(self::$roomMode)) {
+            $content = file_get_contents(FileDistributionController::ROOM_CONFIG_FILE);
+            self::$roomMode = json_decode($content, true)['invert'];
+        }
+        
+        return self::$roomMode;
+    }
+    
+    /**
      * {@inheritdoc}
      */
     public function getFilterSpecification()
     {
-        // Only show controllable hosts
-        return new PropertyMatchSpecification('controllable', true);
+        
+        // Only show controllable hosts and hosts which are in available rooms
+        return new FileDistributionSpecification($this->getRoomMode(), $this->getEntityManager());
     }
     
     /**
@@ -362,92 +361,122 @@ class FileDistributionCrud extends AbstractCrud
      * 
      * @return bool
      */
-    private function isInLan()
+    public function isInLan()
     {
         return Network::ipInLan(null, $this->getConfig()->get('LAN'), $this->getRequest());
     }
+    
     /**
      * {@inheritdoc}
      */
     public function configureListFields(ListMapper $listMapper) 
     {
+        //if ($this->em->getRepository('StsblFileDistributionBundle:FileDistribution')->exists()) {
+        //    $this->options['sort'] = 'fileDistribution';
+        //} else {
+            $this->options['sort'] = 'room';
+        //}
+        
+        $activeFileDistributions = false;
+        $activeSoundLocks = false;
+        
         $listMapper
-            ->addIdentifier('name', null, [
+            ->add('name', null, [
                 'label' => _('Name'),
                 'responsive' => 'all',
                 'sortType' => 'natural',
-                'template' => 'IServHostBundle:Crud:list_field_name.html.twig',
+                'template' => 'StsblFileDistributionBundle:List:field_name.html.twig',
             ])
             ->add('type', null, [
                 'label' => _('Type'),
                 'template' => 'IServHostBundle:Crud:list_field_type.html.twig', 
                 'responsive' => 'desktop'
             ])
-            ->add('fileDistribution', null, [
-                'label' => _('File distribution'),
-                'group' => true,
-                // sort in the following order: fileDistribution, name, room \o/
-                'sortOrder' => [3, 1, 5],
-                'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig',
-            ])
-            ->add('fileDistributionOwner', null, [
-                'label' => _('File distribution owner'),
-            ])
-            ->add('fileDistributionIsolation', null, [
-                'label' => _('Host isolation activated'),
-                'template' => 'IServCrudBundle:List:field_boolean.html.twig',
-            ])
+        ;
+         
+        // check for existing file distribution
+        $fileDistributionRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
+        
+        // only add columns if we have file distributions
+        if (count($fileDistributionRepository->findAll()) > 0) {
+            $activeFileDistributions = true;
+            
+            $listMapper
+                ->add('fileDistribution', null, [
+                    'label' => _('File distribution'),
+                    'group' => true,
+                    // sort in the following order: fileDistribution, name, room \o/
+                    'sortOrder' => [3, 1],
+                    'sortType' => 'natural',
+                    'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig',
+                ])
+                ->add('fileDistributionIsolation', null, [
+                    'label' => '', // no title in table
+                    'template' => 'StsblFileDistributionBundle:List:field_isolation.html.twig',
+            ]);
+        }
+        
+        // check for existing sound locks
+        $soundLockRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock');
+        
+        // only add soundlock column if we have a sound lock
+        if (count($soundLockRepository->findAll()) > 0) {
+            $activeSoundLocks = true;
+            
+            $listMapper->add('soundLock', null, [
+                'label' => '', // no title in table
+                'template' => 'StsblFileDistributionBundle:List:field_soundlock.html.twig',
+                'responsive' => 'min-tablet',
+            ]);
+        }
+        
+        // calculate sort order
+        if ($activeFileDistributions && $activeSoundLocks) {
+            // case: list with file distributions and sound locks
+            $sortOrder = [6, 1];
+        } else if ($activeFileDistributions || $activeSoundLocks) {
+            if ($activeFileDistributions) {
+                // case: only file distributions
+                $sortOrder = [5, 1];
+            } else {
+                // only sound locks
+                $sortOrder = [4, 1];
+            }
+        } else {
+            // case: nothing of them
+            $sortOrder = [3, 1];
+        }
+        $listMapper
             ->add('room', null, [
                 'label' => _('Room'),
                 'group' => true,
                 // sort in the following order: room, name, fileDistribution \o/
-                'sortOrder' => [5, 1, 3],
+                'sortOrder' => $sortOrder,
                 'sortType' => 'natural',
             ])
-            ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
         ;
         
-        // privacy: only allow to view the logged-in user if you are come from LAN
-        if ($this->isInLan()) {
-            $listMapper->add('sambaUserDisplay', null, ['label' => _('User')]);
+        if ($this->isLockAvailable() && count($this->getObjectManager()->getRepository('StsblFileDistributionBundle:Lock')->findAll()) > 0) {
+            $listMapper
+                ->add('lock', null, [
+                    'label' => '', // no title in table
+                    'template' => 'StsblFileDistributionBundle:List:field_lock.html.twig',
+                    'responsive' => 'min-tablet',
+                    'sortType' => 'natural',
+            ]);
         }
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function configureShowFields(ShowMapper $showMapper) 
-    {
-        $showMapper
-            ->add('name', null, [
-                'label' => _('Name')
+        
+        $listMapper
+            ->add('sambaUserDisplay', null, [
+                'label' => _('User'),
+                'template' => 'StsblFileDistributionBundle:List:field_sambauser.html.twig',
             ])
-            ->add('type', null, [
-                'label' => _('Type'),
-                'template' => 'IServHostBundle:Crud:show_field_type.html.twig'
-            ])
-            ->add('fileDistribution', null, [
-                'label' => _('File distribution'),
-                'template' => 'StsblFileDistributionBundle:Show:field_filedistribution.html.twig',
-            ])
-            ->add('fileDistributionOwner', null, [
-                'label' => _('Owner')
-            ])
-            ->add('fileDistributionIsolation', null, [
-                'label' => _('Host isolation'),
-                'template' => 'IServCrudBundle:Show:field_boolean.html.twig',
-            ])
-            ->add('room', null, [
-                'label' => _('Room'),
-            ])
-            ->add('internet', 'boolean', ['label' => _p('host', 'Internet')])
-            
+            ->add('ipInternet', null, [
+                'label' => _('Internet Access'),
+                'template' => 'StsblFileDistributionBundle:List:field_internet.html.twig',
+                'sortType' => 'natural',
+            ]);
         ;
-         
-        // privacy: only allow to view the logged-in user if you are come from LAN
-        if ($this->isInLan()) {
-            $showMapper->add('sambaUserDisplay', null, ['label' => _('User')]);
-        }
     }
     
     /**
@@ -457,11 +486,20 @@ class FileDistributionCrud extends AbstractCrud
     {
         parent::loadBatchActions();
         
-        $enableAction = new EnableAction($this);
+        $enableAction = new Batch\EnableAction($this);
         $this->batchActions->add($enableAction);
         
-        $stopAction = new StopAction($this);
+        $stopAction = new Batch\StopAction($this);
         $this->batchActions->add($stopAction);
+
+        $soundUnlockAction = new Batch\SoundUnlockAction($this);
+        $this->batchActions->add($soundUnlockAction);
+        
+        $soundLockAction = new Batch\SoundLockAction($this);
+        $this->batchActions->add($soundLockAction);
+        
+        $messageAction = new Batch\MessageAction($this);
+        $this->batchActions->add($messageAction);
         
         return $this->batchActions;
     }
@@ -492,15 +530,74 @@ class FileDistributionCrud extends AbstractCrud
     public function configureListFilter(ListHandler $listHandler) 
     {
         $listHandler
-            ->addListFilter((new Filter\ListFilterByFilter(_p('host-has-internet', 'Internet allowed'), array('internet' => true)))->setName('has-internet')->setGroup(_p('host-filter-internet', 'Internet: all')))
-            ->addListFilter((new Filter\ListFilterByFilter(_p('host-has-no-internet', 'No internet'), array('internet' => false)))->setName('has-no-internet')->setGroup(_p('host-filter-internet', 'Internet: all')))
+            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: yes'), array('internet' => true)))->setName('has-internet')->setGroup(_('Internet')))
+            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: no'), array('internet' => false)))->setName('has-no-internet')->setGroup(_('Internet')))
+            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: granted'), array('overrideRoute' => true)))->setName('internet-is-granted')->setGroup(_('Internet')))
+            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: forbidden'), array('overrideRoute' => false)))->setName('internet-is-forbidden')->setGroup(_('Internet')))
         ;
         
+        if ($this->isExamModeAvailable()) {
+                
+            $examFilter = new Filter\ListExpressionFilter(_('Internet: exam mode'), 'EXISTS (SELECT em FROM StsblFileDistributionBundle:Exam em WHERE em.ip = parent.ip)');
+            
+            $examFilter
+                ->setName('internet-exam')
+                ->setGroup(_('Internet'))
+            ;
+            
+            $listHandler->addListFilter($examFilter);
+        }
+        
+        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
+        
+        $fileDistributionFilterHash = [];
+        foreach ($er->findAll() as $f) {
+            if (isset($fileDistributionFilterHash[$f->getPlainTitle()])) {
+                // skip if we have already a filter for the distribution
+                continue;
+            }
+            
+            $fileDistributionFilterHash[$f->getPlainTitle()] = true;
+            
+            $fdFilter = new Filter\ListExpressionFilter(__('File distribution: %s', $f->getPlainTitle()), 'EXISTS (SELECT e FROM StsblFileDistributionBundle:FileDistribution e WHERE e.ip = parent.ip AND e.title = :title)');
+            
+            $fdFilter
+                ->setParameters(['title' => $f->getPlainTitle()])
+                ->setName(sprintf('file-distribution-%s', $f->getId()))
+                ->setGroup(_('File distribution'))
+            ;
+            
+            $listHandler->addListFilter($fdFilter);
+        }
+        
+        $withFilter = new Filter\ListExpressionFilter(_('[With file distribution]'), 'EXISTS (SELECT e FROM StsblFileDistributionBundle:FileDistribution e WHERE e.ip = parent.ip)');    
+        $withFilter
+            ->setName(sprintf('file-distribution-with'))
+            ->setGroup(_('File distribution'))
+        ;
+        $listHandler->addListFilter($withFilter);
+        
+        $withoutFilter = new Filter\ListExpressionFilter(_('[Without file distribution]'), 'NOT EXISTS (SELECT e FROM StsblFileDistributionBundle:FileDistribution e WHERE e.ip = parent.ip)');   
+        $withoutFilter
+            ->setName(sprintf('file-distribution-without'))
+            ->setGroup(_('File distribution'))
+        ;
+        $listHandler->addListFilter($withoutFilter);
+        
+        $whereCondition = 'EXISTS (SELECT fr FROM StsblFileDistributionBundle:FileDistributionRoom fr WHERE fr.room = filter.name)';
+        if ($this->getRoomMode() === true) {
+            $whereCondition = 'NOT '.$whereCondition;
+        }
+        
         $listHandler
-            ->addListFilter((new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'name'))->setName('room')->allowAnyAndNone()->setPickerOptions(array('data-live-search' => 'true')))
-            ->addListFilter((new Filter\ListSearchFilter(_('Search'), array(
+            ->addListFilter((new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'name'))->setName('room')
+                    ->allowAnyAndNone()
+                    ->setPickerOptions(array('data-live-search' => 'true'))
+                    ->setWhereCondition($whereCondition)
+            )
+            ->addListFilter((new Filter\ListSearchFilter(_('Search'), [
                 'name' => FilterSearch::TYPE_TEXT
-            ))))
+            ])))
         ;
     }
     
@@ -513,5 +610,214 @@ class FileDistributionCrud extends AbstractCrud
     public function getHostType($type)
     {
         return HostConfig::getHostType($type);
+    }
+    
+    /**
+     * Check if exam mode is installed on the IServ.
+     * 
+     * @todo Switch to hasBundle() or something similar, when exam mode is ported to IServ 3.
+     * 
+     * @return boolean
+     */
+    private function isExamModeAvailable()
+    {
+        return file_exists('/var/lib/dpkg/info/iserv-exam.list');
+    }
+
+    /**
+     * Check if lock module is installed on the IServ.
+     * 
+     * @todo Switch to hasBundle() or something similar, when lock/host control is ported to IServ 3.
+     * 
+     * @return boolean
+     */
+    private function isLockAvailable()
+    {
+        return file_exists('/var/lib/dpkg/info/iserv-lock.list');
+    }
+    
+    /**
+     * Get current internet state (yes, now, allowed, forbidden) for Host by his ip address.
+     * 
+     * @param string $ip
+     * @return string
+     */
+    public function getInternetStateByIp($ip) {
+        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Host');
+        /* @var $host \Stsbl\FileDistributionBundle\Entity\Host */
+        $host = $er->findOneBy(['ip' => $ip]);
+        
+        if ($host === null) {
+            return 'none';
+        }
+        
+        $overrideRoute = $host->getOverrideRoute();
+        $internet = $host->getInternet();
+        
+        if ($this->isExamModeAvailable()) {
+            $examRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam');
+            
+            $examMode = $examRepository->find($host->getIp());
+            
+            if ($examMode !== null) {
+                return 'exam';
+            }
+        }
+        
+        $qb = $this->getEntityManager()->createQueryBuilder($this->class);
+        $userCondition = '(SELECT MAX(s.act) FROM IServHostBundle:SambaUser s WHERE s.ip = :ip AND s.since=(SELECT MAX(v.since) FROM IServHostBundle:SambaUser v WHERE v.ip = :ip))';
+        
+        $qb
+            ->select('u')
+            ->from('IServCoreBundle:User', 'u')
+            ->where('u.username = '.$userCondition)
+            ->setParameter('ip', $host->getIp())
+        ;
+        
+        /* @var $currentUser \IServ\CoreBundle\Entity\User */
+        $currentUser = $qb->getQuery()->getOneOrNullResult();
+        $internetAlwaysDenied = false;
+        $internetAlwaysGranted = false;
+        
+        if (!is_null($currentUser)) {
+            foreach ($currentUser->getPrivileges() as $p) {
+                /* @var $p \IServ\CoreBundle\Entity\Privilege */
+                if ($p->getId() === 'inet_access') {
+                    $internetAlwaysGranted = true;
+                }
+                
+                if ($p->getId() === 'inet_block') {
+                    $internetAlwaysDenied = true;
+                }
+            }
+        }
+        
+        if ($overrideRoute === false) {
+            return 'forbidden';
+        } elseif ($internetAlwaysDenied === true) {
+            return 'no_priv';
+        } elseif ($overrideRoute === true) {
+            return 'granted';
+        } elseif ($internetAlwaysGranted === true) {
+            return 'yes_priv';
+        } elseif ($internet === true) {
+            return 'yes';
+        } elseif ($internet === false) {
+            return 'no';
+        }
+    }
+    
+    /**
+     * Get current internet lock explaination for Host by his ip address.
+     * 
+     * @param string $ip
+     * @return array
+     */
+    public function getInternetExplainationByIp($ip) 
+    {
+        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Host');
+        /* @var $host \Stsbl\FileDistributionBundle\Entity\Host */
+        $host = $er->findOneBy(['ip' => $ip]);
+        
+        if ($host === null) {
+            return null;
+        }
+        
+        $overrideRoute = $host->getOverrideRoute();
+        
+        if ($this->isExamModeAvailable()) {
+            $examRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam');
+            
+            /* @var $examMode Stsbl\FileDistributionBundle\Entity\Exam */
+            $examMode = $examRepository->find($host->getIp());
+            
+            if (!is_null($examMode)) {
+                return [
+                    'title' => $examMode->getTitle(),
+                    'user' => $examMode->getUser(),
+                    'until' => null
+                ];
+            }
+        }
+        
+        if ($overrideRoute === false || $overrideRoute === true) {
+            return [
+                'title' => null,
+                'user' => $this->getObjectManager()->getRepository('IServCoreBundle:User')->find($host->getOverrideBy()),
+                'until' => $host->getOverrideUntil(),
+            ];
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get file distribution info by id
+     * 
+     * @param integer $id
+     * @return \Stsbl\FileDistributionBundle\Entity\FileDistribution
+     */
+    public function getFileDistributionInfoById($id)
+    {
+        if (!is_null($id)) {
+            return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution')->find($id);
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Get user who locked a computer.
+     * 
+     * @param string $ip
+     * @return \IServ\CoreBundle\Entity\User
+     */
+    public function getLockUser($ip)
+    {  
+        /* @var $lock \Stsbl\FileDistributionBundle\Entity\Lock */
+        $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Lock')->find($ip);
+        
+        if (is_null($lock)) {
+            return null;
+        }
+        
+        return $lock->getUser();
+    }
+    
+    /**
+     * Get user who locked the sound on a computer.
+     * 
+     * @param string $ip
+     * @return \IServ\CoreBundle\Entity\User
+     */
+    public function getSoundLockUser($ip)
+    {  
+        /* @var $lock \Stsbl\FileDistributionBundle\Entity\SoundLock */
+        $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock')->findOneByIp($ip);
+        
+        if (is_null($lock)) {
+            return null;
+        }
+        
+        return $lock->getUser();
+    }
+    
+    /**
+     * Checks wether the user is coming from the host with given name or not.
+     * 
+     * @param string $name
+     * @return boolean
+     */
+    public function isCurrentHost($name)
+    {
+        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Host');
+        /* @var $host \Stsbl\FileDistributionBundle\Entity\Host */
+        $host = $er->find($name);
+        
+        if ($host === null) {
+            return false;
+        }
+        
+        return $host->getIp() === $this->getRequest()->getClientIp();
     }
 }

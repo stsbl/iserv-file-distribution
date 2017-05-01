@@ -1,3 +1,5 @@
 # Disable forgotten file distribution
 00 0	* * *	root	/usr/lib/iserv/file_distribution_off
 
+# Disable forgotten sound lock
+00 0    * * *   root   /usr/lib/iserv/soundlock_off

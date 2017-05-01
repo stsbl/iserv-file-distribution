@@ -4,13 +4,22 @@ services:
         class: Stsbl\FileDistributionBundle\Crud\FileDistributionCrud
         arguments: [Stsbl\FileDistributionBundle\Entity\Host]
         calls:
-           - [ setShell, ["@iserv.shell"]]
-           - [ setEntityManager, ["@doctrine.orm.entity_manager"]]
-           - [ setSecurityHandler, ["@iserv.security_handler"]]
-           - [ setSession, ["@session"]]
-           - [ setConfig, ["@iserv.config"]]
-           - [ setRequest, ["@request_stack"]]
-           - [ setRpc, ["@stsbl.filedistribution.rpc"]]
+#           - [ setShell, ["@iserv.shell"]]
+#           - [ setEntityManager, ["@doctrine.orm.entity_manager"]]
+#           - [ setSecurityHandler, ["@iserv.security_handler"]]
+#           - [ setSession, ["@session"]]
+#           - [ setConfig, ["@iserv.config"]]
+#           - [ setRequest, ["@request_stack"]]
+#           - [ setRpc, ["@stsbl.filedistribution.rpc"]]
+            - [ setContainer, ["@service_container"]]
+        tags:
+            - { name: iserv.crud }
+            
+    stsbl.filedistribution.admin.rooms:
+        class: Stsbl\FileDistributionBundle\Admin\IncludeRoomAdmin
+        arguments: [Stsbl\FileDistributionBundle\Entity\FileDistributionRoom]
+        calls:
+            - [ setLogger, ["@iserv.logger"]]
         tags:
             - { name: iserv.crud }
             
@@ -18,8 +27,13 @@ services:
         class: Stsbl\FileDistributionBundle\EventListener\MenuListener # Out MenuListener Class
         tags:
           - { name: kernel.event_listener, event: iserv_portal.menu_main, method: onBuildMainMenu } # Tells IServ about the main menu method
+          - { name: kernel.event_listener, event: iserv_portal.menu_admin, method: onBuildAdminMenu } # Tells IServ about the admin menu method
     
     stsbl.filedistribution.rpc:
         class: Stsbl\FileDistributionBundle\Service\Rpc
         arguments: ["@iserv.shell", "@iserv.security_handler"]
-        
+    
+    stsbl.filedistribution.twig.extension.base64:
+        class: Stsbl\FileDistributionBundle\Twig\Extension\Base64
+        tags :
+          - { name: twig.extension }

@@ -2,7 +2,6 @@
 
 use warnings;
 use strict;
-use Encode qw(encode);
 use IPC::Run;
 use IServ::Conf;
 use IServ::DB;
@@ -10,6 +9,8 @@ use IServ::Locale;
 use IServ::RPC;
 use Parallel::ForkManager;
 use sessauth;
+use Stsbl::IServ::RPC;
+use Stsbl::IServ::Security;
 umask 0002;
 
 POSIX::setlocale(POSIX::LC_CTYPE, $conf->{DefLang} . ".UTF-8");
@@ -24,23 +25,26 @@ my $m_title = qr/^([ !#&()*+,\-.0-9:<=>?\@A-Z\[\]^_a-z{|}~\P{ascii}]{1,64})$/;
 my ($act) = (shift @ARGV) =~ /^([\w.-]+)$/ or die "Account invalid!\n";
 my ($cmd) = (shift @ARGV) =~ /^(\w+)$/ or die "Command invalid!\n";
 
-my (@ips, @ips_online_win, %ips_online_lin);
+my (@ips, @ips_online, @ips_online_win, @ips_online_lin);
 for (@ARGV)
 {
   my ($ip) = /^\+?\+?([\d.]+)$/ or die "ip invalid\n";
   push @ips, $ip;
-  $ips_online_lin{$ip} = 1 if /^\+\+/;
 }
 die "No IPs!\n" unless @ips;
 
-if (%ENV and defined $ENV{'SUDO_UID'} and $ENV{'SUDO_UID'})
+if (Stsbl::IServ::Security::sudo_context)
 {
   # run as unprivileged user
   my ($sesspw) = $ENV{SESSPW} =~ /^(\w{1,256})$/ or die "SESSPW invalid!\n";
-  my (undef, $encpwd, $uid) = getpwnam $act or die "Authentication failed\n";
-  $uid >= 500 or die "UID too low\n";
+  Stsbl::IServ::Security::verify_uid $act;
 
-  sessauth::login $act, $sesspw, "file_distribution_rpc" or die "Authentication failed\n";
+  Stsbl::IServ::Security::set_credentials $act, $sesspw;
+  Stsbl::IServ::Security::sessauth_login "file_distribution_rpc";
+} else 
+{
+  # no password required if running directly as root
+  Stsbl::IServ::Security::set_credentials $act, undef;
 }
 
 my (undef, undef, $uid, $gid, undef, undef, undef, $home) = getpwnam $act
@@ -72,17 +76,6 @@ sub msg(@)
   warn "$ip: $_" for @_;
 }
 
-sub req_priv($)
-{
-  my ($priv) = @_;
-  return if $act eq "root";
-  die "need privilege $priv"
-    unless IServ::DB::Do "SELECT 1 FROM users_priv WHERE (Act = ? AND Privilege = ?) 
-      OR EXISTS (SELECT 1 FROM role_privileges r WHERE Privilege = ?
-      AND EXISTS (SELECT 1 FROM user_roles u WHERE u.Act = ? AND u.Role = r.Role)) 
-      LIMIT 1", $act, $priv, $priv, $act;
-}
-
 sub req_ownership($)
 {
   my ($ip) = @_;
@@ -105,43 +98,36 @@ sub run_parallel(&@)
   $pm->wait_all_children;
 }
 
-sub rpc_message_umlauts($$)
-{
-  my ($ip, $msg) = @_;
-  $msg =~ s/\r?\n/\r/g;
-  my @err;
-  # NO decoding here, it already breaks special chars like umlauts!
-  # Just encode to iso-8859-2 here and set the code page of
-  # cmd on client to utf-8 (code page 65001).
-  $msg = encode("iso-8859-2", $msg);
-  # real limit seems to be at about 4320 chars:
-  if (length $msg > 4096)
-  {
-    @err = "rpc_message_unicode: message too long\n";
-  }
-  else
-  {
-    @err = IServ::RPC::winexe $ip, "cmd", "/c", "chcp 65001", ">NUL", "&", netlogon "exe\\start", "iserv-msg", $msg;
-  }
-  wantarray? @err: print STDERR @err;
-}
-
 # determine online IPs
-IPC::Run::run ["nmap", "-n", "-sP", "-oG", "-", "--", @ips],
-  ">", IPC::Run::new_chunker("\n"),
-  sub
-  {
-    local $_ = shift;
-    if (/^Host:\s+([\d\.]+)\s+\(\)\s+Status:\s+Up.*$/i)
+IPC::Run::run ["nmap", "-n", "-p22,445", "-oG", "-", "--", @ips],
+    ">", IPC::Run::new_chunker("\n"),
+    sub
     {
-      push @ips_online_win, $1 if !$ips_online_lin{$1};
-    }
-  };
+      local $_ = shift;
+      if (/^Host:\s+([\d\.]+)\s+\(\)\s+Status:\s+Up.*$/i)
+      {
+        push @ips_online, $1;
+      }
+
+      # FIXME Is that a save way to detect the type? How strong is the possibility that port 22 is opened on a Windows system (installed OpenSSH porting?!)?
+      # if we have port 445 (SMB) and port 22 (SSH) opened, assume we have a Linux client ...
+      if (/^Host:\s+([\d\.]+)\s+\(\)\s+Ports:\s+22\/open\/tcp\/\/ssh\/\/\/,\s+445\/open\/tcp\/\/microsoft-ds\/\/\/*$/i)
+      {
+	push @ips_online_lin, $1;
+      }
+
+      # ... , but if port 22 is closed and we just have port 445 assume a Windows Client.
+      # filtered|closed is required because if the Windows firewall is enabled by default it filters access to this port.
+      elsif (/^Host:\s+([\d\.]+)\s+\(\)\s+Ports:\s+22\/(closed|filtered)\/tcp\/\/ssh\/\/\/,\s+445\/open\/tcp\/\/microsoft-ds\/\/\/*$/i)
+      {
+	push @ips_online_win, $1;
+      }
+    };
 
 if ($cmd eq "fdon")
 {
-  req_priv "file_distribution";
-  req_priv "computer_boot";
+  req_priv_or_root "file_distribution";
+  req_priv_or_root "computer_boot";
 
   die "File distribution title invalid!" unless defined $arg and $arg =~ $m_title;
 
@@ -167,17 +153,35 @@ if ($cmd eq "fdon")
 
   my $notice = _("Someone started a file distribution for your host. To access the files,".
     ' click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.');
-  run_parallel { msg rpc_message_umlauts $_, $notice } @ips_online_win;
+  run_parallel { msg Stsbl::IServ::RPC::rpc_message_unicode $_, $notice } @ips_online_win;
   run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "start"; } @ips_online_win;
 
 } 
 elsif ($cmd eq "fdoff") 
 {
-  req_priv "file_distribution";
-  req_priv "computer_boot";
+  req_priv_or_root "file_distribution";
+  req_priv_or_root "computer_boot";
   req_ownership $_ for @ips;
 
   IServ::DB::Do "DELETE FROM file_distribution WHERE ip = ?", $_ for @ips;
   run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "stop" } @ips_online_win;
   system "/usr/lib/iserv/file_distribution_cfg"; 
+}
+elsif ($cmd eq "soundoff")
+{
+  req_priv_or_root "computer_boot";
+  req_priv_or_root "file_distribution";
+  IServ::DB::Do "DELETE FROM computer_sound_lock WHERE IP = ?", $_ for @ips;
+  IServ::DB::Do "INSERT INTO computer_sound_lock (IP, Act) VALUES (?, ?)", $_, $act for @ips;
+  run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "stop", "audiosrv", ">NUL", "2>&1" } @ips_online_win;
+}
+elsif ($cmd eq "soundon")
+{
+  req_priv_or_root "computer_boot";
+  req_priv_or_root "file_distribution";
+  IServ::DB::Do "DELETE FROM computer_sound_lock WHERE IP = ?", $_ for @ips;
+  run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "start", "audiosrv", ">NUL", "2>&1" } @ips_online_win;
+}
+else {
+  die "Unknown command $cmd!";
 }

@@ -11,12 +11,12 @@ open STDIN, "/dev/null" or die $!;
 open STDOUT, ">/dev/null" or die $!;
 open STDERR, ">/dev/null" or die $!;
 
-my ($act, $ip) = @ARGV;
+my (undef, $ip) = @ARGV;
 
 # we're async, so winexe can take as long as it wants
 winexe_set_timeout 180;
 
-if (IServ::DB::Do "SELECT * FROM exam WHERE IP = ?", $ip)
+if (IServ::DB::Do "SELECT 1 FROM file_distribution WHERE IP = ?", $ip)
 {
     winexe $ip, netlogon "file-distribution.bat", "start";
 }

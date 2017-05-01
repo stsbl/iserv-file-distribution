@@ -2,6 +2,7 @@
 // src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php
 namespace Stsbl\FileDistributionBundle\EventListener;
 
+use IServ\AdminBundle\EventListener\AdminMenuListenerInterface;
 use IServ\CoreBundle\Event\MenuEvent;
 use IServ\CoreBundle\EventListener\MainMenuListenerInterface;
 use IServ\CoreBundle\Menu\MenuBuilder;
@@ -36,7 +37,7 @@ use Stsbl\FileDistributionBundle\Security\Privilege;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class MenuListener implements MainMenuListenerInterface
+class MenuListener implements MainMenuListenerInterface, AdminMenuListenerInterface
 {
     /**
      * {@inheritdoc}
@@ -44,10 +45,29 @@ class MenuListener implements MainMenuListenerInterface
     public function onBuildMainMenu(MenuEvent $event) 
     {
         if ($event->getAuthorizationChecker()->isGranted(Privilege::USE_FD) && $event->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT)) {
-            $menu = $event->getMenu(MenuBuilder::GROUP_NETWORK);
+            $menu = $event->getMenu(MenuBuilder::GROUP_EDUCATION);
             
             $item = $menu->addChild('file_distribution', [
                 'route' => 'fd_filedistribution_index',
+                'label' => _('File distribution'),
+            ]);
+            
+            $item
+                ->setExtra('icon', 'box-share')
+                ->setExtra('icon_style', 'fugue');
+        }
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function onBuildAdminMenu(MenuEvent $event) 
+    {
+        if ($event->getAuthorizationChecker()->isGranted(Privilege::FD_ROOMS)) {
+            $menu = $event->getMenu('modules');
+        
+            $item = $menu->addChild('file_distribution', [
+                'route' => 'admin_filedistribution_rooms_index',
                 'label' => _('File distribution'),
             ]);
             

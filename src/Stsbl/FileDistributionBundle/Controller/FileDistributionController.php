@@ -2,15 +2,20 @@
 // src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
 namespace Stsbl\FileDistributionBundle\Controller;
 
+use IServ\CoreBundle\Form\Type\BooleanType;
 use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Controller\CrudController;
 use IServ\CrudBundle\Table\ListHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /*
  * The MIT License
@@ -44,6 +49,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class FileDistributionController extends CrudController
 {
+    const ROOM_CONFIG_FILE = '/var/lib/stsbl/file-distribution/cfg/room-mode.json';
+    
     /**
      * {@inheritdoc}
      */
@@ -101,7 +108,17 @@ class FileDistributionController extends CrudController
                     ->add('isolation', CheckboxType::class, [
                         'label' => _('Enable host isolation'),
                         'attr' => $isolationAttr,
-                    ]);
+                    ])
+                    ->add('rpc_message', TextareaType::class, [
+                        'label' => _('Message'),
+                        'attr' => [
+                            'rows' => 10,
+                            'cols' => 230,
+                            'placeholder' => _('Enter a message...')
+                        ]
+                    ])
+                ;
+                
                 
                 $ret['form'] = $multiSelectForm;
             }
@@ -176,6 +193,11 @@ class FileDistributionController extends CrudController
                 if (!$confirmForm->get('actions')->has('enable')) {
                     $confirmForm->remove('title');
                     $confirmForm->remove('isolation');
+                }
+                
+                // display rpc_message only on sending message
+                if (!$confirmForm->get('actions')->has('message')) {
+                    $confirmForm->remove('rpc_message');
                 }
 
             } else {
@@ -252,15 +274,31 @@ class FileDistributionController extends CrudController
                                 $isolation = false;
                             }
                             $action->setIsolation($isolation);
+                        } else if ($action->getName() === 'message') {
+                            // set message
+                            $action->setMessage($form->getData()['rpc_message']);
                         }
                         
-                        // Run action, collect feedback and return to list afterwards.
-                        $message = $action->execute($data['multi']);
-
-                        if ($message) {
-                            $this->addFlash($message);
+                        foreach ($data['multi'] as $k => $v) {
+                            // skip host which has the client ip, but only if there are 
+                            // more than one host selected.
+                            if ($v->getIp() === $request->getClientIp() && count($data['multi']) > 1 && $action->getName() === 'enable') {
+                                $this->addFlash('warning', _('Skipping own host!'));
+                                unset($data['multi'][$k]);
+                            }
                         }
+                        
+                        // if the own host was the only one, it was may removed above and we would
+                        // have no more hosts.
+                        if (count($data['multi']) > 0) {
+                            // Run action, collect feedback and return to list afterwards.
+                            $message = $action->execute($data['multi']);
 
+                            if ($message) {
+                                $this->addFlash($message);
+                            }
+                        }
+                        
                         return $this->redirect($this->crud->generateUrl('index'));
                     }
                 }
@@ -314,7 +352,7 @@ class FileDistributionController extends CrudController
         /* @var $qb \Doctrine\ORM\QueryBuilder */
         $qb = $em->createQueryBuilder(self::class);
         
-        // get current file distirbutions from database
+        // get current file distributions from database
         $qb
             ->select('f')
             ->from('StsblFileDistributionBundle:FileDistribution', 'f')
@@ -339,5 +377,79 @@ class FileDistributionController extends CrudController
         asort($suggestions);
         
         return new JsonResponse($suggestions);
+    }
+    
+    /**
+     * Get form for room inclusion mode
+     * 
+     * @return \Symfony\Component\Form\Form
+     */
+    private function getRoomInclusionForm()
+    {
+        /* @var $builder \Symfony\Component\Form\FormBuilder */
+        $builder = $this->get('form.factory')->createNamedBuilder('file_distribution_room_inclusion');
+        
+        $mode = FileDistributionCrud::getRoomMode();
+
+        if ($mode === true) {
+            $mode = 1;
+        } else {
+            $mode = 0;
+        }
+        
+        $builder
+            ->add('mode', BooleanType::class, [
+                'label' => false,
+                'choices' => [
+                    _('All rooms except the following') => '1',
+                    _('The following rooms') => '0',
+                ],
+                'preferred_choices' => [(string)$mode],
+                'constraints' => [new NotBlank()],
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => _('Save'),
+                'buttonClass' => 'btn-success',
+                'icon' => 'pro-floppy-disk'
+            ])
+        ;
+        
+        return $builder->getForm();
+    }
+    
+    /**
+     * index action for room admin
+     * 
+     * @param Request $request
+     * @return array
+     */
+    public function roomIndexAction(Request $request)
+    {
+        $ret = parent::indexAction($request);
+        $form = $this->getRoomInclusionForm();
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $mode = (boolean)$form->getData()['mode'];
+            
+            // log if mode is changed
+            if ($mode !== FileDistributionCrud::getRoomMode()) {
+                if ($mode === true) {
+                    $text = 'Raumverfügbarkeit geändert auf "Alle, außer den folgenden"';
+                } else {
+                    $text = 'Raumverfügbarkeit geändert auf "Folgende"';
+                }
+                $this->get('iserv.logger')->writeForModule($text, 'File distribution');
+            }
+            
+            $content = json_encode(['invert' => $mode]);
+            
+            file_put_contents(self::ROOM_CONFIG_FILE, $content);
+            $this->get('iserv.flash')->success(_('Room settings updated successful.'));
+        }
+        
+        $ret['room_inclusion_form'] = $form->createView();
+        
+        return $ret;
     }
 }

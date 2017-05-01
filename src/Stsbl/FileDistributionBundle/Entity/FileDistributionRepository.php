@@ -1,10 +1,9 @@
 <?php
-// src/Stsbl/MailRedirectionBundle/Entity/Host.php
+// src/Stsbl/FileDistributionBundle/Entity/FileDistributionRepository.php
 namespace Stsbl\FileDistributionBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use IServ\CrudBundle\Entity\CrudInterface;
-use IServ\HostBundle\Entity\Host as BaseHost;
+use Doctrine\ORM\NoResultException;
+use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
 
 /*
  * The MIT License
@@ -31,14 +30,30 @@ use IServ\HostBundle\Entity\Host as BaseHost;
  */
 
 /**
- * StsblFileDistributionBundle:Host
- * 
+ * Repository class for FileDistribution
+ *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
- * @ORM\Entity(repositoryClass="Stsbl\FileDistributionBundle\Entity\HostRepository")
- * @ORM\Table(name="hosts")
  */
-class Host extends BaseHost implements CrudInterface
-{ 
-    
+class FileDistributionRepository extends EntitySpecificationRepository
+{
+    /**
+     * Checks if there's at least on file distribution.
+     * 
+     * @return boolean
+     */
+    public function exists()
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('1')
+            ->setMaxResults(1)
+        ;
+        
+        try {
+            $qb->getQuery()->getSingleScalarResult();
+            return true;
+        } catch (NoResultException $e) {
+            return false;
+        }
+    }
 }

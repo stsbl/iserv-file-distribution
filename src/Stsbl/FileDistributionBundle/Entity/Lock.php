@@ -1,5 +1,5 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Enttiy/Set.php
+// src/Stsbl/FileDistributionBundle/Entity/Lock.php
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -33,33 +33,29 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 
 /**
- * StsblFileDistributionBundle:FileDistribution
+ * Temporary entity for exam mode, so that we can detect if a computer is locked
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
- * @ORM\Entity(repositoryClass="FileDistributionRepository")
- * @ORM\Table(name="file_distribution")
- * @DoctrineAssert\UniqueEntity("ip", message="File distribution is already enabled for this host.")
+ * @ORM\Entity
+ * @ORM\Table(name="lock")
+ * @DoctrineAssert\UniqueEntity("ip", message="The computer is already locked.")
  */
-class FileDistribution implements CrudInterface 
+class Lock implements CrudInterface
 {
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * DO NOT ADD ANY REFERENCES to Host here, because Symfony do not like it!
      * 
-     * @var integer
-     */
-    private $id;
-    
-    /**
+     * //@ORM\OneToOne(targetEntity="\IServ\HostBundle\Entity\Host", fetch="EAGER")
+     * //@ORM\JoinColumn(name="ip", referencedColumnName="ip", onDelete="CASCADE")
      * @ORM\Column(type="text", nullable=false)
      * @Assert\NotBlank()
-     * @Assert\Regex("/^([ !#&()*+,\-.0-9:<=>?\@A-Z\[\]^_a-z{|}~$])/", message="The title contains invalid characters.")
-     *
+     * @Assert\Ip()
+     * @ORM\Id
+     * 
      * @var string
      */
-    private $title;
+    private $ip;
     
     /**
      * @ORM\ManyToOne(targetEntity="\IServ\CoreBundle\Entity\User")
@@ -78,47 +74,27 @@ class FileDistribution implements CrudInterface
     private $act;
     
     /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * 
-     * @var boolean
-     */
-    private $isolation;
-    
-    /**
-     * DO NOT ADD ANY REFERENCES to Host here, because Symfony do not like it!
-     * 
-     * //@ORM\OneToOne(targetEntity="\IServ\HostBundle\Entity\Host", fetch="EAGER")
-     * //@ORM\JoinColumn(name="ip", referencedColumnName="ip", onDelete="CASCADE")
-     * @ORM\Column(type="text", nullable=false)
-     * @Assert\NotBlank()
-     * @Assert\Ip()
-     * 
-     * @var string
-     */
-    private $ip;
-    
-    /**
      * {@inheritdoc}
      */
-    public function __toString()
+    public function __toString() 
     {
-        return (string)$this->hostname;
+        return $this->ip;
     }
     
     /**
      * {@inheritdoc}
      */
-    public function getId()
-    {
-        return $this->id;
+    public function getId() {
+        return $this->ip;
     }
+
 
     /**
      * Set ip
      *
-     * @param Host $ip
+     * @param string $ip
      *
-     * @return FileDistribution
+     * @return Lock
      */
     public function setIp($ip)
     {
@@ -130,7 +106,7 @@ class FileDistribution implements CrudInterface
     /**
      * Get ip
      *
-     * @return Host
+     * @return string
      */
     public function getIp()
     {
@@ -138,69 +114,11 @@ class FileDistribution implements CrudInterface
     }
 
     /**
-     * Set title
-     *
-     * @param string $title
-     *
-     * @return FileDistribution
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * Get title
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return sprintf('%s - %s', $this->title, (string)$this->user);
-    }
-    
-    /**
-     * Get plain title
-     * 
-     * @return string
-     */
-    public function getPlainTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * Set user
-     *
-     * @param User $user
-     *
-     * @return FileDistribution
-     */
-    public function setUser(User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
      * Set act
      *
      * @param string $act
      *
-     * @return FileDistribution
+     * @return Lock
      */
     public function setAct($act)
     {
@@ -220,26 +138,26 @@ class FileDistribution implements CrudInterface
     }
 
     /**
-     * Set isolation
+     * Set user
      *
-     * @param boolean $isolation
+     * @param User $user
      *
-     * @return FileDistribution
+     * @return Lock
      */
-    public function setIsolation($isolation)
+    public function setUser(User $user = null)
     {
-        $this->isolation = $isolation;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get isolation
+     * Get user
      *
-     * @return boolean
+     * @return User
      */
-    public function getIsolation()
+    public function getUser()
     {
-        return $this->isolation;
+        return $this->user;
     }
 }

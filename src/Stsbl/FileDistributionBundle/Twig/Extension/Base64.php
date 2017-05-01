@@ -1,10 +1,6 @@
 <?php
-// src/Stsbl/MailRedirectionBundle/Entity/Host.php
-namespace Stsbl\FileDistributionBundle\Entity;
-
-use Doctrine\ORM\Mapping as ORM;
-use IServ\CrudBundle\Entity\CrudInterface;
-use IServ\HostBundle\Entity\Host as BaseHost;
+// src/Stsbl/FileDistributionBundle/Twig/Extension/Base64.php
+namespace Stsbl\FileDistributionBundle\Twig\Extension;
 
 /*
  * The MIT License
@@ -31,14 +27,30 @@ use IServ\HostBundle\Entity\Host as BaseHost;
  */
 
 /**
- * StsblFileDistributionBundle:Host
- * 
+ * Simple base64 filters for twig
+ *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
- * @license MIT license <https://opensource.org/licenses/MIT>
- * @ORM\Entity(repositoryClass="Stsbl\FileDistributionBundle\Entity\HostRepository")
- * @ORM\Table(name="hosts")
+ * @license MIR license <https://opensource.org/licenses/MIT>
+ * @link https://gist.github.com/zburgermeiszter/afb9cb14b9a6f3f023e1 original source
  */
-class Host extends BaseHost implements CrudInterface
-{ 
+class Base64 extends \Twig_Extension 
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilters()
+    {
+        return array(
+            new \Twig_SimpleFilter('base64_encode', 'base64_encode'),
+            new \Twig_SimpleFilter('base64_decode', 'base64_decode')
+        );
+    }
     
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return "base64";
+    }
 }

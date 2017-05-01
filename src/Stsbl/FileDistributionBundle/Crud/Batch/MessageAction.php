@@ -1,11 +1,9 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+// src/Stsbl/FileDistributionBundle/Crud/Batch/Message.php
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /*
  * The MIT License
@@ -32,48 +30,59 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 
 /**
- * FileDistribution stop batch
+ * file distribution rpc message batch
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class StopAction extends AbstractFileDistributionAction
+class MessageAction extends AbstractFileDistributionAction 
 {
     /**
-     * {@inheritodc}
+     * @var string
+     */
+    private $message;
+    
+    /**
+     * Set message
+     * 
+     * @param string $message
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+    
+    /**
+     * {@inheritdoc}
      */
     public function execute(ArrayCollection $entities) 
     {
-        if (is_null($this->shell)) {
-            throw new \RuntimeException(sprintf('shell was not injected into %s, you need to set it via %s.', get_class($this), get_class($this),'::setShell()'));
+        if (is_null($this->message)) {
+            throw new \InvalidArgumentException('No message set, you need to set it via setMessage()!');
         }
         
-        /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
+        $this->rpc->setArg($this->message);
+        
+        /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
         $bag = new FlashMessageBag();
-        $user = $this->crud->getUser();
         
         foreach ($entities as $entity) {
-            /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
-            if ($this->isAllowedToExecute($entity, $user)) {
-                $this->rpc->addHost($entity);
-                $bag->addMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
-            } else {
-                $bag->addMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
-            }
+            $this->rpc->addHost($entity);
+            
+            $bag->addMessage('success', __('Sent message to %s.', (string)$entity->getName()));
         }
         
-        $this->rpc->disable();
+        $this->rpc->sendMessage();
         $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
-        
-        return $bag;
+        return $bag;        
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
-    public function getName()
+    public function getName() 
     {
-        return 'stop';
+        return 'message';
     }
     
     /**
@@ -81,7 +90,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getLabel() 
     {
-        return _('Stop file distribution');
+        return _('Send message');
     }
     
     /**
@@ -89,7 +98,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getTooltip() 
     {
-        return _('Stop the running file distribution for the selected hosts.');
+        return _('Send message to the selected hosts.');
     }
 
     /**
@@ -97,7 +106,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getListIcon()
     {
-        return 'pro-stop-sign';
+        return 'pro-message-flag';
     }
     
     /**
@@ -105,15 +114,6 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getConfirmClass()
     {
-        return 'danger';
-    }
-
-    /**
-     * @param CrudInterface $fileDistribution
-     * @param UserInterface $user
-     */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
-    {
-        return $this->crud->isAllowedToStop($object, $user);
+        return 'primary';
     }
 }

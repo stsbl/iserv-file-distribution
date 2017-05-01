@@ -38,13 +38,18 @@ class HostRepository extends BaseHostRepository
     {
         $ret = parent::getDecoratorColumns();
         
-        $ret['fileDistributionOwner'] = '(SELECT CONCAT(u2.firstname, \' \', u2.lastname) FROM IServCoreBundle:User u2 WHERE u2.username = '.
-            '(SELECT f2.act FROM StsblFileDistributionBundle:FileDistribution f2 WHERE f2.ip = parent.ip))';
-        $ret['fileDistribution'] = '(SELECT f.title FROM StsblFileDistributionBundle:FileDistribution f WHERE f.ip = parent.ip)';
+        $ret['ipInternet'] = '(parent.ip)';
+        $ret['fileDistribution'] = '(SELECT f.id FROM StsblFileDistributionBundle:FileDistribution f WHERE f.ip = parent.ip)';
         $ret['sambaUserDisplay'] = '(SELECT CONCAT(u3.firstname, \' \', u3.lastname) FROM IServCoreBundle:User u3 WHERE u3.username = '.
             '(SELECT MAX(s2.act) FROM IServHostBundle:SambaUser s2 WHERE s2.ip = parent.ip AND s2.since = '.
             '(SELECT MAX(v2.since) FROM IServHostBundle:SambaUser v2 WHERE v2.ip = parent.ip))';
         $ret['fileDistributionIsolation'] = '(SELECT f3.isolation FROM StsblFileDistributionBundle:FileDistribution f3 WHERE f3.ip = parent.ip)';
+        $ret['soundLock'] = '(SELECT sl.ip FROM StsblFileDistributionBundle:SoundLock sl WHERE sl.ip = parent.ip)';
+        
+        if (file_exists('/var/lib/dpkg/info/iserv-lock.list')) {
+            $ret['lock'] = '(SELECT l.ip FROM StsblFileDistributionBundle:Lock l WHERE l.ip = parent.ip)';
+        }
+        
         return $ret;
     }
 }

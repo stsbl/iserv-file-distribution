@@ -1,0 +1,12 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/List/field_isolation.html.twig #}
+{% extends admin.getTemplate('list_field_base') %}
+
+{% block field %}
+    {% if value == true %}
+        <span title="{{ _('Host isolation activated') }}">{{ icon('fugue-arrow-stop') }}</span>
+    {% endif %}
+{% endblock %}
+
+{% block value %}
+    {{ value }}
+{% endblock %}

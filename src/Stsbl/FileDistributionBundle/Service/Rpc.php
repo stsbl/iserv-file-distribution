@@ -1,5 +1,5 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Service/RPC.php
+// src/Stsbl/FileDistributionBundle/Service/Rpc.php
 namespace Stsbl\FileDistributionBundle\Service;
 
 use IServ\CoreBundle\Security\Core\SecurityHandler;
@@ -31,7 +31,7 @@ use Stsbl\FileDistributionBundle\Entity\Host;
  */
 
 /**
- * FileDistribution RPC service
+ * FileDistribution rpc service
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
@@ -39,15 +39,21 @@ use Stsbl\FileDistributionBundle\Entity\Host;
 class Rpc 
 {
     const COMMAND = '/usr/lib/iserv/file_distribution_rpc';
+    const COMMAND_NETRPC = '/usr/lib/iserv/netrpc';
     
     // Constants for file_distribution_rpc
     const ON = 'fdon';
     const OFF = 'fdoff';
+    const SOUNDON = 'soundon';
+    const SOUNDOFF = 'soundoff';
+    
+    // Constants for netrpc
+    const NETRPC_MESSAGE = 'msg';
     
     /**
      * @var string
      */
-    private $title;
+    private $arg;
     
     /**
      * @var boolean
@@ -70,13 +76,26 @@ class Rpc
     private $securityHandler;
     
     /**
-     * Set title for the next operation
+     * Set arg for the next operation
+     * 
+     * @param string $arg
+     */
+    public function setArg($arg)
+    {
+        $this->arg = $arg;
+    }
+    
+    /**
+     * Legacy title function
      * 
      * @param string $title
+     * @deprecated
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        @trigger_error('setTitle is deprecated, use setArg instead!', E_USER_DEPRECATED);
+        
+        $this->setArg($title);
     }
 
     /**
@@ -110,6 +129,74 @@ class Rpc
     }
     
     /**
+     * Returns base command line.
+     * 
+     * @param $args
+     * @return array
+     */
+    private function getBaseCommandLine()
+    {
+        return [
+            self::COMMAND,
+            $this->securityHandler->getUser()->getUsername()
+        ];
+    }
+
+    /**
+     * Returns base command line.
+     * 
+     * @param $args
+     * @return array
+     */
+    private function getNetrpcBaseCommandLine()
+    {
+        return [
+            self::COMMAND_NETRPC,
+            $this->securityHandler->getUser()->getUsername()
+        ];
+    }
+    /**
+     * Prepare hosts for command line
+     * 
+     * @param array $args
+     * @return array
+     */
+    private function addHostsToCommandLine(array $args)
+    {
+        if (count($this->hosts) < 1) {
+            throw new \InvalidArgumentException('No hosts specified!');
+        }
+        
+        foreach ($this->hosts as $h) {
+            $args[] = $h->getIp();
+        }
+        
+        return $args;
+    }
+    
+    /**
+     * Executes command with given arguments
+     * 
+     * @param array $args
+     * @param mixed $arg
+     * @param integer $isolation
+     */
+    private function execute(array $args, $arg = null, $isolation = null)
+    {
+        $env = ['SESSPW' => $this->securityHandler->getSessionPassword()];
+        
+        if (!is_null($arg)) {
+            $env['ARG'] = $arg;
+        }
+        
+        if (!is_null($isolation)) {
+            $env['FD_ISOLATION'] = $isolation;
+        }
+        
+        $this->shell->exec('closefd setsid sudo', $args, null, $env);
+    }
+    
+    /**
      * The constructor
      * 
      * @param Shell $shell
@@ -126,21 +213,12 @@ class Rpc
      */
     public function enable()
     {
-        $args = [];
-        $args[] = self::COMMAND;
-        $args[] = $this->securityHandler->getUser()->getUsername();
+        $args = $this->getBaseCommandLine();
         $args[] = self::ON;
+        $args = $this->addHostsToCommandLine($args);
         
-        if (count($this->hosts) < 1) {
-            throw new \InvalidArgumentException('No hosts specified!');
-        }
-        
-        if (empty($this->title)) {
-            throw new \InvalidArgumentException('No title specified!');
-        }
-        
-        foreach ($this->hosts as $h) {
-            $args[] = $h->getIp();
+        if (empty($this->arg)) {
+            throw new \InvalidArgumentException('No argument specified!');
         }
         
         if (!is_bool($this->isolation)) {
@@ -153,11 +231,7 @@ class Rpc
             $isolation = 0;
         }
         
-        $this->shell->exec('closefd setsid sudo', $args, null, [
-            'ARG' => $this->title, 
-            'FD_ISOLATION' => $isolation, 
-            'SESSPW' => $this->securityHandler->getSessionPassword()
-        ]);
+        $this->execute($args, $this->arg, $isolation);
     }
     
     /**
@@ -165,20 +239,51 @@ class Rpc
      */
     public function disable()
     {
-        $args = [];
-        $args[] = self::COMMAND;
-        $args[] = $this->securityHandler->getUser()->getUsername();
+        $args = $this->getBaseCommandLine();
         $args[] = self::OFF;
+        $args = $this->addHostsToCommandLine($args);
         
-        if (count($this->hosts) < 1) {
-            throw new \InvalidArgumentException('No hosts specified!');
+        $this->execute($args);
+    }
+    
+    /**
+     * Lock sound for the hosts which were previously set via <tt>setHosts</tt>.
+     */
+    public function soundLock()
+    {
+        $args = $this->getBaseCommandLine();
+        $args[] = self::SOUNDOFF;
+        $args = $this->addHostsToCommandLine($args);
+        
+        $this->execute($args);
+    }
+
+    /**
+     * Unlock sound for the hosts which were previously set via <tt>setHosts</tt>.
+     */
+    public function soundUnlock()
+    {
+        $args = $this->getBaseCommandLine();
+        $args[] = self::SOUNDON;
+        $args = $this->addHostsToCommandLine($args);
+        
+        $this->execute($args);
+    }
+    
+    /**
+     * Send message to hosts the hosts which were previouśly set via <tt>setHosts</tt> via IServ netrpc.
+     */
+    public function sendMessage()
+    {
+        $args = $this->getNetrpcBaseCommandLine();
+        $args[] = self::NETRPC_MESSAGE;
+        $args = $this->addHostsToCommandLine($args);
+        
+        if (empty($this->arg)) {
+            throw new \InvalidArgumentException('No argument specified!');
         }
         
-        foreach ($this->hosts as $h) {
-            $args[] = $h->getIp();
-        }
-        
-        $this->shell->exec('closefd setsid sudo', $args, null, ['SESSPW' => $this->securityHandler->getSessionPassword()]);
+        $this->execute($args, $this->arg);
     }
     
     /**

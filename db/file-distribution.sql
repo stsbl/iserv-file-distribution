@@ -17,5 +17,15 @@ CREATE TABLE file_distribution (
     UNIQUE(IP)
 );
 
-GRANT USAGE, SELECT ON "file_distribution_id_seq" TO "symfony";
-GRANT SELECT, INSERT, UPDATE, DELETE ON "file_distribution" TO "symfony";
+CREATE TABLE computer_sound_lock (
+    ID                  SERIAL          PRIMARY KEY,
+    IP                  INET            NOT NULL REFERENCES hosts(IP)
+                                            ON UPDATE CASCADE
+					    ON DELETE CASCADE,    
+    Act                 TEXT            NOT NULL REFERENCES users(Act)
+                                            ON UPDATE CASCADE
+				            ON DELETE CASCADE
+);
+
+GRANT USAGE, SELECT ON "file_distribution_id_seq", "computer_sound_lock_id_seq" TO "symfony";
+GRANT SELECT ON "file_distribution", "computer_sound_lock" TO "symfony";

@@ -1,0 +1,6 @@
+MkDir 0755 root:root /var/lib/stsbl
+MkDir 0755 root:root /var/lib/stsbl/file-distribution
+MkDir 0700 www-data:root /var/lib/stsbl/file-distribution/cfg
+
+Touch /var/lib/stsbl/file-distribution/cfg/room-mode.json
+ChPerm 0600 www-data:root /var/lib/stsbl/file-distribution/cfg/room-mode.json

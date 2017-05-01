@@ -1,0 +1,31 @@
+#!/usr/bin/perl -CSDAL
+
+use warnings;
+use strict;
+use IServ::DB;
+use IServ::RPC;
+
+# run asynchronously
+fork and exit;
+open STDIN, "/dev/null" or die $!;
+open STDOUT, "/dev/null" or die $!;
+open STDERR, "/dev/null" or die $!;
+
+my (undef, $ip) = @ARGV;
+
+# we're async, so winexe can take as long as it wants
+winexe_set_timeout 180;
+
+if (IServ::DB::Do "SELECT 1 FROM computer_sound_lock WHERE IP = ?", $ip)
+{
+  # stop Windows audio service
+  sleep 20;
+  winexe $ip, "cmd", "/c", "net stop audiosrv > NUL";
+}
+else
+{
+  # start Windows audio service
+  sleep 20;
+  winexe $ip, "cmd", "/c", "net start audiosrv > NUL";
+}
+

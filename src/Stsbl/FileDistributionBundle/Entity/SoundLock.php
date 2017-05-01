@@ -1,5 +1,5 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Enttiy/Set.php
+// src/Stsbl/FileDistributionBundle/Entity/SoundLock.php
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -33,15 +33,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 
 /**
- * StsblFileDistributionBundle:FileDistribution
- *
- * @author Felix Jacobi <felix.jacobi@stsbl.de>
+ * StsblFileDistributionBundle:SoundLock
+ * 
  * @license MIT license <https://opensource.org/licenses/MIT>
- * @ORM\Entity(repositoryClass="FileDistributionRepository")
- * @ORM\Table(name="file_distribution")
- * @DoctrineAssert\UniqueEntity("ip", message="File distribution is already enabled for this host.")
+ * @author Felix Jacobi <felix.jacobi@stsbl.de>
+ * @ORM\Entity
+ * @ORM\Table(name="computer_sound_lock")
+ * @DoctrineAssert\UniqueEntity("ip", message="The sound on that computer is already disabled.")
  */
-class FileDistribution implements CrudInterface 
+class SoundLock implements CrudInterface
 {
     /**
      * @ORM\Column(type="integer")
@@ -51,15 +51,6 @@ class FileDistribution implements CrudInterface
      * @var integer
      */
     private $id;
-    
-    /**
-     * @ORM\Column(type="text", nullable=false)
-     * @Assert\NotBlank()
-     * @Assert\Regex("/^([ !#&()*+,\-.0-9:<=>?\@A-Z\[\]^_a-z{|}~$])/", message="The title contains invalid characters.")
-     *
-     * @var string
-     */
-    private $title;
     
     /**
      * @ORM\ManyToOne(targetEntity="\IServ\CoreBundle\Entity\User")
@@ -78,13 +69,6 @@ class FileDistribution implements CrudInterface
     private $act;
     
     /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * 
-     * @var boolean
-     */
-    private $isolation;
-    
-    /**
      * DO NOT ADD ANY REFERENCES to Host here, because Symfony do not like it!
      * 
      * //@ORM\OneToOne(targetEntity="\IServ\HostBundle\Entity\Host", fetch="EAGER")
@@ -96,17 +80,11 @@ class FileDistribution implements CrudInterface
      * @var string
      */
     private $ip;
-    
+
     /**
-     * {@inheritdoc}
-     */
-    public function __toString()
-    {
-        return (string)$this->hostname;
-    }
-    
-    /**
-     * {@inheritdoc}
+     * Get id
+     *
+     * @return integer
      */
     public function getId()
     {
@@ -114,93 +92,11 @@ class FileDistribution implements CrudInterface
     }
 
     /**
-     * Set ip
-     *
-     * @param Host $ip
-     *
-     * @return FileDistribution
-     */
-    public function setIp($ip)
-    {
-        $this->ip = $ip;
-
-        return $this;
-    }
-
-    /**
-     * Get ip
-     *
-     * @return Host
-     */
-    public function getIp()
-    {
-        return $this->ip;
-    }
-
-    /**
-     * Set title
-     *
-     * @param string $title
-     *
-     * @return FileDistribution
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * Get title
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return sprintf('%s - %s', $this->title, (string)$this->user);
-    }
-    
-    /**
-     * Get plain title
-     * 
-     * @return string
-     */
-    public function getPlainTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * Set user
-     *
-     * @param User $user
-     *
-     * @return FileDistribution
-     */
-    public function setUser(User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
      * Set act
      *
      * @param string $act
      *
-     * @return FileDistribution
+     * @return SoundLock
      */
     public function setAct($act)
     {
@@ -220,26 +116,58 @@ class FileDistribution implements CrudInterface
     }
 
     /**
-     * Set isolation
+     * Set ip
      *
-     * @param boolean $isolation
+     * @param string $ip
      *
-     * @return FileDistribution
+     * @return SoundLock
      */
-    public function setIsolation($isolation)
+    public function setIp($ip)
     {
-        $this->isolation = $isolation;
+        $this->ip = $ip;
 
         return $this;
     }
 
     /**
-     * Get isolation
+     * Get ip
      *
-     * @return boolean
+     * @return string
      */
-    public function getIsolation()
+    public function getIp()
     {
-        return $this->isolation;
+        return $this->ip;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \IServ\CoreBundle\Entity\User $user
+     *
+     * @return SoundLock
+     */
+    public function setUser(User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \IServ\CoreBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString() 
+    {
+        return $this->ip;
     }
 }
