@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.05.01-4) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * iservchk: Prevent wrong removal of stsbl-iserv-file-distribution-bridge-lock.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 17:04:47 +0200
+
 stsbl-iserv-file-distribution (17.05.01-3) experimental; urgency=medium
 
   [ Felix Jacobi ]
