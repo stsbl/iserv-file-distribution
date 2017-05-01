@@ -17,7 +17,7 @@ EOT
 fi
 
 # exclude stsbl.test from bridges, because we do not have package management here
-if [ -f "/var/lib/dpkg/info/iserv-exam.list" ] && [ ! "$(hostname)" = "iserv.stsbl.test" ]
+if [ -f "/var/lib/dpkg/info/iserv-lock.list" ] && [ ! "$(hostname)" = "iserv.stsbl.test" ]
 then
   cat <<EOT
 Test "install file distribution db bridge for iserv-lock"
