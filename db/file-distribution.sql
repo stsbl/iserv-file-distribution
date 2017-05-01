@@ -17,6 +17,16 @@ CREATE TABLE file_distribution (
     UNIQUE(IP)
 );
 
+CREATE TABLE file_distribution_rooms (
+    ID                  SERIAL          PRIMARY KEY,
+    Room		TEXT		NOT NULL
+                                        REFERENCES rooms(Name)
+                                            ON DELETE CASCADE
+                                            ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX file_distribution_rooms_room_key ON file_distribution_rooms (Room);
+
 CREATE TABLE computer_sound_lock (
     ID                  SERIAL          PRIMARY KEY,
     IP                  INET            NOT NULL REFERENCES hosts(IP)
@@ -27,5 +37,6 @@ CREATE TABLE computer_sound_lock (
 				            ON DELETE CASCADE
 );
 
-GRANT USAGE, SELECT ON "file_distribution_id_seq", "computer_sound_lock_id_seq" TO "symfony";
+GRANT USAGE, SELECT ON "file_distribution_id_seq", "computer_sound_lock_id_seq", "file_distribution_rooms_id_seq" TO "symfony";
 GRANT SELECT ON "file_distribution", "computer_sound_lock" TO "symfony";
+GRANT SELECT, INSERT, UPDATE, DELETE ON "file_distribution_rooms" TO "symfony";
