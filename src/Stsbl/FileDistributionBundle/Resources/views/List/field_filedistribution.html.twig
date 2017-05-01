@@ -8,7 +8,7 @@
         <span title="{{ __('By: %s', fd.user) }}">{{ fd.plainTitle }}</span>
         {% if fd.user == app.user %}
             {% set path = 'Files/File-Distribution/' ~ fd.plainTitle %}
-            &nbsp;<a href="{{ path('file_list', {'format': 'html', 'path': path|base64_encode}) }}" title="{{ _('Open folder of this file distribution')  }}">{{ icon('legacy-folder') }}</a> 
+            &nbsp;<a href="{{ path('file_list', {'path': path|base64_encode}) }}" title="{{ _('Open folder of this file distribution')  }}">{{ icon('legacy-folder') }}</a> 
         {% endif %}
     {% endif %}
 {% endblock %}
