@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-01 03:03+0200\n"
+"POT-Creation-Date: 2017-05-01 03:30+0200\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -110,26 +110,30 @@ msgid ""
 "Select if all rooms except the one in the following list or only the rooms "
 "which are in the list are available."
 msgstr ""
-"Wählen Sie, ob alle Räume, außer die in der folgenden Liste sind oder nur "
-"die, welche in der folgenden Liste sind, verfügbar sind."
+"Wählen Sie, ob alle Räume, außer die, welche in der folgenden Liste sind "
+"oder nur die, welche in der folgenden Liste sind, verfügbar sind."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1491
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1492
 #, php-format
 msgid ""
 "The files for the distribution \"%s\" must resided in the following folder:"
 msgstr ""
 "Die Dateien für die Verteilung \"%s\" werden in folgenden Ordner abgelegt:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1497
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1498
 #, php-format
 msgid "Files/File-Distribution/%s"
 msgstr "Dateien/File-Distribution/%s"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1760
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1536
+msgid "Manage available rooms"
+msgstr "Verfügbare Räume verwalten"
+
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1802
 msgid "Only hosts which are member of the Windows Domain are supported."
 msgstr "Nur Geräte, die Mitglied der Windows-Domäne sind, werden unterstützt."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1802
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1844
 msgid ""
 "For the users who are logging in on this hosts, there will created two "
 "addtional network drives for file distribution assignment and return."
@@ -137,7 +141,7 @@ msgstr ""
 "Für die Benutzer, die sich auf diesen Geräten anmelden, werden zwei "
 "zusätzliche Netzlaufwerke für die Dateiverteilung- und rückgabe erstellt."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1819
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1861
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:96
 msgid ""
 "The folder path where you will find the assignment folder and the returns "
@@ -146,12 +150,12 @@ msgstr ""
 "Der Ordnerpfad wo Sie den Verteilungsordner und die Rückgaben finden, ist "
 "Dateien/File-Distribution/<Titel>."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1836
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1878
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:108
 msgid "Enable host isolation"
 msgstr "Geräteisolation aktivieren"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1842
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1884
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:104
 msgid ""
 "Enable host isolation if you want to prevent that users can exchange files "
@@ -160,7 +164,7 @@ msgstr ""
 "Aktivieren Sie die Gerätenisolation, wenn Sie verhindern wollen, dass "
 "Benutzer Dateien austatuschen können durch das Teilen ihrer Accounts."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1913
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1955
 msgid ""
 "You can not enable file distributions for the following entries, because "
 "there it is already enabled:"
@@ -168,7 +172,7 @@ msgstr ""
 "Sie können die Dateiverteilung für die folgenden Einträge nicht aktivieren, "
 "da Sie dort bereits aktiviert ist:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1919
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1961
 msgid ""
 "File distribution is not enabled for the following entries or are not are "
 "allowed to stop the file distribution there:"
@@ -180,7 +184,11 @@ msgstr ""
 msgid "Use file distribution"
 msgstr "Dateiverteilung verwenden"
 
-#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:32
+#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:30
+msgid "Manage available rooms for file distribution"
+msgstr "Für die Dateiverteilung verfügbare Räume verwalten"
+
+#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:33
 msgid ""
 "Someone started a file distribution for your host. To access the files, "
 "click on the symbol \"Auf bereitgestellte Dateien zugreifen\" on the desktop."
@@ -189,11 +197,11 @@ msgstr ""
 "Dateien zuzugreifen, klicken Sie auf das Symbol \"Auf bereitgestellte "
 "Dateien zugreifen\" auf dem Desktop."
 
-#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:35
+#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:36
 msgid "Select host isolation by default"
 msgstr "Geräteisolation standardmäßig auswählen"
 
-#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:36
+#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:37
 msgid ""
 "If enabled, the checkbox \"host isolation\" will be selected by default if a "
 "new file distribution will be enabled."
@@ -201,29 +209,29 @@ msgstr ""
 "Wenn aktiviert, wird das Auswahlfeld \"Geräteisolierung\" standardmäßig "
 "angewählt, wenn eine neue Dateiverteilung aktiviert wird."
 
-#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:37
+#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:38
 msgid "Module: File Distribution"
 msgstr "Modul: Dateiverteilung"
 
-#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:40
+#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:41
 msgid "The computer is already in exam mode."
 msgstr "Der Computer ist bereits im Klausurmodus."
 
-#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:41
+#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:42
 msgid "The computer is already locked."
 msgstr "Der Computer ist bereits gesperrt."
 
-#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:42
+#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:43
 msgid "The room is already in the list."
 msgstr "Der Raum ist bereits in der Liste."
 
-#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:43
+#: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:44
 msgid "File distribution is already enabled for this host."
 msgstr "Dateiverteilung ist bereits für dieses Gerät aktiviert."
 
 #: src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:52
-#: src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:70
-#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:152
+#: src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:71
+#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:153
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:222
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:405
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:566
@@ -280,12 +288,12 @@ msgstr "Speichern"
 msgid "Room settings updated successful."
 msgstr "Raumeinstellungen erfolgreich aktualisiert."
 
-#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:50
+#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:51
 msgid "Rooms"
 msgstr "Räume"
 
-#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:51
-#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:96
+#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:52
+#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:97
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:450
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:592
 msgid "Room"
