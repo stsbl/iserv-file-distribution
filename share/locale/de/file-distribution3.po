@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-01 01:08+0200\n"
+"POT-Creation-Date: 2017-05-01 03:03+0200\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -105,23 +105,31 @@ msgstr ""
 msgid "Room availability"
 msgstr "Raumverfügbarkeit"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1486
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1263
+msgid ""
+"Select if all rooms except the one in the following list or only the rooms "
+"which are in the list are available."
+msgstr ""
+"Wählen Sie, ob alle Räume, außer die in der folgenden Liste sind oder nur "
+"die, welche in der folgenden Liste sind, verfügbar sind."
+
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1491
 #, php-format
 msgid ""
 "The files for the distribution \"%s\" must resided in the following folder:"
 msgstr ""
 "Die Dateien für die Verteilung \"%s\" werden in folgenden Ordner abgelegt:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1492
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1497
 #, php-format
 msgid "Files/File-Distribution/%s"
 msgstr "Dateien/File-Distribution/%s"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1755
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1760
 msgid "Only hosts which are member of the Windows Domain are supported."
 msgstr "Nur Geräte, die Mitglied der Windows-Domäne sind, werden unterstützt."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1797
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1802
 msgid ""
 "For the users who are logging in on this hosts, there will created two "
 "addtional network drives for file distribution assignment and return."
@@ -129,7 +137,7 @@ msgstr ""
 "Für die Benutzer, die sich auf diesen Geräten anmelden, werden zwei "
 "zusätzliche Netzlaufwerke für die Dateiverteilung- und rückgabe erstellt."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1814
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1819
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:96
 msgid ""
 "The folder path where you will find the assignment folder and the returns "
@@ -138,12 +146,12 @@ msgstr ""
 "Der Ordnerpfad wo Sie den Verteilungsordner und die Rückgaben finden, ist "
 "Dateien/File-Distribution/<Titel>."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1831
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1836
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:108
 msgid "Enable host isolation"
 msgstr "Geräteisolation aktivieren"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1837
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1842
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:104
 msgid ""
 "Enable host isolation if you want to prevent that users can exchange files "
@@ -152,7 +160,7 @@ msgstr ""
 "Aktivieren Sie die Gerätenisolation, wenn Sie verhindern wollen, dass "
 "Benutzer Dateien austatuschen können durch das Teilen ihrer Accounts."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1908
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1913
 msgid ""
 "You can not enable file distributions for the following entries, because "
 "there it is already enabled:"
@@ -160,7 +168,7 @@ msgstr ""
 "Sie können die Dateiverteilung für die folgenden Einträge nicht aktivieren, "
 "da Sie dort bereits aktiviert ist:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1914
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1919
 msgid ""
 "File distribution is not enabled for the following entries or are not are "
 "allowed to stop the file distribution there:"
@@ -213,12 +221,14 @@ msgstr "Der Raum ist bereits in der Liste."
 msgid "File distribution is already enabled for this host."
 msgstr "Dateiverteilung ist bereits für dieses Gerät aktiviert."
 
-#: src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:51
-#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:129
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:216
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:384
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:545
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:555
+#: src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:52
+#: src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:70
+#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:152
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:222
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:405
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:566
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:575
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:582
 msgid "File distribution"
 msgstr "Dateiverteilung"
 
@@ -270,14 +280,14 @@ msgstr "Speichern"
 msgid "Room settings updated successful."
 msgstr "Raumeinstellungen erfolgreich aktualisiert."
 
-#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:49
+#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:50
 msgid "Rooms"
 msgstr "Räume"
 
-#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:50
-#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:95
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:429
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:561
+#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:51
+#: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:96
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:450
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:592
 msgid "Room"
 msgstr "Raum"
 
@@ -360,65 +370,69 @@ msgstr "Nachricht senden"
 msgid "Send message to the selected hosts."
 msgstr "Nachricht an die ausgewählten Geräte versenden."
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:217
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:223
 msgctxt "file-distribution"
 msgid "Device"
 msgstr "Gerät"
 
 # sprintf
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:363
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:384
 msgid "Name"
 msgstr "Name"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:369
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:390
 msgid "Type"
 msgstr "Typ"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:449
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:470
 msgid "User"
 msgstr "Benutzer"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:453
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:474
 msgid "Internet Access"
 msgstr "Internetzugriff"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:511
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:532
 msgid "Internet: yes"
 msgstr "Internet: Ja"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:511
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:512
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:513
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:514
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:523
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:532
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:533
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:534
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:535
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:544
 msgid "Internet"
 msgstr "Internet"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:512
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:533
 msgid "Internet: no"
 msgstr "Internet: Nein"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:513
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:534
 msgid "Internet: granted"
 msgstr "Internet: Erlaubt"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:514
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:535
 msgid "Internet: forbidden"
 msgstr "Internet: Verboten"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:519
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:540
 msgid "Internet: exam mode"
 msgstr "Internet: Klausurmodus"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:540
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:561
 #, php-format
 msgid "File distribution: %s"
 msgstr "Dateiverteilung: %s"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:551
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:572
+msgid "[With file distribution]"
+msgstr "[Mit Dateiverteilung]"
+
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:579
 msgid "[Without file distribution]"
 msgstr "[Ohne Dateiverteilung]"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:562
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:597
 msgid "Search"
 msgstr "Suchen"

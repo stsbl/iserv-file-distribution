@@ -32,6 +32,14 @@
     {{ parent() }}
 {% endblock %}
 
+{% block crud_actions %}
+    {% if admin.user.hasRole('ROLE_ADMIN') and is_granted('PRIV_FILE_DISTRIBUTION_ROOMS') %}
+        <div class="list-actions">
+            <a class="btn btn-default" href="{{ path('admin_filedistribution_rooms_index') }}">{{ icon('door') }} {{ _('Manage available rooms') }}</a>
+        </div>
+    {% endif %}
+{% endblock %}
+
 {% block javascripts %}
     {{ parent() }}
     

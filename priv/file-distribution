@@ -1,5 +1,11 @@
 priv.file_distribution:
-module		Computers
+module		File distribution
 description	Use file distribution
 assign		admins
 assignroles     admin teacher
+
+priv.file_distribution_rooms:
+module		File distribution
+description	Manage available rooms for file distribution
+assign		admins
+assignroles     admin

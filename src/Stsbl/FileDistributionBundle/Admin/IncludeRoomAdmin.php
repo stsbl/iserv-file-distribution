@@ -6,6 +6,7 @@ use IServ\AdminBundle\Admin\AbstractAdmin;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\AbstractBaseMapper;
 use IServ\CrudBundle\Mapper\FormMapper;
+use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /*
@@ -151,5 +152,13 @@ class IncludeRoomAdmin extends AbstractAdmin
         $ret = parent::prepareBreadcrumbs();
         $ret[_('File distribution')] = $this->router->generate('fd_filedistribution_index');
         return $ret;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function isAuthorized() 
+    {
+        return $this->isGranted(Privilege::FD_ROOMS);
     }
 }

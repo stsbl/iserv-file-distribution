@@ -27,6 +27,7 @@
 
 // Privilege
 _('Use file distribution');
+_('Manage available rooms for file distribution');
 
 // Rpc message
 _('Someone started a file distribution for your host. To access the files, click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.');

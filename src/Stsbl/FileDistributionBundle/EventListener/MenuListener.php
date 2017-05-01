@@ -63,16 +63,18 @@ class MenuListener implements MainMenuListenerInterface, AdminMenuListenerInterf
      */
     public function onBuildAdminMenu(MenuEvent $event) 
     {
-        $menu = $event->getMenu('modules');
+        if ($event->getAuthorizationChecker()->isGranted(Privilege::FD_ROOMS)) {
+            $menu = $event->getMenu('modules');
         
-        $item = $menu->addChild('file_distribution', [
-            'route' => 'admin_filedistribution_rooms_index',
-            'label' => _('File distribution'),
-        ]);
+            $item = $menu->addChild('file_distribution', [
+                'route' => 'admin_filedistribution_rooms_index',
+                'label' => _('File distribution'),
+            ]);
             
-        $item
-            ->setExtra('icon', 'box-share')
-            ->setExtra('icon_style', 'fugue');
+            $item
+                ->setExtra('icon', 'box-share')
+                ->setExtra('icon_style', 'fugue');
+        }
     }
 
 }
