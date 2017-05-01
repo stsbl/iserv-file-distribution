@@ -3,6 +3,7 @@
 namespace Stsbl\FileDistributionBundle\Admin;
 
 use IServ\AdminBundle\Admin\AbstractAdmin;
+use IServ\CoreBundle\Service\Logger;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\AbstractBaseMapper;
 use IServ\CrudBundle\Mapper\FormMapper;
@@ -42,6 +43,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class IncludeRoomAdmin extends AbstractAdmin
 {
     /**
+     * @var Logger
+     */
+    private $logger;
+    
+    /**
      * {@inheritdoc}
      */
     protected function configure() 
@@ -53,6 +59,16 @@ class IncludeRoomAdmin extends AbstractAdmin
         $this->id = 'filedistribution_rooms';
         $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';
         $this->templates['crud_index'] = 'StsblFileDistributionBundle:Crud:file_distribution_rooms_index.html.twig';
+    }
+    
+    /**
+     * Set logger
+     * 
+     * @param Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
     }
     
     /**
@@ -160,5 +176,23 @@ class IncludeRoomAdmin extends AbstractAdmin
     public function isAuthorized() 
     {
         return $this->isGranted(Privilege::FD_ROOMS);
+    }
+    
+    /* LOGGING */
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function postPersist(CrudInterface $object) 
+    {
+        $this->logger->writeForModule(sprintf('Raum "%s" zur Raumliste hinzugefügt', (string)$object->getRoom()), 'File distribution');
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function postRemove(CrudInterface $object) 
+    {
+        $this->logger->writeForModule(sprintf('Raum "%s" aus der Raumliste entfernt', (string)$object->getRoom()), 'File distribution');
     }
 }

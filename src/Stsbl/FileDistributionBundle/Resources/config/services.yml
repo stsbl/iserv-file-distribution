@@ -18,6 +18,8 @@ services:
     stsbl.filedistribution.admin.rooms:
         class: Stsbl\FileDistributionBundle\Admin\IncludeRoomAdmin
         arguments: [Stsbl\FileDistributionBundle\Entity\FileDistributionRoom]
+        calls:
+            - [ setLogger, ["@iserv.logger"]]
         tags:
             - { name: iserv.crud }
             

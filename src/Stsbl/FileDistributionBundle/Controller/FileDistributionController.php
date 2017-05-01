@@ -8,6 +8,7 @@ use IServ\CrudBundle\Controller\CrudController;
 use IServ\CrudBundle\Table\ListHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -388,8 +389,7 @@ class FileDistributionController extends CrudController
         /* @var $builder \Symfony\Component\Form\FormBuilder */
         $builder = $this->get('form.factory')->createNamedBuilder('file_distribution_room_inclusion');
         
-        $content = file_get_contents(self::ROOM_CONFIG_FILE);
-        $mode = json_decode($content, true)['invert'];
+        $mode = FileDistributionCrud::getRoomMode();
 
         if ($mode === true) {
             $mode = 1;
@@ -431,6 +431,17 @@ class FileDistributionController extends CrudController
         
         if ($form->isSubmitted() && $form->isValid()) {
             $mode = (boolean)$form->getData()['mode'];
+            
+            // log if mode is changed
+            if ($mode !== FileDistributionCrud::getRoomMode()) {
+                if ($mode === true) {
+                    $text = 'Raumverfügbarkeit geändert auf "Alle, außer den folgenden"';
+                } else {
+                    $text = 'Raumverfügbarkeit geändert auf "Folgende"';
+                }
+                $this->get('iserv.logger')->writeForModule($text, 'File distribution');
+            }
+            
             $content = json_encode(['invert' => $mode]);
             
             file_put_contents(self::ROOM_CONFIG_FILE, $content);

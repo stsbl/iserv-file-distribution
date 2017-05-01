@@ -101,7 +101,7 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * @var bool
      */
-    private $roomMode;
+    private static $roomMode;
     
     /* SETTERS */
     
@@ -317,15 +317,16 @@ class FileDistributionCrud extends AbstractCrud
      * 
      * @return bool
      */
-    private function getRoomMode()
+    public static function getRoomMode()
     {
-        if (!is_bool($this->roomMode)) {
+        if (!is_bool(self::$roomMode)) {
             $content = file_get_contents(FileDistributionController::ROOM_CONFIG_FILE);
-            $this->roomMode = json_decode($content, true)['invert'];
+            self::$roomMode = json_decode($content, true)['invert'];
         }
         
-        return $this->roomMode;
+        return self::$roomMode;
     }
+    
     /**
      * {@inheritdoc}
      */
