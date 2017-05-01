@@ -3,7 +3,6 @@
 namespace Stsbl\FileDistributionBundle\Crud;
 
 use Doctrine\ORM\EntityManager;
-use IServ\CoreBundle\Entity\Specification\PropertyMatchSpecification;
 use IServ\CoreBundle\Security\Core\SecurityHandler;
 use IServ\CoreBundle\Service\Config;
 use IServ\CoreBundle\Service\Shell;
@@ -16,7 +15,9 @@ use IServ\CrudBundle\Mapper\ListMapper;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
+use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
+use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\Rpc;
 use Symfony\Component\DependencyInjection\Container;
@@ -96,6 +97,11 @@ class FileDistributionCrud extends AbstractCrud
      * @var Container
      */
     private $container;
+    
+    /**
+     * @var bool
+     */
+    private $roomMode;
     
     /* SETTERS */
     
@@ -307,12 +313,27 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
+     * Get current room filter mode
+     * 
+     * @return bool
+     */
+    private function getRoomMode()
+    {
+        if (!is_bool($this->roomMode)) {
+            $content = file_get_contents(FileDistributionController::ROOM_CONFIG_FILE);
+            $this->roomMode = json_decode($content, true)['invert'];
+        }
+        
+        return $this->roomMode;
+    }
+    /**
      * {@inheritdoc}
      */
     public function getFilterSpecification()
     {
-        // Only show controllable hosts
-        return new PropertyMatchSpecification('controllable', true);
+        
+        // Only show controllable hosts and hosts which are in available rooms
+        return new FileDistributionSpecification($this->getRoomMode(), $this->getEntityManager());
     }
     
     /**
@@ -548,17 +569,31 @@ class FileDistributionCrud extends AbstractCrud
             $listHandler->addListFilter($fdFilter);
         }
         
-        $withoutFilter = new Filter\ListExpressionFilter(_('[Without file distribution]'), 'NOT EXISTS (SELECT e FROM StsblFileDistributionBundle:FileDistribution e WHERE e.ip = parent.ip)');
-            
-        $withoutFilter
-            ->setName(sprintf('file-distribution-wihthout'))
+        $withFilter = new Filter\ListExpressionFilter(_('[With file distribution]'), 'EXISTS (SELECT e FROM StsblFileDistributionBundle:FileDistribution e WHERE e.ip = parent.ip)');    
+        $withFilter
+            ->setName(sprintf('file-distribution-with'))
             ->setGroup(_('File distribution'))
         ;
+        $listHandler->addListFilter($withFilter);
         
+        $withoutFilter = new Filter\ListExpressionFilter(_('[Without file distribution]'), 'NOT EXISTS (SELECT e FROM StsblFileDistributionBundle:FileDistribution e WHERE e.ip = parent.ip)');   
+        $withoutFilter
+            ->setName(sprintf('file-distribution-without'))
+            ->setGroup(_('File distribution'))
+        ;
         $listHandler->addListFilter($withoutFilter);
         
+        $whereCondition = 'EXISTS (SELECT fr FROM StsblFileDistributionBundle:FileDistributionRoom fr WHERE fr.room = filter.name)';
+        if ($this->getRoomMode() === true) {
+            $whereCondition = 'NOT '.$whereCondition;
+        }
+        
         $listHandler
-            ->addListFilter((new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'name'))->setName('room')->allowAnyAndNone()->setPickerOptions(array('data-live-search' => 'true')))
+            ->addListFilter((new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'name'))->setName('room')
+                    ->allowAnyAndNone()
+                    ->setPickerOptions(array('data-live-search' => 'true'))
+                    ->setWhereCondition($whereCondition)
+            )
             ->addListFilter((new Filter\ListSearchFilter(_('Search'), [
                 'name' => FilterSearch::TYPE_TEXT
             ])))
