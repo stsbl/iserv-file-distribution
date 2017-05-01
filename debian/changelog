@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.05.01-1) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * iservchk: Fixed neol.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 05:14:11 +0200
+
 stsbl-iserv-file-distribution (17.05.01-0) experimental; urgency=medium
 
   * Moved file distribution menu item from network to education category.
