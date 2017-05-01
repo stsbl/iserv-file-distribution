@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.05.01-2) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Added missing database table.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 01 May 2017 05:34:25 +0200
+
 stsbl-iserv-file-distribution (17.05.01-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
