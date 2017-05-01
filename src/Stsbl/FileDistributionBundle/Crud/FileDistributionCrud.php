@@ -385,7 +385,7 @@ class FileDistributionCrud extends AbstractCrud
                 'label' => _('Name'),
                 'responsive' => 'all',
                 'sortType' => 'natural',
-                'template' => 'StsblFileDistributionBundle:List:field_name.html.twig',
+                'template' => 'IServHostBundle:Crud:list_field_name.html.twig',
             ])
             ->add('type', null, [
                 'label' => _('Type'),

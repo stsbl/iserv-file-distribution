@@ -66,3 +66,11 @@
         IServ.Host.updateStatus({{ status|json_encode|raw }});
     </script>
 {% endblock %}
+
+{% block crud_table_row %}
+    {% spaceless %}
+        <tr{% if ip == item.ip %} class="highlight"{% endif %}>
+            {{ block('crud_table_cells') }}
+        </tr>
+    {% endspaceless %}
+{% endblock crud_table_row %}
