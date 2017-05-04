@@ -2,9 +2,11 @@
 // src/Stsbl/FileDistributionBundle/Service/FileDistributionManager.php
 namespace Stsbl\FileDistributionBundle\Service;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Entity\Host;
 use IServ\HostBundle\Service\HostManager;
+use IServ\HostBundle\Service\HostStatus;
 
 /*
  * The MIT License
@@ -165,5 +167,37 @@ class FileDistributionManager extends HostManager
     public function msg($hosts, $msg)
     {
         return $this->netrpc(self::NETRPC_MSG, $this->getIpsForHosts($hosts), $msg);
+    }
+    
+    /**
+     * Get IPs for a collection of hosts.
+     * Add plus if it is Windows, add dobule plus if it is Linux.
+     *
+     * @param HostEntity|array|ArrayCollection $hosts
+     * @throws \InvalidArgumentException
+     * @return array string array of ips of the hosts, prefixed with '+' if online
+     */
+    protected function getIpsForHosts($hosts)
+    {
+        if (!is_array($hosts) and !($hosts instanceof ArrayCollection)) {
+            $hosts = array($hosts);
+        }
+
+        $ips = array();
+        foreach ($hosts as $h) {
+            $ping = $this->ping($hosts);
+            if (!($h instanceof Host)) {
+                throw new \InvalidArgumentException('Argument must be an instance of \Iserv\HostBundle\Entity\Host');
+            }
+            if ($ping[$h->getId()] >= HostStatus::LINUX) {
+                $ips[] = '++' . $h->getIp();
+            } else if ($ping[$h->getId()] >= HostStatus::WIN) {
+                $ips[] = '+' . $h->getIp();
+            } else {
+                $ips[] = $h->getIp();
+            }
+        }
+
+        return $ips;
     }
 }
