@@ -58,19 +58,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class FileDistributionCrud extends AbstractCrud
 {
     /**
-     * @var Shell
-     */
-    private $shell;
-    
-    /**
      * @var EntityManager
      */
     private $em;
-    
-    /**
-     * @var SecurityHandler
-     */
-    private $securityHandler;
     
     /**
      * @var Session
@@ -118,16 +108,6 @@ class FileDistributionCrud extends AbstractCrud
     /* GETTERS */
     
     /**
-     * Get shell
-     * 
-     * @return Shell|null
-     */
-    public function getShell()
-    {
-        return $this->shell;
-    }
-    
-    /**
      * Get entity manager
      * 
      * @return EntityManager|null
@@ -135,16 +115,6 @@ class FileDistributionCrud extends AbstractCrud
     public function getEntityManager()
     {
         return $this->em;
-    }
-    
-    /**
-     * Get security handler
-     * 
-     * @return SecurityHandler|null
-     */
-    public function getSecurityHandler()
-    {
-        return $this->securityHandler;
     }
     
     /**
@@ -178,16 +148,6 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
-     * Get rpc
-     * 
-     * @return Rpc|null
-     */
-    public function getRpc()
-    {
-        return $this->rpc;
-    }
-    
-    /**
      * Get manager
      * 
      * @return FileDistributionManager|null
@@ -212,9 +172,7 @@ class FileDistributionCrud extends AbstractCrud
      */
     private function initServices()
     {
-        $this->shell = $this->container->get('iserv.shell');
         $this->em = $this->container->get('doctrine.orm.entity_manager');
-        $this->securityHandler = $this->container->get('iserv.security_handler');
         $this->session = $this->container->get('session');
         $this->config = $this->container->get('iserv.config');
         $this->request = $this->container->get('request_stack')->getCurrentRequest();
