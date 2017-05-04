@@ -201,4 +201,54 @@ class FileDistributionManager extends HostManager
 
         return $ips;
     }
+    
+    /**
+     * Ping hosts and check if Windows or Linux is running.
+     *
+     * @param HostEntity|array|ArrayCollection $hosts
+     * @return array Results (key: host name, value: 0=offline, 1=online, 2=Windows)
+     */
+    public function ping($hosts)
+    {
+        if (!is_array($hosts) and !($hosts instanceof ArrayCollection)) {
+            $hosts = array($hosts);
+        }
+
+        $ips = array();
+        $newhosts = array();
+        foreach ($hosts as $h) {
+            /* @var $h HostEntity */
+            if (!($h instanceof HostEntity)) {
+                throw new \InvalidArgumentException('Argument must be an instance of \Iserv\HostBundle\Entity\Host');
+            }
+            $ips[$h->getIp()] = $h->getId();
+            $newhosts[$h->getId()] = $h;
+        }
+        $hosts = $newhosts;
+
+        $res = array_fill_keys($ips, ['status' => HostStatus::OFFLINE]);
+        $this->shell->exec('sudo', array_merge(array('/usr/lib/iserv/winping'), array_keys($ips)));
+        $output = $this->shell->getOutput();
+
+        foreach ($output as $v) {
+            $m = null;
+            if (preg_match("|Host: ([\d.]+) |", $v, $m)) {
+                $res[$ips[$m[1]]] = ['status' => HostStatus::ONLINE];
+                if (preg_match("|445/open/tcp/|", $v)) {
+                    $res[$ips[$m[1]]]['status'] |= HostStatus::WIN;
+                }
+                if (preg_match("|22/open/tcp/|", $v)) {
+                    $res[$ips[$m[1]]]['status'] |= HostStatus::LINUX;
+                }
+                $hosts[$ips[$m[1]]]->setLastseenPing(new \DateTime);
+                $this->em->persist($hosts[$ips[$m[1]]]);
+            }
+        }
+
+        $this->em->flush();
+
+        $this->status->merge($res);
+
+        return $res;
+    }
 }
