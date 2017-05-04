@@ -20,7 +20,6 @@ use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
-use Stsbl\FileDistributionBundle\Service\Rpc;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -87,11 +86,6 @@ class FileDistributionCrud extends AbstractCrud
      * @var Request
      */
     private $request;
-    
-    /**
-     * @var Rpc
-     */
-    private $rpc;
     
     /**
      * @var FileDistributionManager
@@ -224,7 +218,6 @@ class FileDistributionCrud extends AbstractCrud
         $this->session = $this->container->get('session');
         $this->config = $this->container->get('iserv.config');
         $this->request = $this->container->get('request_stack')->getCurrentRequest();
-        $this->rpc = $this->container->get('stsbl.filedistribution.rpc');
         $this->manager = $this->container->get('stsbl.filedistribution.manager');
     }
     

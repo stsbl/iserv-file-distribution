@@ -22,10 +22,6 @@ services:
           - { name: kernel.event_listener, event: iserv_portal.menu_main, method: onBuildMainMenu } # Tells IServ about the main menu method
           - { name: kernel.event_listener, event: iserv_portal.menu_admin, method: onBuildAdminMenu } # Tells IServ about the admin menu method
     
-    stsbl.filedistribution.rpc:
-        class: Stsbl\FileDistributionBundle\Service\Rpc
-        arguments: ["@iserv.shell", "@iserv.security_handler"]
-    
     stsbl.filedistribution.manager:
         class: Stsbl\FileDistributionBundle\Service\FileDistributionManager
         arguments: ["@doctrine.orm.entity_manager", "@iserv.shell", "@iserv.config", "@iserv.security_handler", "@iserv.host.status"]
