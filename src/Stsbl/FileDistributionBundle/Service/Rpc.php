@@ -9,7 +9,7 @@ use Stsbl\FileDistributionBundle\Entity\Host;
 /*
  * The MIT License
  *
- * Copyright 2017 Fleix Jacobi.
+ * Copyright 2017 Felix Jacobi.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

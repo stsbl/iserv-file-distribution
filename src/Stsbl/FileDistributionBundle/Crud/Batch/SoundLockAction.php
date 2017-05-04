@@ -3,7 +3,8 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\HostBundle\Security\Privilege as HostPrivilege;
+use Stsbl\FileDistributionBundle\Security\Privilege;
 
 /*
  * The MIT License
@@ -37,22 +38,26 @@ use IServ\CrudBundle\Entity\FlashMessageBag;
  */
 class SoundLockAction extends AbstractFileDistributionAction
 {
+    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    
     /**
      * {@inheritdoc}
      */
     public function execute(ArrayCollection $entities) 
     {
         /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
-        $bag = new FlashMessageBag();
+        $messages = [];
         
         foreach ($entities as $entity) {
-            $this->rpc->addHost($entity);
-            
-            $bag->addMessage('success', __('Disabled sound on %s.', (string)$entity->getName()));
+            $messages[] = $this->createFlashMessage('success', __('Disabled sound on %s.', (string)$entity->getName()));
         }
         
-        $this->rpc->soundLock();
-        $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
+        $bag = $this->getFileDistributionManager()->soundLock($entities);
+        // add messsages created during work
+        foreach ($messages as $message) {
+            $bag->add($message);
+        }
+        
         return $bag;
     }
 

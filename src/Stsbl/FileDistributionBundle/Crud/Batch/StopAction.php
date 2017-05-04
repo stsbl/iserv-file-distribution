@@ -4,7 +4,8 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
-use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\HostBundle\Security\Privilege as HostPrivilege;
+use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /*
@@ -39,31 +40,33 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class StopAction extends AbstractFileDistributionAction
 {
+    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    
     /**
      * {@inheritodc}
      */
     public function execute(ArrayCollection $entities) 
-    {
-        if (is_null($this->shell)) {
-            throw new \RuntimeException(sprintf('shell was not injected into %s, you need to set it via %s.', get_class($this), get_class($this),'::setShell()'));
-        }
-        
+    { 
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
-        $bag = new FlashMessageBag();
         $user = $this->crud->getUser();
+        $messages = [];
         
-        foreach ($entities as $entity) {
+        foreach ($entities as $key => $entity) {
             /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
-            if ($this->isAllowedToExecute($entity, $user)) {
-                $this->rpc->addHost($entity);
-                $bag->addMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
+            if (!$this->isAllowedToExecute($entity, $user)) {
+                // remove unallowed hosts
+                $messages[] = $this->createFlashMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
+                unset($entities[$key]);
             } else {
-                $bag->addMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
+                $messages[] = $this->createFlashMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
             }
         }
         
-        $this->rpc->disable();
-        $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
+        $bag = $this->getFileDistributionManager()->disableFileDistribution($entities);
+        // add messsages created during work
+        foreach ($messages as $message) {
+            $bag->add($message);
+        }
         
         return $bag;
     }

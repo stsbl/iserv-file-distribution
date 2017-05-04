@@ -5,6 +5,8 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\HostBundle\Security\Privilege as HostPrivilege;
+use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /*
@@ -39,6 +41,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class EnableAction extends AbstractFileDistributionAction 
 {
+    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    
     /**
      * @var string
      */
@@ -75,26 +79,40 @@ class EnableAction extends AbstractFileDistributionAction
     public function execute(ArrayCollection $entities) 
     {      
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
-        $bag = new FlashMessageBag();
         $user = $this->crud->getUser();
-        $this->rpc->setTitle($this->title);
+        $messages = [];
+        $error = false;
         
-        foreach ($entities as $entity) {
+        if ($this->isolation === null) {
+            throw new \InvalidArgumentException('Parameter isolation is not set!');
+        }
+        
+        foreach ($entities as $key => $entity) {
             if (empty($this->title)) {
-               $bag->addMessage('error', _('Title should not be empty!'));
-               return $bag;
-            } else if ($this->isAllowedToExecute($entity, $user)) {
-                $this->rpc->addHost($entity);
-                
-                $bag->addMessage('success', __('Enabled file distribution for %s.', (string)$entity->getName()));
+               $messages[] = $this->createFlashMessage('error', _('Title should not be empty!'));
+               $error = true;
+               break;
+            } 
+            
+            if (!$this->isAllowedToExecute($entity, $user)) {
+                // remove unallowed hosts
+                $messages[] = $this->createFlashMessage('error', __('You are not allowed to enable file distribution for %s.', (string)$entity->getName()));
+                unset($entities[$key]);
             } else {
-                $bag->addMessage('error', __('You are not allowed to enable file distribution for %s.', (string)$entity->getName()));
+                $messages[] = $this->createFlashMessage('success', __('Enabled file distribution for %s.', (string)$entity->getName()));
             }
         }
         
-        $this->rpc->setIsolation($this->isolation);
-        $this->rpc->enable();
-        $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
+        if (!$error) {
+            $bag = $this->getFileDistributionManager()->enableFileDistribution($entities, $this->title, $this->isolation);
+        } else {
+            $bag = new FlashMessageBag();
+        }
+        // add messsages created during work
+        foreach ($messages as $message) {
+            $bag->add($message);
+        }
+        
         $this->session->set('fd_title', $this->title);
         
         return $bag;

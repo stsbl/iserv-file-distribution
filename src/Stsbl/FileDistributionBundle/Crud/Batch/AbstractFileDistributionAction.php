@@ -2,14 +2,12 @@
 // src/Stsbl/FileDistributionBundle/Crud/Batch/AbstractFileDistributionAction.php
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
-use Doctrine\ORM\EntityManager;
-use IServ\CoreBundle\Service\Shell;
-use IServ\CoreBundle\Security\Core\SecurityHandler;
 use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Crud\Batch\AbstractBatchAction;
-use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\CrudBundle\Entity\FlashMessage;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
-use Stsbl\FileDistributionBundle\Service\Rpc;
+use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /*
@@ -45,29 +43,19 @@ use Symfony\Component\HttpFoundation\Session\Session;
 abstract class AbstractFileDistributionAction extends AbstractBatchAction 
 {
     /**
-     * @var Shell
+     * @var FileDistributionCrud
      */
-    protected $shell;
+    protected $crud;
     
     /**
-     * @var EntityManager
+     * @var string|array
      */
-    protected $em;
-    
-    /**
-     * @var SecurityHandler
-     */
-    protected $securityHandler;
+    protected $privileges;
     
     /**
      * @var Session
      */
     protected $session;
-    
-    /**
-     * @var Rpc
-     */
-    protected $rpc;
 
     /**
      * {@inheritdoc}
@@ -78,29 +66,56 @@ abstract class AbstractFileDistributionAction extends AbstractBatchAction
             throw new \InvalidArgumentException(sprintf('This batch action only supports the CRUD %s or childs of it.', FileDistributionCrud::class));
         }
         
-        parent::__construct($crud, $enabled);
-        
-        // inject required components into class
-        /* @var $crud FileDistributionCrud */
-        $this->shell = $crud->getShell();
-        $this->em = $crud->getEntityManager();
-        $this->securityHandler = $crud->getSecurityHandler();
         $this->session = $crud->getSession();
-        $this->rpc = $crud->getRpc();
+        parent::__construct($crud, $enabled);
     }
     
     /**
-     * Convert shell error output into a flash message
+     * Gets the file distribution manager and validates the required privilege.
      * 
-     * @param FlashMessageBag $bag
-     * @param array $errors
+     * @return FileDistributionManager
      */
-    protected function handleShellErrorOutput(FlashMessageBag $bag, array $errors)
+    protected function getFileDistributionManager()
     {
-        if (count($errors) > 0) {
-            $bag->addMessage('error', implode("\n", $errors));
+        if ($this->privileges && !$this->checkPrivileges()) {
+            throw new AccessDeniedException(sprintf('You need the %s privilege for this action!', $this->privilege));
         }
         
-        return $bag;
+        return $this->crud->getFileDistributionManager();
+    }
+    
+    /**
+     * Checks if required privileges are granted.
+     * 
+     * @return bool
+     */
+    protected function checkPrivileges()
+    {
+        if (is_string($this->privileges)) {
+            return $this->crud->getAuthorizationChecker()->isGranted($this->privileges);
+        } else if (is_array($this->privileges)) {
+            $granted = true;
+            foreach ($this->privileges as $p) {
+                if (!$this->crud->getAuthorizationChecker()->isGranted($p)) {
+                    $granted = false;
+                    break;
+                }
+            }
+            return $granted;
+        } else {
+            throw new \InvalidArgumentException(sprintf('Unexpected type %s for privileges variable!', gettype($this->privileges)));
+        }
+    }
+    
+    /**
+     * Create new flash message
+     * 
+     * @param string $type
+     * @param string $message
+     * @return FlashMessage
+     */
+    protected function createFlashMessage($type, $message)
+    {
+        return new FlashMessage($type, $message);
     }
 }

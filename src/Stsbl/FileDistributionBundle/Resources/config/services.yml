@@ -4,13 +4,6 @@ services:
         class: Stsbl\FileDistributionBundle\Crud\FileDistributionCrud
         arguments: [Stsbl\FileDistributionBundle\Entity\Host]
         calls:
-#           - [ setShell, ["@iserv.shell"]]
-#           - [ setEntityManager, ["@doctrine.orm.entity_manager"]]
-#           - [ setSecurityHandler, ["@iserv.security_handler"]]
-#           - [ setSession, ["@session"]]
-#           - [ setConfig, ["@iserv.config"]]
-#           - [ setRequest, ["@request_stack"]]
-#           - [ setRpc, ["@stsbl.filedistribution.rpc"]]
             - [ setContainer, ["@service_container"]]
         tags:
             - { name: iserv.crud }
@@ -33,6 +26,10 @@ services:
         class: Stsbl\FileDistributionBundle\Service\Rpc
         arguments: ["@iserv.shell", "@iserv.security_handler"]
     
+    stsbl.filedistribution.manager:
+        class: Stsbl\FileDistributionBundle\Service\FileDistributionManager
+        arguments: ["@doctrine.orm.entity_manager", "@iserv.shell", "@iserv.config", "@iserv.security_handler", "@iserv.host.status"]
+        
     stsbl.filedistribution.twig.extension.base64:
         class: Stsbl\FileDistributionBundle\Twig\Extension\Base64
         tags :

@@ -19,10 +19,10 @@ use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
+use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
 use Stsbl\FileDistributionBundle\Service\Rpc;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -92,6 +92,11 @@ class FileDistributionCrud extends AbstractCrud
      * @var Rpc
      */
     private $rpc;
+    
+    /**
+     * @var FileDistributionManager
+     */
+    private $manager;
     
     /**
      * @var Container
@@ -187,6 +192,16 @@ class FileDistributionCrud extends AbstractCrud
     {
         return $this->rpc;
     }
+    
+    /**
+     * Get manager
+     * 
+     * @return FileDistributionManager|null
+     */
+    public function getFileDistributionManager()
+    {
+        return $this->manager;
+    }
 
     /**
      * Get container
@@ -210,6 +225,7 @@ class FileDistributionCrud extends AbstractCrud
         $this->config = $this->container->get('iserv.config');
         $this->request = $this->container->get('request_stack')->getCurrentRequest();
         $this->rpc = $this->container->get('stsbl.filedistribution.rpc');
+        $this->manager = $this->container->get('stsbl.filedistribution.manager');
     }
     
     /**
@@ -332,7 +348,6 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getFilterSpecification()
     {
-        
         // Only show controllable hosts and hosts which are in available rooms
         return new FileDistributionSpecification($this->getRoomMode(), $this->getEntityManager());
     }

@@ -3,7 +3,7 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\HostBundle\Security\Privilege;
 
 /*
  * The MIT License
@@ -37,6 +37,8 @@ use IServ\CrudBundle\Entity\FlashMessageBag;
  */
 class MessageAction extends AbstractFileDistributionAction 
 {
+    protected $privileges = Privilege::BOOT;
+    
     /**
      * @var string
      */
@@ -57,23 +59,23 @@ class MessageAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities) 
     {
-        if (is_null($this->message)) {
+        if ($this->message === null) {
             throw new \InvalidArgumentException('No message set, you need to set it via setMessage()!');
         }
         
-        $this->rpc->setArg($this->message);
-        
         /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
-        $bag = new FlashMessageBag();
+        $messages = [];
         
         foreach ($entities as $entity) {
-            $this->rpc->addHost($entity);
-            
-            $bag->addMessage('success', __('Sent message to %s.', (string)$entity->getName()));
+            $messages[] = $this->createFlashMessage('success', __('Sent message to %s.', (string)$entity->getName()));
         }
         
-        $this->rpc->sendMessage();
-        $bag = $this->handleShellErrorOutput($bag, $this->rpc->getErrorOutput());
+        $bag = $this->getFileDistributionManager()->msg($entities, $this->message);
+        // add messsages created during work
+        foreach ($messages as $message) {
+            $bag->add($message);
+        }        
+        
         return $bag;        
     }
 
