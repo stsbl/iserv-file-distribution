@@ -767,23 +767,4 @@ class FileDistributionCrud extends AbstractCrud
         
         return $lock->getUser();
     }
-    
-    /**
-     * Checks wether the user is coming from the host with given name or not.
-     * 
-     * @param string $name
-     * @return boolean
-     */
-    public function isCurrentHost($name)
-    {
-        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Host');
-        /* @var $host \Stsbl\FileDistributionBundle\Entity\Host */
-        $host = $er->find($name);
-        
-        if ($host === null) {
-            return false;
-        }
-        
-        return $host->getIp() === $this->getRequest()->getClientIp();
-    }
 }
