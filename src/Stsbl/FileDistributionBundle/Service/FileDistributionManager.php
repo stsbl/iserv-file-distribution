@@ -189,9 +189,10 @@ class FileDistributionManager extends HostManager
             if (!($h instanceof Host)) {
                 throw new \InvalidArgumentException('Argument must be an instance of \Iserv\HostBundle\Entity\Host');
             }
-            if ($ping[$h->getId()] >= HostStatus::LINUX) {
+            
+            if ($ping[$h->getId()]['status'] >= HostStatus::LINUX) {
                 $ips[] = '++' . $h->getIp();
-            } else if ($ping[$h->getId()] >= HostStatus::WIN) {
+            } else if ($ping[$h->getId()]['status'] >= HostStatus::WIN) {
                 $ips[] = '+' . $h->getIp();
             } else {
                 $ips[] = $h->getIp();

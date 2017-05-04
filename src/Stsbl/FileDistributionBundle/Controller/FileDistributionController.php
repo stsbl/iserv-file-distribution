@@ -233,6 +233,8 @@ class FileDistributionController extends CrudController
             'fields' => $this->crud->getFields(),
             'confirmForm' => $confirm,
             'batchAction' => $batchAction,
+            'status' => $this->get('iserv.host.status')->get(),
+            'ip' => $request->getClientIp(),
         );
     }
     
@@ -293,6 +295,7 @@ class FileDistributionController extends CrudController
                         // if the own host was the only one, it was may removed above and we would
                         // have no more hosts.
                         if (count($data['multi']) > 0) {
+                            
                             // Run action, collect feedback and return to list afterwards.
                             $message = $action->execute($data['multi']);
 

@@ -3,6 +3,17 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => vendor/glyphicons-social.css -->
+    {% endif %}
+    <link rel="stylesheet" href="{{ asset('/css/vendor/glyphicons-social.css') }}"/>
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => host.css -->
+    {% endif %}
+    {% stylesheets '@IServHostBundle/Resources/public/host.css' filter='cssrewrite' filter='?uglifycss' output='css/compiled/host.css' %}
+     <link rel="stylesheet" href="{{ asset_url }}">
+    {% endstylesheets %}
     
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => file-distribution.css -->
@@ -22,6 +33,7 @@
 {% endblock %}
 
 {% block crud_table_foot %}
+    {% set colspan = 3 %}
     <tfoot>
         {% if confirmForm.form.actions.enable is defined %}
             <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
@@ -55,8 +67,35 @@
             </div>
         </td></tr>
     </tfoot>
-{% endblock crud_table_foot %}
+{% endblock %}
 
+{% block crud_table_body %}
+    <thead>
+        <tr>
+            <th>{{ _('Host') }}</th>
+            <th>{{ _('Room') }}</th>
+            <th>{{ _('User') }}</th>
+        </tr>
+    </thead>
+    {{ parent() }}
+{% endblock %}
+
+{% block crud_table_row %}
+    {% spaceless %}
+        <tr{% if ip == item.ip %} class="highlight"{% endif %}>
+            {% block crud_table_cells %}
+                {% set form = confirmForm.form.multi|slice(loop.index0, 1)[0] %}
+                <td>
+                    <input type="hidden" name="{{ form.vars.full_name }}" value="{{ form.vars.value }}" />
+                    <span class="host_status" data-host-id="{{ item.id }}" id="host_status_{{ item.id }}"></span>&nbsp;{{ item }}
+                </td>
+                <td>{{ item.room }}</td>
+                <td>{{ item.sambaUserDisplay }}</td>
+            {% endblock %}
+        </tr>
+    {% endspaceless %}
+{% endblock %}
+                
 {% block crud_disallowed_table %}
 {% if not disallowedItems is empty %}
     <div class="panel panel-warning mt">
@@ -69,15 +108,37 @@
         </div>
         <table class="table table-bordered">
             {% block crud_disallowed_table_body %}
+                <thead>
+                    <tr>
+                        <th>{{ _('Host') }}</th>
+                        <th>{{ _('Room') }}</th>
+                        <th>{{ _('User') }}</th>
+                    </tr>
+                </thead>
                 {{ parent() }}
             {% endblock %}
             {% block crud_disallowed_table_foot %}
-                {{ parent() }}
+                {% set colspan = 3 %}
+                {% if items is empty %}
+                    <tfoot>
+                        <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                            <div class="batch-actions">
+                                <a class="btn btn-default" href="{{ admin.generateUrl('index') }}">{{ icon('remove') }}{{ _('Cancel') }}</a>
+                            </div>
+                        </td></tr>
+                    </tfoot>
+                {% endif %}
             {% endblock %}
         </table>
     </div>
 {% endif %}
-{% endblock crud_disallowed_table %}
+{% endblock %}
+
+{% block crud_disallowed_table_cells %}
+    <td><span class="host_status" data-host-id="{{ item.id }}" id="host_status_{{ item.id }}"></span>&nbsp;{{ item }}</td>
+    <td>{{ item.room }}</td>
+    <td>{{ item.sambaUserDisplay }}</td>
+{% endblock %}
 
 {% block javascripts %}
     {{  parent() }}
@@ -89,6 +150,15 @@
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => host.js -->
+    {% endif %}
+    {% javascripts '@IServHostBundle/Resources/public/host.js' filter='?uglifyjs2' output='js/compiled/host.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script type="text/javascript">
+        IServ.Host.updateStatus({{ status|json_encode|raw }});
+    </script>
     <script type="text/javascript">
         // prevent requirement of input on cancel
         $('#iserv_crud_multi_select_actions_cancel').click(function() {

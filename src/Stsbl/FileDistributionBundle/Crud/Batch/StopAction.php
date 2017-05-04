@@ -61,7 +61,7 @@ class StopAction extends AbstractFileDistributionAction
                 $messages[] = $this->createFlashMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
             }
         }
-        
+
         $bag = $this->getFileDistributionManager()->disableFileDistribution($entities);
         // add messsages created during work
         foreach ($messages as $message) {
