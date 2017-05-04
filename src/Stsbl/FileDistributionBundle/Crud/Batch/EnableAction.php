@@ -88,22 +88,31 @@ class EnableAction extends AbstractFileDistributionAction
         }
         
         foreach ($entities as $key => $entity) {
+            $skipOwnHost = false;
+            
             if (empty($this->title)) {
                $messages[] = $this->createFlashMessage('error', _('Title should not be empty!'));
                $error = true;
                break;
             } 
             
+            if ($entity->getIp() === $this->crud->getRequest()->getClientIp() && count($entities) > 1) {
+                $messages[] = $this->createFlashMessage('warning', _('Skipping own host!'));
+                unset($entities[$key]);
+                $skipOwnHost = true;
+            }
+            
             if (!$this->isAllowedToExecute($entity, $user)) {
                 // remove unallowed hosts
                 $messages[] = $this->createFlashMessage('error', __('You are not allowed to enable file distribution for %s.', (string)$entity->getName()));
                 unset($entities[$key]);
-            } else {
+            } else if (!$skipOwnHost) {
                 $messages[] = $this->createFlashMessage('success', __('Enabled file distribution for %s.', (string)$entity->getName()));
             }
         }
         
-        if (!$error) {
+        // only execute rpc, if we have no errors and at least one entity
+        if (!$error && count($entities) > 0) {
             $bag = $this->getFileDistributionManager()->enableFileDistribution($entities, $this->title, $this->isolation);
         } else {
             $bag = new FlashMessageBag();

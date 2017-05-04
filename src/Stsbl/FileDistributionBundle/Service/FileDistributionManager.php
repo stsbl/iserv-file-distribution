@@ -218,7 +218,7 @@ class FileDistributionManager extends HostManager
         $newhosts = array();
         foreach ($hosts as $h) {
             /* @var $h HostEntity */
-            if (!($h instanceof HostEntity)) {
+            if (!($h instanceof Host)) {
                 throw new \InvalidArgumentException('Argument must be an instance of \Iserv\HostBundle\Entity\Host');
             }
             $ips[$h->getIp()] = $h->getId();

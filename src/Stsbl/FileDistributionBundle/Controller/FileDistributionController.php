@@ -283,25 +283,12 @@ class FileDistributionController extends CrudController
                             $action->setMessage($form->getData()['rpc_message']);
                         }
                         
-                        foreach ($data['multi'] as $k => $v) {
-                            // skip host which has the client ip, but only if there are 
-                            // more than one host selected.
-                            if ($v->getIp() === $request->getClientIp() && count($data['multi']) > 1 && $action->getName() === 'enable') {
-                                $this->addFlash('warning', _('Skipping own host!'));
-                                unset($data['multi'][$k]);
-                            }
-                        }
-                        
-                        // if the own host was the only one, it was may removed above and we would
-                        // have no more hosts.
-                        if (count($data['multi']) > 0) {
                             
-                            // Run action, collect feedback and return to list afterwards.
-                            $message = $action->execute($data['multi']);
+                        // Run action, collect feedback and return to list afterwards.
+                        $message = $action->execute($data['multi']);
 
-                            if ($message) {
-                                $this->addFlash($message);
-                            }
+                        if ($message) {
+                            $this->addFlash($message);
                         }
                         
                         return $this->redirect($this->crud->generateUrl('index'));
