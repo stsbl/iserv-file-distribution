@@ -1,3 +1,11 @@
+stsbl-iserv-file-distribution (17.05.05-1) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Only offer rooms with a controllable host in the room filter.
+  * Fixed l10n.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 05 May 2017 02:42:11 +0200
+
 stsbl-iserv-file-distribution (17.05.05-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
