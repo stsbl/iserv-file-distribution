@@ -103,7 +103,7 @@ class FileDistributionManager extends HostManager
             }
         }
         
-        return $this->shellMsg(
+        return $this->shellMsgFilter(
             'sudo',
             array_merge([self::FD_RPC, $this->securityHandler->getUser()->getUsername(), $cmd], $args),
             null,
@@ -250,5 +250,33 @@ class FileDistributionManager extends HostManager
         $this->status->merge($res);
 
         return $res;
+    }
+    
+    /**
+     * Execute a command and return a FlashMessageBag with STDOUT lines as
+     * warning messages and STDERR lines as error messages.
+     * Similar to the original from HostManager, but filter out empty
+     * stdout lines.
+     *
+     * @param string $cmd
+     * @param mixed $args
+     * @param mixed $stdin
+     * @param array $env
+     * @return FlashMessageBag STDOUT and STDERR contents as FlashMessageBag
+     */
+    protected function shellMsgFilter($cmd, $args = null, $stdin = null, $env = null)
+    {
+        $this->shell->exec($cmd, $args, $stdin, $env);
+
+        $messages = new FlashMessageBag();
+        foreach ($this->shell->getOutput() as $o) {
+            if (!empty($o)) $messages->addMessage('warning', $o);
+        }
+
+        foreach ($this->shell->getError() as $e) {
+            $messages->addMessage('error', $e);
+        }
+
+        return $messages;
     }
 }

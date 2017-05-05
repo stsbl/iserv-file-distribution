@@ -2,13 +2,15 @@
 
 use warnings;
 use strict;
+use utf8;
 use IPC::Run;
 use IServ::Conf;
 use IServ::DB;
 use IServ::Locale;
 use IServ::RPC;
 use Parallel::ForkManager;
-use sessauth;
+use Stsbl::IServ::FileDistribution;
+use Stsbl::IServ::IO;
 use Stsbl::IServ::RPC;
 use Stsbl::IServ::Security;
 umask 0002;
@@ -73,19 +75,13 @@ $ENV{PATH} = "/usr/sbin:/usr/bin:/sbin:/bin";
 
 my $pm = new Parallel::ForkManager(100);
 
-sub msg(@)
-{
-  my ($ip) = $_;
-  warn "$ip: $_" for @_;
-}
-
 sub req_ownership($)
 {
   my ($ip) = @_;
   return if $act eq "root";
   return if not IServ::DB::Do "SELECT 1 FROM file_distribution WHERE ip = ?", $ip;
   my ($curAct) =  IServ::DB::SelectRow "SELECT Act FROM file_distribution WHERE ip = ?", $ip; 
-  die "need ownership of file distribution for ip $ip" 
+  error "need ownership of file distribution for ip $ip" 
     unless $curAct eq $act;
 } 
 
@@ -122,6 +118,7 @@ if ($cmd eq "fdon")
 {
   req_priv_or_root "file_distribution";
   req_priv_or_root "computer_boot";
+  rpc_linux_req_nologin(keys %ips_online_lin);
 
   die "File distribution title invalid!" unless defined $arg and $arg =~ $m_title;
 
@@ -149,16 +146,18 @@ if ($cmd eq "fdon")
     ' click on the symbol "Auf bereitgestellte Dateien zugreifen" on the desktop.');
   run_parallel { msg Stsbl::IServ::RPC::rpc_message_unicode $_, $notice } @ips_online_win;
   run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "start"; } @ips_online_win;
-
+  run_parallel { linux_start; } keys %ips_online_lin;
 } 
 elsif ($cmd eq "fdoff") 
 {
   req_priv_or_root "file_distribution";
   req_priv_or_root "computer_boot";
   req_ownership $_ for @ips;
+  rpc_linux_req_nologin(keys %ips_online_lin);
 
   IServ::DB::Do "DELETE FROM file_distribution WHERE ip = ?", $_ for @ips;
-  run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "stop" } @ips_online_win;
+  run_parallel { msg IServ::RPC::winexe $_, IServ::RPC::netlogon "file-distribution.bat", "stop"; } @ips_online_win;
+  run_parallel { linux_stop; } keys %ips_online_lin;
   system "/usr/lib/iserv/file_distribution_cfg"; 
 }
 elsif ($cmd eq "soundoff")
@@ -167,14 +166,14 @@ elsif ($cmd eq "soundoff")
   req_priv_or_root "file_distribution";
   IServ::DB::Do "DELETE FROM computer_sound_lock WHERE IP = ?", $_ for @ips;
   IServ::DB::Do "INSERT INTO computer_sound_lock (IP, Act) VALUES (?, ?)", $_, $act for @ips;
-  run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "stop", "audiosrv", ">NUL", "2>&1" } @ips_online_win;
+  run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "stop", "audiosrv", ">NUL", "2>&1"; } @ips_online_win;
 }
 elsif ($cmd eq "soundon")
 {
   req_priv_or_root "computer_boot";
   req_priv_or_root "file_distribution";
   IServ::DB::Do "DELETE FROM computer_sound_lock WHERE IP = ?", $_ for @ips;
-  run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "start", "audiosrv", ">NUL", "2>&1" } @ips_online_win;
+  run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "start", "audiosrv", ">NUL", "2>&1"; } @ips_online_win;
 }
 else {
   die "Unknown command $cmd!";

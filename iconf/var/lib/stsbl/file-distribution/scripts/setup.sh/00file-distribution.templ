@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# File distribution linux setup script for IServ
+#
+# This file is generated automatically by iservchk.
+# It is not recommended to make any changes to this file.
+# If really necessary you can save changes permanently using:
+#   iconf save /var/lib/stsbl/file-distribution/scripts/setup.sh
+
+cleanMount()
+{
+  ## remove old lines
+  NUM=$RANDOM
+  # sed does not deletes the lines on direct editing ?:(
+  sed '/<\!-- File Distribution BEGIN -->/,/<\!-- File Distribution END -->/d' /etc/iserv/security/pam_mount.conf.xml > "/tmp/pam_mount.conf-\$NUM"".xml"
+  if [ -L "/etc/security/pam_mount.conf.xml" ]
+  then
+    cp "/tmp/pam_mount.conf-\$NUM"".xml" "/etc/iserv/security/pam_mount.conf.xml"
+  else
+    cp "/tmp/pam_mount.conf-\$NUM"".xml" "/etc/security/pam_mount.conf.xml"
+  fi
+  rm -f "/tmp/pam_mount.conf-\$NUM"".xml"
+}
+
+addMount()
+{
+  ## add new lines
+  String="/Volume\\ definitions/a"
+  String+="<\\!-- File Distribution BEGIN -->\\n"
+  String+="<volume uid=\\"10000-100000\\" fstype=\\"cifs\\" server=\\"$(hostname -d)\\" "
+  String+="path=\"file_assignment\" mountpoint=\"/home/\%(USER)/File Distribution-Assignment\" options=\""
+  String+="iocharset=utf8,dir_mode=0500\" \/>\n"
+  String+="<volume uid=\\"10000-100000\\" fstype=\\"cifs\\" server=\\"$(hostname -d)\\" "
+  String+="path=\"file_return\" mountpoint=\\"/home/\%(USER)/File Distribution-Return\\" options=\\""
+  String+="iocharset=utf8,dir_mode=0700\\" \\/>\\n"
+  String+="<\\!-- File Distribution END -->\\n"
+
+  ## assume that the pam_mount.conf.xml is linked by iserv-client
+  if [ -L "/etc/security/pam_mount.conf.xml" ]
+  then
+    sed -i "\$String" /etc/iserv/security/pam_mount.conf.xml
+  else
+    sed -i "\$String" /etc/security/pam_mount.conf.xml
+  fi
+}
+
+if [ \$1 = "start" ]
+then
+  # delete old lines
+  cleanMount
+  # add new one
+  addMount
+elif [ \$1 = "stop" ]
+then
+  # delete old lines
+  cleanMount
+else
+  echo "\$0 called with unknown mode!"
+  exit 1
+fi

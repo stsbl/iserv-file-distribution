@@ -2,8 +2,10 @@
 
 use warnings;
 use strict;
+use IPC::Run;
 use IServ::DB;
 use IServ::RPC;
+use Stsbl::IServ::FileDistribution;
 
 # run asynchronously
 fork and exit;
@@ -12,15 +14,36 @@ open STDOUT, ">/dev/null" or die $!;
 open STDERR, ">/dev/null" or die $!;
 
 my (undef, $ip) = @ARGV;
+my $linux = 0;
+
+IPC::Run::run ["/usr/lib/iserv/winping", $ip],
+  ">", IPC::Run::new_chunker("\n"),
+  sub {
+    local $_ = shift;
+    if (/^Host:\s+([\d\.]+)\s+\(\)\s+Ports:\s+22\/open\/tcp\/\/ssh\/\/+/i)
+    {
+      $linux = 1;
+    }
+};
 
 # we're async, so winexe can take as long as it wants
 winexe_set_timeout 180;
 
 if (IServ::DB::Do "SELECT 1 FROM file_distribution WHERE IP = ?", $ip)
 {
+  if ($linux)
+  {
+    local $_ = $ip;
+    linux_start;
+  } else {
     winexe $ip, netlogon "file-distribution.bat", "start";
-}
-else
-{
+  }
+} else {
+  if ($linux)
+  {
+    local $_ = $ip;
+    linux_stop;
+  } else {
     winexe $ip, netlogon "file-distribution.bat", "stop";
+  }
 }

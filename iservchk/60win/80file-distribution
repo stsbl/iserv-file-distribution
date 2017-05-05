@@ -2,3 +2,8 @@ Check /etc/samba/netlogon/file-distribution.{txt,bat}
 Check /etc/samba/netlogon/file-distribution-access-shares.bat
 
 Link /usr/share/iserv/samba/ico /etc/samba/netlogon/
+
+MkDir 0755 root:root /var/lib/stsbl/file-distribution/scripts
+Check /var/lib/stsbl/file-distribution/scripts/setup.sh
+ChPerm 0755 root:root /var/lib/stsbl/file-distribution/scripts/setup.sh
+
