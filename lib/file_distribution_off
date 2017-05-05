@@ -11,13 +11,3 @@ if (@ips > 0) {
   print "disable file distribution on: @ips\n";
   system "/usr/lib/iserv/file_distribution_rpc", "root", "fdoff", @ips;
 }
-
-chdir "/var/lib/iserv/config/file-distribution" or die $!;
-my @del = glob "*";
-
-foreach my $del (@del) {
-  # ignore iservchk stub file
-  unless ($del eq "0.0.0.0") {
-    unlink $del;
-  }
-}

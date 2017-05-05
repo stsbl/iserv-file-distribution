@@ -1,0 +1,2 @@
+#!/bin/sh
+find /var/lib/iserv/config/file-distribution -type f -size 0 -not -name 0.0.0.0 -delete
