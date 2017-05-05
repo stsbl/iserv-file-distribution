@@ -503,7 +503,7 @@ msgstr "Aktivieren"
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:84
 msgid "Enable sound on the selected hosts."
-msgstr "Ton auf den ausgewählten Geräten aktivieren."
+msgstr "Ton auf den gewählten Geräten aktivieren."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:108
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:109
@@ -522,7 +522,7 @@ msgstr "Deaktivieren"
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:85
 msgid "Disable sound on the selected hosts."
-msgstr "Ton auf den ausgewählten Geräten deaktivieren."
+msgstr "Ton auf den gewählten Geräten deaktivieren."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:58
 #, php-format
@@ -540,11 +540,11 @@ msgstr "Beenden"
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:95
 msgid "Stop the running file distribution for the selected hosts."
-msgstr "Eine laufende Dateiverteilung für die ausgewählten Geräte beenden."
+msgstr "Eine laufende Dateiverteilung für die gewählten Geräte beenden."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:42
 msgid "Switch the selected computers into exam mode."
-msgstr "Die ausgewählten Computer in den Klausurmodus versetzen."
+msgstr "Die gewählten Computer in den Klausurmodus versetzen."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:64
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:94
@@ -558,7 +558,7 @@ msgstr "%s in den Klausurmodus versetzt."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:26
 msgid "Disable exam mode on the selected computers."
-msgstr "Klausurmodus auf den ausgewählten Computern deaktivieren."
+msgstr "Klausurmodus auf den gewählten Computern deaktivieren."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:44
 #, php-format
@@ -581,7 +581,7 @@ msgstr "Starten"
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:151
 msgid "Start a file distribution for the selected hosts."
-msgstr "Eine Dateiverteilung für die ausgewählten Geräte beginnen."
+msgstr "Eine Dateiverteilung für die gewählten Geräte beginnen."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:86
 #, php-format
@@ -594,7 +594,7 @@ msgstr "Verbieten"
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:119
 msgid "Deny internet access for the selected hosts."
-msgstr "Internetzugriff für die ausgewählten Geräte sperren."
+msgstr "Internetzugriff für die gewählten Geräte sperren."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php:21
 msgid "Unlock"
@@ -620,7 +620,7 @@ msgstr "Nachricht senden"
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:103
 msgid "Send message to the selected hosts."
-msgstr "Nachricht an die ausgewählten Geräte versenden."
+msgstr "Nachricht an die gewählten Geräte versenden."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:127
 msgid "Communication"
@@ -708,8 +708,3 @@ msgstr "[Ohne Dateiverteilung]"
 msgid "Search"
 msgstr "Suchen"
 
-#~ msgid "Reset internet access of the selected hosts."
-#~ msgstr "Internetzugriff der ausgewählten Geräte zurücksetzen."
-
-#~ msgid "%s locked successful."
-#~ msgstr "%s erfolgreich gesperrt."
