@@ -70,7 +70,7 @@ class FileDistributionSpecification extends AbstractSpecification
             ->select('fr')
             ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
             ->where('fr.room = '.$dqlAlias.'.room')
-        ;        
+        ;
             
         if (true === $this->invert) {
             return $qb->expr()->andX($qb->expr()->not($qb->expr()->exists($subQb)), $dqlAlias.'.controllable = true');

@@ -550,16 +550,32 @@ class FileDistributionCrud extends AbstractCrud
         ;
         $listHandler->addListFilter($withoutFilter);
         
-        $whereCondition = 'EXISTS (SELECT fr FROM StsblFileDistributionBundle:FileDistributionRoom fr WHERE fr.room = filter.name)';
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select('fr')
+            ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
+            ->where('fr.room = filter.name')
+        ;
+        $roomCondition = $qb->expr()->exists($qb);
         if ($this->getRoomMode() === true) {
-            $whereCondition = 'NOT '.$whereCondition;
+            $roomCondition = $qb->expr()->not($roomCondition);
         }
+        
+        $qb2 = $this->getEntityManager()->createQueryBuilder();
+        $qb2
+            ->select('h')
+            ->from('StsblFileDistributionBundle:Host', 'h')
+            ->where('h.room = filter.name')
+            ->andWhere('h.controllable = true')
+        ;
+        
+        $hostCondition = $qb->expr()->exists($qb2);
         
         $listHandler
             ->addListFilter((new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'name'))->setName('room')
                     ->allowAnyAndNone()
                     ->setPickerOptions(array('data-live-search' => 'true'))
-                    ->setWhereCondition($whereCondition)
+                    ->setWhereCondition($roomCondition.' AND '.$hostCondition)
             )
             ->addListFilter((new Filter\ListSearchFilter(_('Search'), [
                 'name' => FilterSearch::TYPE_TEXT
