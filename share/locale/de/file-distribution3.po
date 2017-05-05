@@ -428,7 +428,7 @@ msgstr "Zurücksetzen"
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:93
 msgid "Reset internet access of the selected hosts to the default value."
 msgstr ""
-"Internetzugriff für die ausgewählten Geräte auf den Standardwert "
+"Internetzugriff für die gewählten Geräte auf den Standardwert "
 "zurücksetzten."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:117
