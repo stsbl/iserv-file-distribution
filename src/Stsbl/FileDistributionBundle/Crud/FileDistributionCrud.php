@@ -526,8 +526,8 @@ class FileDistributionCrud extends AbstractCrud
     public function configureListFilter(ListHandler $listHandler) 
     {
         $listHandler
-            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: yes'), array('internet' => true)))->setName('has-internet')->setGroup(_('Internet')))
-            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: no'), array('internet' => false)))->setName('has-no-internet')->setGroup(_('Internet')))
+            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: yes'), array('internet' => true, 'overrideRoute' => null)))->setName('has-internet')->setGroup(_('Internet')))
+            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: no'), array('internet' => false,'overrideRoute' => null)))->setName('has-no-internet')->setGroup(_('Internet')))
             ->addListFilter((new Filter\ListFilterByFilter(_('Internet: granted'), array('overrideRoute' => true)))->setName('internet-is-granted')->setGroup(_('Internet')))
             ->addListFilter((new Filter\ListFilterByFilter(_('Internet: forbidden'), array('overrideRoute' => false)))->setName('internet-is-forbidden')->setGroup(_('Internet')))
         ;
