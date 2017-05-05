@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.05.05-3) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed missing dollar sign escaping, which let iservchk repair the setup script at every run.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 05 May 2017 10:22:42 +0200
+
 stsbl-iserv-file-distribution (17.05.05-2) experimental; urgency=medium
 
   [ Felix Jacobi ]
