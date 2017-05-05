@@ -1,10 +1,9 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+// src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -33,36 +32,35 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 
 /**
- * FileDistribution stop batch
+ * FileDistribution reset internet batch
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
- * @license MIT license <https://opensource.org/licenses/MIT>
+ * @license MIT license <https://opensourc.org/licenses/MIT>
  */
-class StopAction extends AbstractFileDistributionAction
+class ResetInternetAction extends AbstractFileDistributionAction
 {
-    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    protected $privileges = Privilege::INET_ROOMS;
     
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
-    public function execute(ArrayCollection $entities) 
-    { 
-        /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
-        $user = $this->crud->getUser();
+    public function execute(ArrayCollection $entities)
+    {
+        /* @var $entities \Stsbl\FileDistributionBundle\Entity\Host[] */
         $messages = [];
         
-        foreach ($entities as $key => $entity) {
-            /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
-            if (!$this->isAllowedToExecute($entity, $user)) {
-                // remove unallowed hosts
-                $messages[] = $this->createFlashMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
-                unset($entities[$key]);
-            } else {
-                $messages[] = $this->createFlashMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
-            }
+        foreach ($entities as $e) {
+            $e->setOverrideRoute(null);
+            $e->setOverrideUntil(null);
+            $e->setOverrideBy(null);
+            
+            $this->crud->getEntityManager()->persist($e);
+            $this->crud->getEntityManager()->flush();
+            
+            $messages[] = $this->createFlashMessage('success', __('Reset internet access for %s.', (string)$e));
         }
-
-        $bag = $this->getFileDistributionManager()->disableFileDistribution($entities);
+        
+        $bag = $this->getFileDistributionManager()->activation();
         // add messsages created during work
         foreach ($messages as $message) {
             $bag->add($message);
@@ -70,13 +68,13 @@ class StopAction extends AbstractFileDistributionAction
         
         return $bag;
     }
-
+    
     /**
      * {@inheritodc}
      */
     public function getName()
     {
-        return 'stop';
+        return 'inetreset';
     }
     
     /**
@@ -84,7 +82,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getLabel() 
     {
-        return _('Stop');
+        return _('Reset');
     }
     
     /**
@@ -92,7 +90,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getTooltip() 
     {
-        return _('Stop the running file distribution for the selected hosts.');
+        return _('Reset internet access of the selected hosts.');
     }
 
     /**
@@ -100,7 +98,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getListIcon()
     {
-        return 'pro-disk-save';
+        return 'pro-rewind';
     }
     
     /**
@@ -108,22 +106,23 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getConfirmClass()
     {
-        return 'danger';
+        return 'primary';
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getGroup()
     {
-        return _('File distribution');
+        return _('Internet');
     }
+
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {
-        return $this->crud->isAllowedToStop($object, $user);
+        return $this->crud->getAuthorizationChecker()->isGranted(Privilege::INET_ROOMS);
     }
 }

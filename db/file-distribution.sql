@@ -38,5 +38,5 @@ CREATE TABLE computer_sound_lock (
 );
 
 GRANT USAGE, SELECT ON "file_distribution_id_seq", "computer_sound_lock_id_seq", "file_distribution_rooms_id_seq" TO "symfony";
-GRANT SELECT ON "file_distribution", "computer_sound_lock" TO "symfony";
+GRANT SELECT ON "file_distribution", "computer_sound_lock", "nacs" TO "symfony";
 GRANT SELECT, INSERT, UPDATE, DELETE ON "file_distribution_rooms" TO "symfony";

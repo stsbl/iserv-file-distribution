@@ -40,25 +40,47 @@
                 <span class="fd-help-text">{{ _('For the users who are logging in on this hosts, there will created two addtional network drives for file distribution assignment and return.') }}</span>
             </td></tr>
             <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
-                {{ form_widget(confirmForm.form.title) }}
-                <span class="help-block">{{ _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')|escape('html') }}</span>
+                {{ form_label(confirmForm.form.title) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.title) }}
+                    <span class="help-block">{{ _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')|escape('html') }}</span>
+                </div>
             </td></tr>
             <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                <div class="col-lg-2">
+                </div>
+                <div class="col-lg-10">
                     <div class="checkbox">
                         <label for="iserv_crud_multi_select_isolation">
                             {{ form_widget(confirmForm.form.isolation) }}&nbsp;{{ _('Enable host isolation') }}
                         </label>
                     </div>
-                <span class="help-block">{{ _('Enable host isolation if you want to prevent that users can exchange files by sharing their accounts.') }}</span>
+                    <span class="help-block">{{ _('Enable host isolation if you want to prevent that users can exchange files by sharing their accounts.') }}</span>
+               </div>
+            </td></tr>
+        {% endif %}
+        {% if confirmForm.form.actions.exam is defined %}
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_label(confirmForm.form.exam_title) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.exam_title) }}
+                </div>
             </td></tr>
         {% endif %}
         {% if confirmForm.form.actions.message is defined %}
             <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
-                    <div class="checkbox">
-                        <label for="iserv_crud_multi_select_rpc_message">
-                            {{ form_widget(confirmForm.form.rpc_message) }}
-                        </label>
-                    </div>
+                {{ form_label(confirmForm.form.rpc_message) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.rpc_message) }}
+                </div>
+            </td></tr>
+        {% endif %}
+        {% if (confirmForm.form.actions.inetgrant is defined) or (confirmForm.form.actions.inetdeny is defined) %}
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_label(confirmForm.form.inet_duration) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.inet_duration) }}
+                </div> 
             </td></tr>
         {% endif %}
         <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}> 

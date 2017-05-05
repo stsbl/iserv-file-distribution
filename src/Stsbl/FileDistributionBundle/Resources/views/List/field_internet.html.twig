@@ -12,6 +12,8 @@
         {{ _('Yes') }}
     {% elseif state == 'no' %}
         {{ _('No') }}
+    {% elseif state == 'yes_nac' %}
+        {{ _('Yes') ~ ' (NAC)' }}
     {% elseif state == 'yes_priv' %}
         {{ _('Yes') ~ ' (' ~ _('Privilege') ~ ')' }}
     {% elseif state == 'no_priv' %}
@@ -39,5 +41,7 @@
         {{ _('Yes') ~ ' (' ~ _('Privilege') ~ ')' }}
     {% elseif state == 'no_priv' %}
         {{ _('No') ~ ' (' ~ _('Privilege') ~ ')' }}
+    {% elseif state == 'yes_nac' %}
+        {{ _('Yes') ~ ' (NAC)' }}
     {% endif %}
 {% endblock %}

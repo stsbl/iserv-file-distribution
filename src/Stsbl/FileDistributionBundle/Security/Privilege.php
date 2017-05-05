@@ -37,4 +37,8 @@ final class Privilege
     const USE_FD = 'PRIV_FILE_DISTRIBUTION';
     
     const FD_ROOMS = 'PRIV_FILE_DISTRIBUTION_ROOMS';
+    
+    const INET_ROOMS = 'PRIV_INET_ROOMS';
+    
+    const EXAM = 'PRIV_EXAM';
 }

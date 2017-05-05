@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -93,10 +94,12 @@ class FileDistributionController extends CrudController
                 
                 $multiSelectForm
                     ->add('title', TextType::class, [
-                        'label' => false,
+                        'label' => _('File distribution title'),
+                        'constraints' => [new NotBlank()],
                         'attr' => [
                             'placeholder' => _('Title for this file distribution'),
-                            'help_text' => _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')
+                            'help_text' => _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.'),
+                            'required' => 'required'
                         ]
                     ]);
                     
@@ -117,6 +120,30 @@ class FileDistributionController extends CrudController
                             'rows' => 10,
                             'cols' => 230,
                             'placeholder' => _('Enter a message...')
+                        ]
+                    ])
+                    ->add('inet_duration', ChoiceType::class, [
+                        'label' => _('Duration'),
+                        'constraints' => [new NotBlank()],
+                        'choices' => [
+                            __n('One minute', '%d minutes', 15, 15) => 15,
+                            __n('One minute', '%d minutes', 30, 30) => 30,
+                            __n('One minute', '%d minutes', 45, 45) => 45,
+                            __n('One hour', '%d hours', 1, 1) => 60,
+                            __n('One hour', '%d hours', 1.5, 1.5) => 90,
+                            __n('One hour', '%d hours', 3, 3) => 180,
+                            _('Today') => 'today'
+                        ],
+                        'attr' => [
+                            'required' => 'required'
+                        ]
+                    ])
+                    ->add('exam_title', TextType::class, [
+                        'label' => _('Exam title'),
+                        'constraints' => [new NotBlank()],
+                        'attr' => [
+                            'placeholder' => _('Title for this exam'),
+                            'required' => 'required'
                         ]
                     ])
                 ;
@@ -201,6 +228,17 @@ class FileDistributionController extends CrudController
                 if (!$confirmForm->get('actions')->has('message')) {
                     $confirmForm->remove('rpc_message');
                 }
+                
+                // display inet duration only on internet actions
+                if (!$confirmForm->get('actions')->has('inetgrant') && 
+                    !$confirmForm->get('actions')->has('inetdeny')) {
+                    $confirmForm->remove('inet_duration');
+                }
+                
+                // display exam title only on enable exam
+                if (!$confirmForm->get('actions')->has('exam')) {
+                    $confirmForm->remove('exam_title');
+                }
 
             } else {
                 $this->addFlash('warning', _('No host selected!'));
@@ -281,6 +319,12 @@ class FileDistributionController extends CrudController
                         } else if ($action->getName() === 'message') {
                             // set message
                             $action->setMessage($form->getData()['rpc_message']);
+                        } else if ($action->getName() === 'inetgrant' || $action->getName() === 'inetdeny') {
+                            // set until
+                            $action->setUntil($form->getData()['inet_duration']);                            
+                        } else if ($action->getName() === 'exam') {
+                            // set exam title
+                            $action->setTitle($form->getData()['exam_title']);
                         }
                         
                             
@@ -298,7 +342,7 @@ class FileDistributionController extends CrudController
                 throw new \RuntimeException('No valid batch action was found on submit!');
             }
         }
-
+        
         return $this->redirect($this->crud->generateUrl('index'));
     }
     

@@ -74,7 +74,7 @@ class SoundLockAction extends AbstractFileDistributionAction
      */
     public function getLabel() 
     {
-        return _('Disable sound');
+        return _('Disable');
     }
     
     /**
@@ -104,8 +104,8 @@ class SoundLockAction extends AbstractFileDistributionAction
     /**
      * {@inheritdoc}
      */
-    public function requiresConfirmation() 
+    public function getGroup() 
     {
-        return false;
+        return _('Sound');
     }
 }

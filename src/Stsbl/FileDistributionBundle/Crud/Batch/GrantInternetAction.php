@@ -1,10 +1,9 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+// src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -33,36 +32,60 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 
 /**
- * FileDistribution stop batch
+ * FileDistribution grant internet batch
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
- * @license MIT license <https://opensource.org/licenses/MIT>
+ * @license MIT license <https://opensourc.org/licenses/MIT>
  */
-class StopAction extends AbstractFileDistributionAction
+class GrantInternetAction extends AbstractFileDistributionAction
 {
-    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    protected $privileges = Privilege::INET_ROOMS;
     
     /**
-     * {@inheritodc}
+     * @var integer|string
      */
-    public function execute(ArrayCollection $entities) 
-    { 
-        /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
-        $user = $this->crud->getUser();
+    private $until;
+    
+    /**
+     * Set until
+     * 
+     * @param integer|string $until
+     */
+    public function setUntil($until)
+    {
+        $this->until = $until;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function execute(ArrayCollection $entities)
+    {
+        /* @var $entities \Stsbl\FileDistributionBundle\Entity\Host[] */
         $messages = [];
         
-        foreach ($entities as $key => $entity) {
-            /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
-            if (!$this->isAllowedToExecute($entity, $user)) {
-                // remove unallowed hosts
-                $messages[] = $this->createFlashMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
-                unset($entities[$key]);
-            } else {
-                $messages[] = $this->createFlashMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
-            }
+        if ($this->until === null) {
+            throw new \InvalidArgumentException('until is not defined! You need to set it via setUntil()!');
         }
-
-        $bag = $this->getFileDistributionManager()->disableFileDistribution($entities);
+        
+        if ($this->until === 'today') {
+            $overrideUntil = new \DateTime(date('y-m-d 23:59 O', time()));
+        } else {
+            $overrideUntil = new \DateTime(date('y-m-d H:i O', time() + $this->until * 60));
+        }
+        
+        foreach ($entities as $e) {
+            $e->setOverrideRoute(true);
+            $e->setOverrideUntil($overrideUntil);
+            $e->setOverrideBy($this->crud->getUser()->getUsername());
+            
+            $this->crud->getEntityManager()->persist($e);
+            $this->crud->getEntityManager()->flush();
+            
+            $messages[] = $this->createFlashMessage('success', __('Granted internet access for %s.', (string)$e));
+        }
+        
+        $bag = $this->getFileDistributionManager()->activation();
         // add messsages created during work
         foreach ($messages as $message) {
             $bag->add($message);
@@ -70,13 +93,13 @@ class StopAction extends AbstractFileDistributionAction
         
         return $bag;
     }
-
+    
     /**
      * {@inheritodc}
      */
     public function getName()
     {
-        return 'stop';
+        return 'inetgrant';
     }
     
     /**
@@ -84,7 +107,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getLabel() 
     {
-        return _('Stop');
+        return _('Grant');
     }
     
     /**
@@ -92,7 +115,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getTooltip() 
     {
-        return _('Stop the running file distribution for the selected hosts.');
+        return _('Grant internet access to the selected hosts.');
     }
 
     /**
@@ -100,7 +123,7 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getListIcon()
     {
-        return 'pro-disk-save';
+        return 'pro-ok-sign';
     }
     
     /**
@@ -108,22 +131,23 @@ class StopAction extends AbstractFileDistributionAction
      */
     public function getConfirmClass()
     {
-        return 'danger';
+        return 'primary';
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getGroup()
     {
-        return _('File distribution');
+        return _('Internet');
     }
+
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {
-        return $this->crud->isAllowedToStop($object, $user);
+        return $this->crud->getAuthorizationChecker()->isGranted(Privilege::INET_ROOMS);
     }
 }

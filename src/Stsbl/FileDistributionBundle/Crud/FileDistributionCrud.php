@@ -3,9 +3,7 @@
 namespace Stsbl\FileDistributionBundle\Crud;
 
 use Doctrine\ORM\EntityManager;
-use IServ\CoreBundle\Security\Core\SecurityHandler;
 use IServ\CoreBundle\Service\Config;
-use IServ\CoreBundle\Service\Shell;
 use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Table\Filter;
 use IServ\CrudBundle\Table\ListHandler;
@@ -452,20 +450,52 @@ class FileDistributionCrud extends AbstractCrud
     {
         parent::loadBatchActions();
         
-        $enableAction = new Batch\EnableAction($this);
-        $this->batchActions->add($enableAction);
+        /*
+         * This section can also be called if we have no token set.
+         * In this case the isGranted calls will not work and throw
+         * an exception.
+         */
+        $hasToken = $this->getContainer()->get('security.token_storage')->getToken() != null;
         
-        $stopAction = new Batch\StopAction($this);
-        $this->batchActions->add($stopAction);
-
-        $soundUnlockAction = new Batch\SoundUnlockAction($this);
-        $this->batchActions->add($soundUnlockAction);
+        // Lock
+        if (!$hasToken || $this->isLockAvailable() && $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::LOCK)) {
+            $this->batchActions->add(new Batch\LockAction($this));
+            $this->batchActions->add(new Batch\UnlockAction($this));
+        }
+        // Internet
+        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::INET_ROOMS)) {
+            $this->batchActions->add(new Batch\GrantInternetAction($this));
+            $this->batchActions->add(new Batch\DenyInternetAction($this));
+            $this->batchActions->add(new Batch\ResetInternetAction($this));
+        }
+        // Communication
+        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::BOOT)) {
+            $this->batchActions->add(new Batch\MessageAction($this));
+        }
+        // Sound
+        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::BOOT) && $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::USE_FD)) {
+            $this->batchActions->add(new Batch\SoundUnlockAction($this));
+            $this->batchActions->add(new Batch\SoundLockAction($this));
+        }
+        // Start & Shutdown
+        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::BOOT)) {
+            $this->batchActions->add(new Batch\PowerOnAction($this));
+            $this->batchActions->add(new Batch\LogOffAction($this));
+            $this->batchActions->add(new Batch\RebootAction($this));
+            $this->batchActions->add(new Batch\ShutdownAction($this));
+            $this->batchActions->add(new Batch\ShutdownCancelAction($this));
+        }
+        // File Distribution
+        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::BOOT) && $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::USE_FD)) {
+            $this->batchActions->add(new Batch\EnableAction($this));
+            $this->batchActions->add(new Batch\StopAction($this));
+        }
         
-        $soundLockAction = new Batch\SoundLockAction($this);
-        $this->batchActions->add($soundLockAction);
-        
-        $messageAction = new Batch\MessageAction($this);
-        $this->batchActions->add($messageAction);
+        // Exam Mode
+        if (!$hasToken || $this->isExamModeAvailable() && $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::EXAM)) {
+            $this->batchActions->add(new Batch\ExamAction($this));
+            $this->batchActions->add(new Batch\ExamOffAction($this));
+        }
         
         return $this->batchActions;
     }
@@ -503,8 +533,14 @@ class FileDistributionCrud extends AbstractCrud
         ;
         
         if ($this->isExamModeAvailable()) {
-                
-            $examFilter = new Filter\ListExpressionFilter(_('Internet: exam mode'), 'EXISTS (SELECT em FROM StsblFileDistributionBundle:Exam em WHERE em.ip = parent.ip)');
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb
+                ->select('e')
+                ->from('StsblFileDistributionBundle:Exam', 'em')
+                ->where('em.ip = parent.ip')
+            ;
+            
+            $examFilter = new Filter\ListExpressionFilter(_('Internet: exam mode'), $qb->expr()->exists($qb));
             
             $examFilter
                 ->setName('internet-exam')
@@ -525,7 +561,15 @@ class FileDistributionCrud extends AbstractCrud
             
             $fileDistributionFilterHash[$f->getPlainTitle()] = true;
             
-            $fdFilter = new Filter\ListExpressionFilter(__('File distribution: %s', $f->getPlainTitle()), 'EXISTS (SELECT e FROM StsblFileDistributionBundle:FileDistribution e WHERE e.ip = parent.ip AND e.title = :title)');
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb
+                ->select('e')
+                ->from('StsblFileDistributionBundle:FileDistribution', 'e')
+                ->where('e.ip = parent.ip')
+                ->andWhere('e.title = :title')
+            ;
+            
+            $fdFilter = new Filter\ListExpressionFilter(__('File distribution: %s', $f->getPlainTitle()), $qb->expr()->exists($qb));
             
             $fdFilter
                 ->setParameters(['title' => $f->getPlainTitle()])
@@ -536,14 +580,21 @@ class FileDistributionCrud extends AbstractCrud
             $listHandler->addListFilter($fdFilter);
         }
         
-        $withFilter = new Filter\ListExpressionFilter(_('[With file distribution]'), 'EXISTS (SELECT e FROM StsblFileDistributionBundle:FileDistribution e WHERE e.ip = parent.ip)');    
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select('e')
+            ->from('StsblFileDistributionBundle:FileDistribution', 'e')
+            ->where('e.ip = parent.ip')
+        ;
+        
+        $withFilter = new Filter\ListExpressionFilter(_('[With file distribution]'), $qb->expr()->exists($qb));    
         $withFilter
             ->setName(sprintf('file-distribution-with'))
             ->setGroup(_('File distribution'))
         ;
         $listHandler->addListFilter($withFilter);
         
-        $withoutFilter = new Filter\ListExpressionFilter(_('[Without file distribution]'), 'NOT EXISTS (SELECT e FROM StsblFileDistributionBundle:FileDistribution e WHERE e.ip = parent.ip)');   
+        $withoutFilter = new Filter\ListExpressionFilter(_('[Without file distribution]'), $qb->expr()->not($qb->expr()->exists($qb)));   
         $withoutFilter
             ->setName(sprintf('file-distribution-without'))
             ->setGroup(_('File distribution'))
@@ -619,6 +670,36 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
+     * Check if old Internet GUI is installed on the IServ.
+     * 
+     * @todo Switch to hasBundle() or something similar, when the Internet GUI is ported to IServ 3 (?).
+     * 
+     * @return boolean
+     */
+    private function isInternetAvailable()
+    {
+        return file_exists('/var/lib/dpkg/info/iserv-internet.list');
+    }
+    
+    /**
+     * Checks if internet is granted to an ip via a NAC.
+     * 
+     * @param string $ip
+     * @return boolean
+     */
+    private function isInternetGrantedViaNac($ip)
+    {
+        $er = $this->getEntityManager()->getRepository('StsblFileDistributionBundle:Nac');
+        $nac = $er->findOneBy(['ip' => $ip]);
+        
+        if ($nac === null) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
      * Get current internet state (yes, now, allowed, forbidden) for Host by his ip address.
      * 
      * @param string $ip
@@ -676,15 +757,17 @@ class FileDistributionCrud extends AbstractCrud
         
         if ($overrideRoute === false) {
             return 'forbidden';
-        } elseif ($internetAlwaysDenied === true) {
+        } else if ($internetAlwaysDenied === true) {
             return 'no_priv';
-        } elseif ($overrideRoute === true) {
+        } else if ($overrideRoute === true) {
             return 'granted';
-        } elseif ($internetAlwaysGranted === true) {
+        } else if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($ip) === true) {
+            return 'yes_nac';
+        } else if ($internetAlwaysGranted === true) {
             return 'yes_priv';
-        } elseif ($internet === true) {
+        } else if ($internet === true) {
             return 'yes';
-        } elseif ($internet === false) {
+        } else if ($internet === false) {
             return 'no';
         }
     }

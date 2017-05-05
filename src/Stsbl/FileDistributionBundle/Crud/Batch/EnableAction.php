@@ -140,7 +140,7 @@ class EnableAction extends AbstractFileDistributionAction
      */
     public function getLabel() 
     {
-        return _('Start file distribution');
+        return _('Start');
     }
     
     /**
@@ -156,7 +156,7 @@ class EnableAction extends AbstractFileDistributionAction
      */
     public function getListIcon()
     {
-        return 'pro-folder-plus';
+        return 'pro-disk-open';
     }
     
     /**
@@ -168,7 +168,15 @@ class EnableAction extends AbstractFileDistributionAction
     }
 
     /**
-     * @param CrudInterface $fileDistribution
+     * {@inheritdoc}
+     */
+    public function getGroup()
+    {
+        return _('File distribution');
+    }
+
+    /**
+     * @param CrudInterface $object
      * @param UserInterface $user
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 

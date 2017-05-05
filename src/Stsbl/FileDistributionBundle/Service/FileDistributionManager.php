@@ -50,6 +50,8 @@ class FileDistributionManager extends HostManager
     const FD_SOUNDOFF = 'soundoff';
     // Constants for netrpc
     const NETRPC_MSG = 'msg';
+    const NETRPC_EXAM_ON = 'examon';
+    const NETRPC_EXAM_OFF = 'examoff';
     
     /**
      * Execute netrpc command.
@@ -127,7 +129,7 @@ class FileDistributionManager extends HostManager
     /**
      * Disable file distribution on hosts.
      * 
-     * @param Host\ArrayAccess $hosts
+     * @param Host|\ArrayAccess $hosts
      * @return FlashMessageBag
      */
     public function disableFileDistribution($hosts)
@@ -149,7 +151,7 @@ class FileDistributionManager extends HostManager
     /**
      * Enable sound on hosts.
      * 
-     * @param Host\ArrayAccess $hosts
+     * @param Host|\ArrayAccess $hosts
      * @return FlashMessageBag
      */
     public function soundUnlock($hosts)
@@ -158,7 +160,7 @@ class FileDistributionManager extends HostManager
     }
     
     /**
-     * Send message to hosts
+     * Send message to hosts.
      * 
      * @param Host\ArrayAccess $hosts
      * @param string $msg
@@ -167,6 +169,29 @@ class FileDistributionManager extends HostManager
     public function msg($hosts, $msg)
     {
         return $this->netrpc(self::NETRPC_MSG, $this->getIpsForHosts($hosts), $msg);
+    }
+    
+    /**
+     * Enable exam mode on hosts.
+     * 
+     * @param Host|\ArrayAccess $hosts
+     * @param string $title
+     * @return FlashMessageBag
+     */
+    public function examOn($hosts, $title)
+    {
+        return $this->netrpc(self::NETRPC_EXAM_ON, $this->getIpsForHosts($hosts), $title);
+    }
+
+    /**
+     * Disable exam mode on hosts.
+     * 
+     * @param Host|\ArrayAccess $hosts
+     * @return FlashMessageBag
+     */
+    public function examOff($hosts)
+    {
+        return $this->netrpc(self::NETRPC_EXAM_OFF, $this->getIpsForHosts($hosts));
     }
     
     /**
@@ -277,6 +302,71 @@ class FileDistributionManager extends HostManager
             $messages->addMessage('error', $e);
         }
 
+        return $messages;
+    }
+
+    /**
+     * Execute a command and return a FlashMessageBag with STDERR 
+     * lines as error messages.
+     * Similar to the original from HostManager, but only show
+     * STDERR lines.
+     *
+     * @param string $cmd
+     * @param mixed $args
+     * @param mixed $stdin
+     * @param array $env
+     * @return FlashMessageBag STDERR content as FlashMessageBag
+     */
+    protected function shellMsgError($cmd, $args = null, $stdin = null, $env = null)
+    {
+        $this->shell->exec($cmd, $args, $stdin, $env);
+
+        $messages = new FlashMessageBag();
+        foreach ($this->shell->getError() as $e) {
+            $messages->addMessage('error', $e);
+        }
+
+        return $messages;
+    }
+    
+    /**
+     * Execute activation command.
+     * 
+     * @return FlashMessageBag STDOUT and STDERR contents as FlashMessageBag
+     */
+    public function activation()
+    {
+        return $this->shellMsgError('sudo', '/usr/lib/iserv/activation');
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function wol($hosts)
+    {
+        $messages = new FlashMessageBag();
+        foreach ($hosts as $h) {
+            if ($mac = $h->getMac()) {
+                // determine broadcast route to the host
+                if (!($route = $this->ifBcast($this->findRoute($h->getIp())))) {
+                    $route = $h->getIp();
+                }
+
+                $this->status->update($h, HostStatus::WOL);
+
+                // send a WOL packet
+                $messages->addAll(
+                    $this->shellMsgError('wakeonlan', array('-i', $route, $mac))
+                );
+            } else {
+                $messages->addMessage(
+                    "warning",
+                    _("Cannot wake host \"%host%\" because it has no MAC address set."),
+                    ["%host%" => $h->getName()]
+                );
+            }
+        }
+        
         return $messages;
     }
 }

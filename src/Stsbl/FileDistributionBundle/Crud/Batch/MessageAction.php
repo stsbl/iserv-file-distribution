@@ -118,4 +118,12 @@ class MessageAction extends AbstractFileDistributionAction
     {
         return 'primary';
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroup()
+    {
+        return _('Communication');
+    }
 }
