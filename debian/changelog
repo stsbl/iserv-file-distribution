@@ -1,21 +1,24 @@
 stsbl-iserv-file-distribution (17.05.05-0) experimental; urgency=medium
 
-  * UNRELEASED
-
- -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 05 May 2017 02:11:10 +0200
-
-stsbl-iserv-file-distribution (17.05.01-5) experimental; urgency=medium
-
+  [ Felix Jacobi ]
   * Removed not required parameter format from folder link.
   * Added new FileDistributionManager based on HostManager.
   * Removed old rpc service.
-  * Reworked /win/*nix detection of rpc command.
+  * Reworked win/linux detection of rpc command.
   * Show more information in confirm batch (ping, room and  user).
   * FileDistributionManager: Replace broken ping implementation.
   * Moved own host check from controller to batch action.
   * Removed services not longer required services from FileDistributionCrud.
   * Removed uneeded methods from FileDistributionCrud.
   * Added linux support.
+
+  iserv: Dieses Update enthält kleinere Verbesserungen: Es werden nun im 
+    Bestätigungsdialog mehr Informationen zu den ausgewählten Geräten
+    angezeigt: Dort sind nun zusätzlich der aktuelle Online-Status, der
+    Raum des Gerätes und der angemeldete Benutzer sichtbar. Außerdem wurde mit
+    diesem Update Unterstützung für Linux-Clients hinzugefügt, diese können nun
+    genau wie Windows-Clients ohne Einschränkungen an Dateiverteilungen
+    teilnehmen.
 
  -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 05 May 2017 02:11:01 +0200
 
