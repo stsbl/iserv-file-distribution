@@ -525,19 +525,106 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function configureListFilter(ListHandler $listHandler) 
     {
-        $listHandler
-            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: yes'), array('internet' => true, 'overrideRoute' => null)))->setName('has-internet')->setGroup(_('Internet')))
-            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: no'), array('internet' => false,'overrideRoute' => null)))->setName('has-no-internet')->setGroup(_('Internet')))
-            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: granted'), array('overrideRoute' => true)))->setName('internet-is-granted')->setGroup(_('Internet')))
-            ->addListFilter((new Filter\ListFilterByFilter(_('Internet: forbidden'), array('overrideRoute' => false)))->setName('internet-is-forbidden')->setGroup(_('Internet')))
-        ;
+        $yesExpr = '(parent.internet = true';
+        
+        // add condition for NAC activation
+        if ($this->isInternetAvailable()) {
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb
+                ->select('n')
+                ->from('StsblFileDistributionBundle:Nac', 'n')
+                ->where('n.ip = parent.ip')
+            ;
+            
+            $yesExpr .= ' OR '.$qb->expr()->exists($qb);
+        }
+        
+        $yesExpr .= ') AND '.$qb->expr()->isNull('parent.overrideRoute');
+        
+        if ($this->isExamModeAvailable()) {
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb
+                ->select('ex')
+                ->from('StsblFileDistributionBundle:Exam', 'ex')
+                ->where('ex.ip = parent.ip')
+            ;
+            
+            $yesExpr .= ' AND '.$qb->expr()->not($qb->expr()->exists($qb));
+        }
+        
+        $internetYesFilter = new Filter\ListExpressionFilter(_('Internet: yes'), $yesExpr);
+        $internetYesFilter
+                ->setName('has-internet')
+                ->setGroup(_('Internet'));
+            
+        $listHandler->addListFilter($internetYesFilter);
+        
+        $noExpr = '(parent.internet = false AND '.$qb->expr()->isNull('parent.overrideRoute').')';
+        
+        if ($this->isExamModeAvailable()) {
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb
+                ->select('ex2')
+                ->from('StsblFileDistributionBundle:Exam', 'ex2')
+                ->where('ex2.ip = parent.ip')
+            ;
+            
+            $noExpr .= ' AND '.$qb->expr()->not($qb->expr()->exists($qb));
+        }
+        
+        $internetNoFilter = new Filter\ListExpressionFilter(_('Internet: no'), $noExpr);
+        $internetNoFilter
+                ->setName('has-no-internet')
+                ->setGroup(_('Internet'));
+            
+        $listHandler->addListFilter($internetNoFilter);
+        
+        $grantedExpr = 'parent.overrideRoute = true';
+
+        if ($this->isExamModeAvailable()) {
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb
+                ->select('ex3')
+                ->from('StsblFileDistributionBundle:Exam', 'ex3')
+                ->where('ex3.ip = parent.ip')
+            ;
+            
+            $grantedExpr .= ' AND '.$qb->expr()->not($qb->expr()->exists($qb));
+        }
+        
+        $internetGrantedFilter = new Filter\ListExpressionFilter(_('Internet: granted'), $grantedExpr);
+        $internetGrantedFilter
+                ->setName('internet-is-granted')
+                ->setGroup(_('Internet'));
+            
+        $listHandler->addListFilter($internetGrantedFilter);
+        
+        $deniedExpr = 'parent.overrideRoute = false';
+
+        if ($this->isExamModeAvailable()) {
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb
+                ->select('ex4')
+                ->from('StsblFileDistributionBundle:Exam', 'ex4')
+                ->where('ex4.ip = parent.ip')
+            ;
+            
+            $deniedExpr .= ' AND '.$qb->expr()->not($qb->expr()->exists($qb));
+        }
+        
+        $internetDeniedFilter = new Filter\ListExpressionFilter(_('Internet: forbidden'), $deniedExpr);
+        $internetDeniedFilter
+                ->setName('internet-is-forbidden')
+                ->setGroup(_('Internet'));
+            
+        $listHandler->addListFilter($internetDeniedFilter);
         
         if ($this->isExamModeAvailable()) {
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
                 ->select('e')
-                ->from('StsblFileDistributionBundle:Exam', 'em')
-                ->where('em.ip = parent.ip')
+                ->from('StsblFileDistributionBundle:Exam', 'e')
+                ->where('e.ip = parent.ip')
             ;
             
             $examFilter = new Filter\ListExpressionFilter(_('Internet: exam mode'), $qb->expr()->exists($qb));

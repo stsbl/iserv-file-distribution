@@ -90,7 +90,7 @@ class ResetInternetAction extends AbstractFileDistributionAction
      */
     public function getTooltip() 
     {
-        return _('Reset internet access of the selected hosts.');
+        return _('Reset internet access of the selected hosts to the default value.');
     }
 
     /**
