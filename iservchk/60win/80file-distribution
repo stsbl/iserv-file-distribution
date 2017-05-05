@@ -7,3 +7,5 @@ MkDir 0755 root:root /var/lib/stsbl/file-distribution/scripts
 Check /var/lib/stsbl/file-distribution/scripts/setup.sh
 ChPerm 0755 root:root /var/lib/stsbl/file-distribution/scripts/setup.sh
 
+Shell "/var/lib/iserv/config/file-distribution/0.0.0.0 must be empty"
+  /usr/lib/iserv/file_distribution_config_empty
