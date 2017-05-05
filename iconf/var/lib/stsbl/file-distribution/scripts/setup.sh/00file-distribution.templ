@@ -10,7 +10,7 @@
 cleanMount()
 {
   ## remove old lines
-  NUM=$RANDOM
+  NUM=\$RANDOM
   # sed does not deletes the lines on direct editing ?:(
   sed '/<\!-- File Distribution BEGIN -->/,/<\!-- File Distribution END -->/d' /etc/iserv/security/pam_mount.conf.xml > "/tmp/pam_mount.conf-\$NUM"".xml"
   if [ -L "/etc/security/pam_mount.conf.xml" ]
