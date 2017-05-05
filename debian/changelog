@@ -1,3 +1,15 @@
+stsbl-iserv-file-distribution (17.05.05-2) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Added support for controlling internet, start & shutdown and exam mode via file distribution interface.
+  * Added detection of internet access which is granted via NAC.
+
+  iserv: Sämtliche Operationen, die über die Rechnersteuerung gesteuert werden
+    können (Internetzugriff, Hoch-/Herunterfahren und der Klausurmodus) können
+    nun auch über die Oberfläche der Dateiverteilung gesteuert werden.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 05 May 2017 10:09:10 +0200
+
 stsbl-iserv-file-distribution (17.05.05-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
