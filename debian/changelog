@@ -1,3 +1,9 @@
+stsbl-iserv-file-distribution (17.05.05-0) experimental; urgency=medium
+
+  * UNRELEASED
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 05 May 2017 02:11:10 +0200
+
 stsbl-iserv-file-distribution (17.05.01-5) experimental; urgency=medium
 
   * Removed not required parameter format from folder link.
