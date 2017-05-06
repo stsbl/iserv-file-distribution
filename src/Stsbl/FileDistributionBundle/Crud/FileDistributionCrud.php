@@ -532,7 +532,7 @@ class FileDistributionCrud extends AbstractCrud
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
                 ->select('n')
-                ->from('StsblFileDistributionBundle:Nac', 'n')
+                ->from('StsblInternetBundle:Nac', 'n')
                 ->where('n.ip = parent.ip')
             ;
             
@@ -776,7 +776,7 @@ class FileDistributionCrud extends AbstractCrud
      */
     private function isInternetGrantedViaNac($ip)
     {
-        $er = $this->getEntityManager()->getRepository('StsblFileDistributionBundle:Nac');
+        $er = $this->getEntityManager()->getRepository('StsblInternetBundle:Nac');
         $nac = $er->findOneBy(['ip' => $ip]);
         
         if ($nac === null) {
