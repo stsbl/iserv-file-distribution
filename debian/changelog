@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.05.07-1) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed command of lock action (called accidentally exam mode).
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sun, 07 May 2017 20:54:22 +0200
+
 stsbl-iserv-file-distribution (17.05.07-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
