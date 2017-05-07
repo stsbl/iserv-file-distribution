@@ -1,3 +1,20 @@
+stsbl-iserv-file-distribution (17.05.07-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Moved config purging to own cronjob.
+  * Ensure that 0.0.0.0 stub configuration file is empty.
+  * file_distribution_config_empty: Prevent wrong error message.
+  * Display only hosts in filter Internet: {yes,no} which have overrideRoute not set.
+  * Internet access filters: Exclude exam mode hosts.
+  * Count NAC activation as Internet: yes.
+  * Updated l10n.
+  * Moved Nac entity and database grants to IServ 3 internet module.
+  * Moved NAC-related classes (entity) to internet3 module.
+  * Switched to hasBundle for Internet detection.
+  * Display NAC expiration.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sun, 07 May 2017 20:28:50 +0200
+
 stsbl-iserv-file-distribution (17.05.05-3) experimental; urgency=medium
 
   [ Felix Jacobi ]
