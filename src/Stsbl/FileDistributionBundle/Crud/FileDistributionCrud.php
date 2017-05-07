@@ -463,7 +463,7 @@ class FileDistributionCrud extends AbstractCrud
             $this->batchActions->add(new Batch\UnlockAction($this));
         }
         // Internet
-        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::INET_ROOMS)) {
+        if ((!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::INET_ROOMS)) && $this->getConfig()->get('Activation')) {
             $this->batchActions->add(new Batch\GrantInternetAction($this));
             $this->batchActions->add(new Batch\DenyInternetAction($this));
             $this->batchActions->add(new Batch\ResetInternetAction($this));
@@ -733,13 +733,24 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
+     * Checks if a bundle is installed
+     *
+     * @param string $name A bundle name like 'IServFooBundle'
+     * @return bool
+     */
+    public function hasBundle($name)
+    {
+        return array_key_exists($name, $this->getContainer()->getParameter('kernel.bundles'));
+    }
+    
+    /**
      * Check if exam mode is installed on the IServ.
      * 
      * @todo Switch to hasBundle() or something similar, when exam mode is ported to IServ 3.
      * 
      * @return boolean
      */
-    private function isExamModeAvailable()
+    public function isExamModeAvailable()
     {
         return file_exists('/var/lib/dpkg/info/iserv-exam.list');
     }
@@ -751,21 +762,19 @@ class FileDistributionCrud extends AbstractCrud
      * 
      * @return boolean
      */
-    private function isLockAvailable()
+    public function isLockAvailable()
     {
         return file_exists('/var/lib/dpkg/info/iserv-lock.list');
     }
     
     /**
-     * Check if old Internet GUI is installed on the IServ.
-     * 
-     * @todo Switch to hasBundle() or something similar, when the Internet GUI is ported to IServ 3 (?).
+     * Check if Internet GUI is installed on the IServ.
      * 
      * @return boolean
      */
-    private function isInternetAvailable()
+    public function isInternetAvailable()
     {
-        return file_exists('/var/lib/dpkg/info/iserv-internet.list');
+        return $this->hasBundle('StsblInternetBundle');
     }
     
     /**
@@ -895,8 +904,22 @@ class FileDistributionCrud extends AbstractCrud
         if ($overrideRoute === false || $overrideRoute === true) {
             return [
                 'title' => null,
-                'user' => $this->getObjectManager()->getRepository('IServCoreBundle:User')->find($host->getOverrideBy()),
+                'user' => $this->getEntityManager()->getRepository('IServCoreBundle:User')->find($host->getOverrideBy()),
                 'until' => $host->getOverrideUntil(),
+            ];
+        }
+        
+        if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($host->getIp())) {
+            /* @var $nac \Stsbl\InternetBundle\Entity\Nac */
+            $nac = $this->getEntityManager()->getRepository('StsblInternetBundle:Nac')->findOneByIp($host->getIp());
+            $user = $nac->getUser();
+            $until = $nac->getTimer();
+            
+            return [
+                'title' => null,
+                'user' => $user,
+                // HACK use twig filter here
+                'until' => $this->getContainer()->get('stsbl.internet.twig.extension.time')->smartDate($until),
             ];
         }
         

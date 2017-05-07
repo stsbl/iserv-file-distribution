@@ -30,7 +30,7 @@ namespace Stsbl\FileDistributionBundle\Twig\Extension;
  * Simple base64 filters for twig
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
- * @license MIR license <https://opensource.org/licenses/MIT>
+ * @license MIT license <https://opensource.org/licenses/MIT>
  * @link https://gist.github.com/zburgermeiszter/afb9cb14b9a6f3f023e1 original source
  */
 class Base64 extends \Twig_Extension 

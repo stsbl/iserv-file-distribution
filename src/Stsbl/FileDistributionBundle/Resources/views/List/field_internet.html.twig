@@ -13,7 +13,7 @@
     {% elseif state == 'no' %}
         {{ _('No') }}
     {% elseif state == 'yes_nac' %}
-        {{ _('Yes') ~ ' (NAC)' }}
+        <span title="{{ __('Until: %s', explaination.until) ~ ', ' ~ __('By: %s', explaination.user) }}">{{ _('Yes') ~ ' (NAC)' }}</span>
     {% elseif state == 'yes_priv' %}
         {{ _('Yes') ~ ' (' ~ _('Privilege') ~ ')' }}
     {% elseif state == 'no_priv' %}
