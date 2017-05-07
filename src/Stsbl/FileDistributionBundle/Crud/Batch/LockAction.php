@@ -49,7 +49,7 @@ class LockAction extends AbstractFileDistributionAction
             }
         }
         
-        $bag = $this->getFileDistributionManager()->examOn($entities, $this->title);
+        $bag = $this->getFileDistributionManager()->lock($entities);
         // add messsages created during work
         foreach ($messages as $message) {
             $bag->add($message);
