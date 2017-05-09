@@ -112,7 +112,13 @@
                     <span class="host_status" data-host-id="{{ item.id }}" id="host_status_{{ item.id }}"></span>&nbsp;{{ item }}
                 </td>
                 <td>{{ item.room }}</td>
-                <td>{{ item.sambaUserDisplay }}</td>
+                <td>
+                    {% if not admin.isInLan() and item.sambaUserDisplay is not null %}
+                        {{ _('Yes') }}
+                    {% else %}
+                        {{ item.sambaUserDisplay }}
+                    {% endif %}
+                </td>
             {% endblock %}
         </tr>
     {% endspaceless %}
@@ -159,7 +165,13 @@
 {% block crud_disallowed_table_cells %}
     <td><span class="host_status" data-host-id="{{ item.id }}" id="host_status_{{ item.id }}"></span>&nbsp;{{ item }}</td>
     <td>{{ item.room }}</td>
-    <td>{{ item.sambaUserDisplay }}</td>
+    <td>
+        {% if not admin.isInLan() and item.sambaUserDisplay is not null %}
+            {{ _('Yes') }}
+        {% else %}
+            {{ item.sambaUserDisplay }}
+        {% endif %}
+    </td>
 {% endblock %}
 
 {% block javascripts %}
