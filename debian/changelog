@@ -1,3 +1,11 @@
+stsbl-iserv-file-distribution (17.05.12-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * bugfixes:
+    - privacy: Do not show user names in batch actions outside of LAN, only show "Yes".
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 12 May 2017 23:31:52 +0200
+
 stsbl-iserv-file-distribution (17.05.07-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
