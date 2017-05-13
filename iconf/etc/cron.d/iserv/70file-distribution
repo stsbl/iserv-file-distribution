@@ -3,3 +3,4 @@
 
 # Disable forgotten sound lock
 00 0    * * *   root   /usr/lib/iserv/soundlock_off
+
