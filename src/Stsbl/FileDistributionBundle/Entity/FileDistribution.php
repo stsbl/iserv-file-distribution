@@ -85,17 +85,21 @@ class FileDistribution implements CrudInterface
     private $isolation;
     
     /**
-     * DO NOT ADD ANY REFERENCES to Host here, because Symfony do not like it!
-     * 
-     * //@ORM\OneToOne(targetEntity="\IServ\HostBundle\Entity\Host", fetch="EAGER")
-     * //@ORM\JoinColumn(name="ip", referencedColumnName="ip", onDelete="CASCADE")
-     * @ORM\Column(type="text", nullable=false)
+     * @ORM\Column(type="inet", nullable=false)
      * @Assert\NotBlank()
      * @Assert\Ip()
      * 
      * @var string
      */
     private $ip;
+    
+    /**
+     * @ORM\Column(name="FolderAvailability", type="text", nullable=false)
+     * @Assert\Choice(choices = {"keep", "readonly", "replace"}, message = "Choose a valid folder availability.")
+     *
+     * @var string
+     */
+    private $folderAvailability;
     
     /**
      * {@inheritdoc}
@@ -114,9 +118,9 @@ class FileDistribution implements CrudInterface
     }
 
     /**
-     * Set ip
+     * Set host
      *
-     * @param Host $ip
+     * @param string $ip
      *
      * @return FileDistribution
      */
@@ -130,11 +134,11 @@ class FileDistribution implements CrudInterface
     /**
      * Get ip
      *
-     * @return Host
+     * @return string
      */
     public function getIp()
     {
-        return $this->ip;
+        return $this->$ip;
     }
 
     /**
@@ -241,5 +245,53 @@ class FileDistribution implements CrudInterface
     public function getIsolation()
     {
         return $this->isolation;
+    }
+
+    /**
+     * Set folderAvailability
+     *
+     * @param string $folderAvailability
+     *
+     * @return FileDistribution
+     */
+    public function setFolderAvailability($folderAvailability)
+    {
+        $this->folderAvailability = $folderAvailability;
+
+        return $this;
+    }
+
+    /**
+     * Get folderAvailability
+     *
+     * @return string
+     */
+    public function getFolderAvailability()
+    {
+        return $this->folderAvailability;
+    }
+
+    /**
+     * Set host
+     *
+     * @param \Stsbl\FileDistributionBundle\Entity\Host $host
+     *
+     * @return FileDistribution
+     */
+    public function setHost(\Stsbl\FileDistributionBundle\Entity\Host $host = null)
+    {
+        $this->host = $host;
+
+        return $this;
+    }
+
+    /**
+     * Get host
+     *
+     * @return \Stsbl\FileDistributionBundle\Entity\Host
+     */
+    public function getHost()
+    {
+        return $this->host;
     }
 }

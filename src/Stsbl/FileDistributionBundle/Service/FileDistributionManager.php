@@ -87,7 +87,7 @@ class FileDistributionManager extends HostManager
      * @param boolean $isolation
      * @return FlashMessageBag
      */
-    public function fileDistributionRpc($cmd, array $args = array(), $arg = null, $isolation = null)
+    public function fileDistributionRpc($cmd, array $args = array(), $arg = null, $isolation = null, $folderAvailability = null)
     {
         $env = ['SESSPW' => $this->securityHandler->getSessionPassword()];
         
@@ -105,6 +105,10 @@ class FileDistributionManager extends HostManager
             }
         }
         
+        if ($folderAvailability != null) {
+            $env['FD_FOLDER_AVAILABILITY'] = $folderAvailability;
+        }
+        
         return $this->shellMsgFilter(
             'sudo',
             array_merge([self::FD_RPC, $this->securityHandler->getUser()->getUsername(), $cmd], $args),
@@ -119,11 +123,12 @@ class FileDistributionManager extends HostManager
      * @param Host|\ArrayAccess $hosts
      * @param string $title
      * @param boolean $isolation
+     * @param string $folderAvailability
      * @return FlashMessageBag
      */
-    public function enableFileDistribution($hosts, $title, $isolation)
+    public function enableFileDistribution($hosts, $title, $isolation, $folderAvailability)
     {
-        return $this->fileDistributionRpc(self::FD_ON, $this->getIpsForHosts($hosts), $title, $isolation);
+        return $this->fileDistributionRpc(self::FD_ON, $this->getIpsForHosts($hosts), $title, $isolation, $folderAvailability);
     }
     
     /**

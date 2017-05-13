@@ -64,6 +64,14 @@ if (defined $ENV{FD_ISOLATION})
   $isolation = 0;
 }
 
+my $folder_availability;
+if (defined $ENV{FD_FOLDER_AVAILABILITY})
+{
+    $folder_availability = $ENV{FD_FOLDER_AVAILABILITY} if $ENV{FD_FOLDER_AVAILABILITY} =~ /^.*$/;
+} else {
+    $folder_availability = 'keep';
+}
+
 # convert to perl boolean
 if (defined $isolation) {
   $isolation = 0 if $isolation eq '0';
@@ -137,7 +145,7 @@ if ($cmd eq "fdon")
   
   foreach (@ips) { 
     my $exists = IServ::DB::Do "SELECT 1 FROM file_distribution WHERE ip = ?", $_;
-    IServ::DB::Do "INSERT INTO file_distribution (Title, Act, IP, Isolation) VALUES (?, ?, ?, ?)", $arg, $act, $_, $isolation if not $exists;
+    IServ::DB::Do "INSERT INTO file_distribution (Title, Act, IP, Isolation, FolderAvailability) VALUES (?, ?, ?, ?, ?)", $arg, $act, $_, $isolation, $folder_availability if not $exists;
     warn "Cannot enable file distribution for $_ twice!" if $exists;
   }
   system "/usr/lib/iserv/file_distribution_cfg";

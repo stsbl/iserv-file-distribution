@@ -95,7 +95,9 @@ class FileDistributionController extends CrudController
                 $multiSelectForm
                     ->add('title', TextType::class, [
                         'label' => _('File distribution title'),
-                        'constraints' => [new NotBlank()],
+                        'constraints' => [
+                            new NotBlank(['message' => _('Please enter a title for your file distribution.')])
+                        ],
                         'attr' => [
                             'placeholder' => _('Title for this file distribution'),
                             'help_text' => _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.'),
@@ -111,7 +113,7 @@ class FileDistributionController extends CrudController
                 
                 $multiSelectForm
                     ->add('isolation', CheckboxType::class, [
-                        'label' => _('Enable host isolation'),
+                        'label' => _('Host isolation'),
                         'attr' => $isolationAttr,
                     ])
                     ->add('rpc_message', TextareaType::class, [
@@ -124,7 +126,9 @@ class FileDistributionController extends CrudController
                     ])
                     ->add('inet_duration', ChoiceType::class, [
                         'label' => _('Duration'),
-                        'constraints' => [new NotBlank()],
+                        'constraints' => [
+                            new NotBlank(['message' => _('Please select the duration.')])
+                        ],
                         'choices' => [
                             __n('One minute', '%d minutes', 15, 15) => 15,
                             __n('One minute', '%d minutes', 30, 30) => 30,
@@ -140,10 +144,26 @@ class FileDistributionController extends CrudController
                     ])
                     ->add('exam_title', TextType::class, [
                         'label' => _('Exam title'),
-                        'constraints' => [new NotBlank()],
+                        'constraints' => [
+                            new NotBlank(['message' => _('Please enter a title for your exam.')])
+                        ],
                         'attr' => [
                             'placeholder' => _('Title for this exam'),
                             'required' => 'required'
+                        ]
+                    ])
+                    ->add('folder_availability', ChoiceType::class, [
+                        'label' => _('Availability of group folders and shares'),
+                        'choices' => [
+                            _('Keep group folders and other shares available') => 'keep',
+                            _('Allow only read access to group folders and other shares') => 'readonly',
+                            _('Replace group folders and other folders with empty folders') => 'replace',
+                        ],
+                        'expanded' => true,
+                        'required' => true,
+                        'data' => $this->get('iserv.config')->get('FileDistributionFolderAvailabilityDefault'),
+                        'constraints' => [
+                            new NotBlank(['message' => _('Please choose availability of group folders and shares.')]),
                         ]
                     ])
                 ;
@@ -218,10 +238,11 @@ class FileDistributionController extends CrudController
                     }
                 }
                 
-                // display title and isolation only on enable file distribution
+                // display title, folder availability and isolation only on enable file distribution
                 if (!$confirmForm->get('actions')->has('enable')) {
                     $confirmForm->remove('title');
                     $confirmForm->remove('isolation');
+                    $confirmForm->remove('folder_availability');
                 }
                 
                 // display rpc_message only on sending message
@@ -316,6 +337,8 @@ class FileDistributionController extends CrudController
                                 $isolation = false;
                             }
                             $action->setIsolation($isolation);
+                            // set folder availability on enable
+                            $action->setFolderAvailability($form->getData()['folder_availability']);
                         } else if ($action->getName() === 'message') {
                             // set message
                             $action->setMessage($form->getData()['rpc_message']);

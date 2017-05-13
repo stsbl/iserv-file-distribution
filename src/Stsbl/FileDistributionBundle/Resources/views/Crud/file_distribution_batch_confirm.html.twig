@@ -47,8 +47,14 @@
                 </div>
             </td></tr>
             <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
-                <div class="col-lg-2">
+                {{ form_label(confirmForm.form.folder_availability) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.folder_availability) }}
+                    <span class="help-block">{{ _('Select if you want to grant access to the group folders and other file shares on the Portalserver.')|escape('html') }}</span>
                 </div>
+            </td></tr>
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_label(confirmForm.form.isolation) }}
                 <div class="col-lg-10">
                     <div class="checkbox">
                         <label for="iserv_crud_multi_select_isolation">

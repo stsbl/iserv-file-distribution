@@ -13,6 +13,8 @@ CREATE TABLE file_distribution (
     IP                  INET            NOT NULL REFERENCES hosts(IP)
                                             ON UPDATE CASCADE
                                             ON DELETE CASCADE,
+    FolderAvailability  TEXT            NOT NULL CHECK (FolderAvailability IN
+        ('readonly', 'replace', 'keep')),
     ISOLATION           BOOLEAN         NOT NULL,
     UNIQUE(IP)
 );

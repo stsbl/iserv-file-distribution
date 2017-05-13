@@ -4,3 +4,10 @@ description     If enabled, the checkbox "host isolation" will be selected by de
 group           Module: File Distribution
 type            bool
 default         true
+
+FileDistributionFolderAvailabilityDefault:
+name            Default selection of "Availability of group folders and shares"
+description     Select which option will selected for this option, if a new file distribution will enabled.
+group           Module: File Distribution
+type            select[keep=Keep group folders and other shares available|readonly=Allow only read access to group folders and other shares|replace=Replace group folders and other folders with empty folders]
+default         keep

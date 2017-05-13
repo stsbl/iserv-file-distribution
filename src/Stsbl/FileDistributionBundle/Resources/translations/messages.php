@@ -35,6 +35,11 @@ _('Someone started a file distribution for your host. To access the files, click
 // iservcfg
 _('Select host isolation by default');
 _('If enabled, the checkbox "host isolation" will be selected by default if a new file distribution will be enabled.');
+_('Default selection of "Availability of group folders and shares"');
+_('Select which option will selected for this option, if a new file distribution will enabled.');
+_('Keep group folders and other shares available');
+_('Allow only read access to group folders and other shares');
+_('Replace group folders and other folders with empty folders');
 _('Module: File Distribution');
 
 // Constraints

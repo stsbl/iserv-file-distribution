@@ -54,6 +54,11 @@ class EnableAction extends AbstractFileDistributionAction
     private $isolation;
     
     /**
+     * @var string
+     */
+    private $folderAvailability;
+    
+    /**
      * Set file distribution title
      * 
      * @param string $title
@@ -71,6 +76,16 @@ class EnableAction extends AbstractFileDistributionAction
     public function setIsolation($isolation)
     {
         $this->isolation = $isolation;
+    }
+    
+    /**
+     * Set file distribution folder availabilty
+     * 
+     * @param string $folderAvailability
+     */
+    public function setFolderAvailability($folderAvailability)
+    {
+        $this->folderAvailability = $folderAvailability;
     }
     
     /**
@@ -113,7 +128,7 @@ class EnableAction extends AbstractFileDistributionAction
         
         // only execute rpc, if we have no errors and at least one entity
         if (!$error && count($entities) > 0) {
-            $bag = $this->getFileDistributionManager()->enableFileDistribution($entities, $this->title, $this->isolation);
+            $bag = $this->getFileDistributionManager()->enableFileDistribution($entities, $this->title, $this->isolation, $this->folderAvailability);
         } else {
             $bag = new FlashMessageBag();
         }

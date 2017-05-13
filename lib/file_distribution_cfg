@@ -15,11 +15,23 @@ $< = $>;
 
 chdir "/var/lib/iserv/config/file-distribution" or die $!;
 
+my @custom_shares = ("groups");
+if (open my $fh, '<', '/etc/samba/smb.conf.local')
+{
+  while (<$fh>)
+  {
+    # skip global section
+    next if /^\s*\[global\]\s*$/;
+
+    push @custom_shares, $1 if /^\s*\[(.*)\]\s*$/;
+  }
+}
+
 my %reload;
 my %del = map {($_, 1)} glob "*";
 my @fn;
-for (@{ IServ::DB::DBH->selectall_arrayref("SELECT IP, Act, Home, Title, Isolation FROM file_distribution f JOIN users u USING (Act) ORDER BY IP") or die $! }) {
-  my ($ip, $act, $home, $title, $isolation) = @$_;
+for (@{ IServ::DB::DBH->selectall_arrayref("SELECT IP, Act, Home, Title, Isolation, FolderAvailability FROM file_distribution f JOIN users u USING (Act) ORDER BY IP") or die $! }) {
+  my ($ip, $act, $home, $title, $isolation, $folder_availability) = @$_;
   $title =~ $m_title or die "invalid title\n";
 
   my $cfg = 
@@ -31,15 +43,15 @@ for (@{ IServ::DB::DBH->selectall_arrayref("SELECT IP, Act, Home, Title, Isolati
     "\n".
     "[file_return]\n";
 
-    if ($isolation) {
-      $cfg .=
-      "  path = $home/File-Distribution/$title/Return/%U @ %m\n";
-    } else {
-      $cfg .=
-      "  path = $home/File-Distribution/$title/Return/%U\n";
-    }
-
+  if ($isolation) {
     $cfg .=
+      "  path = $home/File-Distribution/$title/Return/%U @ %m\n";
+  } else {
+    $cfg .=
+      "  path = $home/File-Distribution/$title/Return/%U\n";
+  }
+
+  $cfg .=
     "  preexec = /bin/mkdir -pm02770 '%P'\n".
     "  force user = $act\n".
     "  force group = $act\n".
@@ -48,6 +60,22 @@ for (@{ IServ::DB::DBH->selectall_arrayref("SELECT IP, Act, Home, Title, Isolati
     "  veto files = /desktop.ini/\n".
     "  delete veto files = yes\n".
     "\n";
+
+  if ($folder_availability eq "readonly")
+  {
+    # make group folders and other shares read-only
+    $cfg .= "[$_]\n".
+      "  writeable = no\n".
+      "\n" for @custom_shares;
+  } elsif ($folder_availability eq "replace") {
+    # disable custom shares
+    # it seems to be pretty much impossible to block access to a share without
+    # introducing delays or a password prompt, so we just redirect them to an
+    # empty folder that's read-only.
+    $cfg .= "[$_]\n".
+      "  path = /usr/share/iserv/samba/empty\n".
+      "\n" for @custom_shares;
+  }
     
   delete $del{$ip};
   unless (-f $ip and IServ::IO::getfile $ip eq $cfg)

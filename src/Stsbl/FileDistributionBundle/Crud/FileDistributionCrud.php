@@ -934,7 +934,7 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getFileDistributionInfoById($id)
     {
-        if (!is_null($id)) {
+        if ($id != null) {
             return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution')->find($id);
         } else {
             return null;
