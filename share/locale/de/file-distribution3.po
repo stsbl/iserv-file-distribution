@@ -289,7 +289,7 @@ msgstr ""
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:40
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:158
 msgid "Keep group folders and other shares available"
-msgstr "Gruppenordner und andere Freigaben verügbar lassen"
+msgstr "Gruppenordner und andere Freigaben verfügbar lassen"
 
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:41
 #: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:159
