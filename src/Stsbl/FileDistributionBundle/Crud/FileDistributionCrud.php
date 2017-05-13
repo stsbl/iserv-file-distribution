@@ -525,11 +525,11 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function configureListFilter(ListHandler $listHandler) 
     {
+        $qb = $this->getEntityManager()->createQueryBuilder();
         $yesExpr = '(parent.internet = true';
         
         // add condition for NAC activation
         if ($this->isInternetAvailable()) {
-            $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
                 ->select('n')
                 ->from('StsblInternetBundle:Nac', 'n')
