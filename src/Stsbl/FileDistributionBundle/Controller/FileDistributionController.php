@@ -157,7 +157,7 @@ class FileDistributionController extends CrudController
                         'choices' => [
                             _('Keep group folders and other shares available') => 'keep',
                             _('Allow only read access to group folders and other shares') => 'readonly',
-                            _('Replace group folders and other folders with empty folders') => 'replace',
+                            _('Replace group folders and other shares with empty folders') => 'replace',
                         ],
                         'expanded' => true,
                         'required' => true,

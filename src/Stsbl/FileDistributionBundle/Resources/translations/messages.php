@@ -39,7 +39,7 @@ _('Default selection of "Availability of group folders and shares"');
 _('Select which option will selected for this option, if a new file distribution will enabled.');
 _('Keep group folders and other shares available');
 _('Allow only read access to group folders and other shares');
-_('Replace group folders and other folders with empty folders');
+_('Replace group folders and other shares with empty folders');
 _('Module: File Distribution');
 
 // Constraints
