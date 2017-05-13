@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.05.13-1) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed list filter configuration if stsbl-iserv3-internet is not installed.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sat, 13 May 2017 20:43:24 +0200
+
 stsbl-iserv-file-distribution (17.05.13-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
