@@ -2,6 +2,7 @@
 // src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php
 namespace Stsbl\FileDistributionBundle\Admin;
 
+use Doctrine\ORM\EntityRepository;
 use IServ\AdminBundle\Admin\AbstractAdmin;
 use IServ\CoreBundle\Service\Logger;
 use IServ\CrudBundle\Entity\CrudInterface;
@@ -93,7 +94,7 @@ class IncludeRoomAdmin extends AbstractAdmin
      */
     public function isAllowedToEdit(CrudInterface $object = null, UserInterface $user = null)
     {
-        return true;
+        return false;
     }
     
     /**
@@ -101,7 +102,7 @@ class IncludeRoomAdmin extends AbstractAdmin
      */
     public function isAllowedToDelete(CrudInterface $object = null, UserInterface $user = null) 
     {
-        return $this->isAllowedToEdit($object, $user);
+        return true;
     }
     
     /**
@@ -114,25 +115,23 @@ class IncludeRoomAdmin extends AbstractAdmin
         ];
         
         if ($mapper instanceof FormMapper) {
-            /* @var $qb \Doctrine\ORM\QueryBuilder */
-            $qb = $this->getObjectManager()->createQueryBuilder($this->class);
-            $subQb = clone $qb;
+            $options['query_builder'] = function (EntityRepository $er) {
+                $subQb = $er->createQueryBuilder('fr');
             
-            $subQb
-                ->select('fr')
-                ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
-                ->where('fr.room = r.name')
-            ;        
-            
-            $choices = $qb
-                ->select('r')
-                ->from('IServRoomBundle:Room', 'r')
-                ->where($qb->expr()->not($qb->expr()->exists($subQb)))
-                ->getQuery()
-                ->getResult()
-            ;
-            $options['choices'] = $choices;
+                $subQb
+                    ->resetDqlParts()
+                    ->select('fr')
+                    ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
+                    ->where('fr.room = r.name')
+                ;
+                
+                return $er->createQueryBuilder('r')
+                    ->where($subQb->expr()->not($subQb->expr()->exists($subQb)))
+                    ->orderBy('r.name', 'ASC')
+                ;
+            };
         }
+        
         $mapper->add('room', null, $options);
     }
     
