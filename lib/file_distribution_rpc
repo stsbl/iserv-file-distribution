@@ -57,7 +57,7 @@ my $arg;
 ($arg) = grep { utf8::decode $_ } $ENV{ARG} =~ /(.*)/s if exists $ENV{ARG};
 
 my $isolation;
-if (defined $ENV{FD_ISOLATION}) 
+if (defined $ENV{FD_ISOLATION})
 {
   $isolation = $ENV{FD_ISOLATION} if $ENV{FD_ISOLATION} =~ /^0|1$/;
 } else {
@@ -67,13 +67,14 @@ if (defined $ENV{FD_ISOLATION})
 my $folder_availability;
 if (defined $ENV{FD_FOLDER_AVAILABILITY})
 {
-    $folder_availability = $ENV{FD_FOLDER_AVAILABILITY} if $ENV{FD_FOLDER_AVAILABILITY} =~ /^.*$/;
+  $folder_availability = $ENV{FD_FOLDER_AVAILABILITY} if $ENV{FD_FOLDER_AVAILABILITY} =~ /^(keep|readonly|replace)$/;
 } else {
-    $folder_availability = 'keep';
+  $folder_availability = 'keep';
 }
 
 # convert to perl boolean
-if (defined $isolation) {
+if (defined $isolation)
+{
   $isolation = 0 if $isolation eq '0';
   $isolation = 1 if $isolation eq '1';
 }

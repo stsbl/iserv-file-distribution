@@ -2,6 +2,7 @@
 
 package Stsbl::IServ::FileDistribution;
 use warnings;
+use utf8;
 use strict;
 use IServ::SSH;
 use Stsbl::IServ::SCP;
@@ -36,8 +37,7 @@ sub linux_start
     $cnt++;
   }
   msg @stdout if scalar @stdout > 1;
-  # FIXME contains ssh warnings
-  #msg @stderr;
+  msg @stderr if scalar @stderr > 1;
 }
 
 sub linux_stop
@@ -56,8 +56,7 @@ sub linux_stop
     $cnt++;
   }
   msg @stdout if scalar @stdout > 1;
-  # FIXME contains ssh warnings
-  #msg @stderr;
+  msg @stderr if scalar @stderr > 1;
 }
 
 1;
