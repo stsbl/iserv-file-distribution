@@ -458,27 +458,27 @@ class FileDistributionCrud extends AbstractCrud
         $hasToken = $this->getContainer()->get('security.token_storage')->getToken() != null;
         
         // Lock
-        if (!$hasToken || $this->isLockAvailable() && $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::LOCK)) {
+        if ((!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::LOCK)) && $this->isLockAvailable()) {
             $this->batchActions->add(new Batch\LockAction($this));
             $this->batchActions->add(new Batch\UnlockAction($this));
         }
         // Internet
-        if ((!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::INET_ROOMS)) && $this->getConfig()->get('Activation')) {
+        if ((!$hasToken || $this->getAuthorizationChecker()->isGranted(Privilege::INET_ROOMS)) && $this->getConfig()->get('Activation')) {
             $this->batchActions->add(new Batch\GrantInternetAction($this));
             $this->batchActions->add(new Batch\DenyInternetAction($this));
             $this->batchActions->add(new Batch\ResetInternetAction($this));
         }
         // Communication
-        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::BOOT)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT)) {
             $this->batchActions->add(new Batch\MessageAction($this));
         }
         // Sound
-        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::BOOT) && $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::USE_FD)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT) && $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::USE_FD)) {
             $this->batchActions->add(new Batch\SoundUnlockAction($this));
             $this->batchActions->add(new Batch\SoundLockAction($this));
         }
         // Start & Shutdown
-        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::BOOT)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT)) {
             $this->batchActions->add(new Batch\PowerOnAction($this));
             $this->batchActions->add(new Batch\LogOffAction($this));
             $this->batchActions->add(new Batch\RebootAction($this));
@@ -486,13 +486,13 @@ class FileDistributionCrud extends AbstractCrud
             $this->batchActions->add(new Batch\ShutdownCancelAction($this));
         }
         // File Distribution
-        if (!$hasToken || $this->getContainer()->get('security.authorization_checker')->isGranted(HostPrivilege::BOOT) && $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::USE_FD)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT) && $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
             $this->batchActions->add(new Batch\EnableAction($this));
             $this->batchActions->add(new Batch\StopAction($this));
         }
         
         // Exam Mode
-        if (!$hasToken || $this->isExamModeAvailable() && $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::EXAM)) {
+        if ((!$hasToken || $this->getAuthorizationChecker()->isGranted(Privilege::EXAM)) && $this->isExamModeAvailable()) {
             $this->batchActions->add(new Batch\ExamAction($this));
             $this->batchActions->add(new Batch\ExamOffAction($this));
         }
