@@ -1,3 +1,14 @@
+stsbl-iserv-file-distribution (17.05.24-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Order rooms in IncludeRoomAdmin by name.
+  * file_distribution_rpc: Improved input validation.
+  * FileDistribution.pm: Print ssh errors again.
+  * FileDistribution.pm: Enabled utf8 support.
+  * FIleDistirubtionCrud: Improved batch action privilege handling.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Wed, 24 May 2017 07:16:03 +0200
+
 stsbl-iserv-file-distribution (17.05.13-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
