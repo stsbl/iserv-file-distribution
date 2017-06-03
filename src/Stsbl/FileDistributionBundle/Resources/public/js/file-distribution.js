@@ -40,12 +40,27 @@ IServ.FileDistribution.Autocomplete = IServ.register(function (IServ) {
             suggestion: renderSuggestion
         }
     };
+    
+    function registerCancelHandler()
+    {
+        // prevent requirement of input on cancel
+        $('#iserv_crud_multi_select_actions_cancel').click(function() {
+            $('#iserv_crud_multi_select_title').removeAttr('required');
+            $('#iserv_crud_multi_select_isolation').removeAttr('required');
+            $('#iserv_crud_multi_select_rpc_message').removeAttr('required');
+            $('#iserv_crud_multi_select_exam_title').removeAttr('required');
+            $('#iserv_crud_multi_select_inet_duration').removeAttr('required');
+            return true;
+        });
+    }
 
     function initialize()
     {
         var element = $('#iserv_crud_multi_select_title');
         
     	IServ.Autocomplete.make(element, thSource, thOptions);
+        
+        registerCancelHandler();
     }
     
     //see mail compse.js

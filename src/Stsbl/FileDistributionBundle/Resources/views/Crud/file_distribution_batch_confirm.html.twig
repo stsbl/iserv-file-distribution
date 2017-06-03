@@ -199,13 +199,4 @@
     <script type="text/javascript">
         IServ.Host.updateStatus({{ status|json_encode|raw }});
     </script>
-    <script type="text/javascript">
-        // prevent requirement of input on cancel
-        $('#iserv_crud_multi_select_actions_cancel').click(function() {
-            $('#iserv_crud_multi_select_title').removeAttr('required');
-            $('#iserv_crud_multi_select_isolation').removeAttr('required');
-            $('#iserv_crud_multi_select_rpc_message').removeAttr('required');
-            return true;
-        });
-    </script>
 {% endblock %}
