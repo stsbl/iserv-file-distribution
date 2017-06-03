@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.06.03-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Improved compatibility with CSP.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sat, 03 Jun 2017 21:06:52 +0200
+
 stsbl-iserv-file-distribution (17.05.24-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
