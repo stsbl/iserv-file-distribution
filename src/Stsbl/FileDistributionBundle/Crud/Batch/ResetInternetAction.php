@@ -39,6 +39,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class ResetInternetAction extends AbstractFileDistributionAction
 {
+    use Traits\NoopFormTrait;
+    
     protected $privileges = Privilege::INET_ROOMS;
     
     /**

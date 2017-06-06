@@ -7,6 +7,8 @@ use IServ\HostBundle\Security\Privilege;
 
 class ShutdownAction extends AbstractFileDistributionAction
 {
+    use Traits\NoopFormTrait;
+    
     protected $privileges = Privilege::BOOT;
 
     public function getName()

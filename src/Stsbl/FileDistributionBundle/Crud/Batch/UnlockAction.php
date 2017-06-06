@@ -9,6 +9,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UnlockAction extends AbstractFileDistributionAction
 {
+    use Traits\NoopFormTrait;
+    
     protected $privileges = Privilege::LOCK;
 
     public function getName()

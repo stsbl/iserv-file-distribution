@@ -4,6 +4,7 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Crud\Batch\AbstractBatchAction;
+use IServ\CrudBundle\Crud\Batch\FormExtendingBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessage;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
 use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
@@ -40,7 +41,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-abstract class AbstractFileDistributionAction extends AbstractBatchAction 
+abstract class AbstractFileDistributionAction extends AbstractBatchAction implements FormExtendingBatchActionInterface
 {
     /**
      * @var FileDistributionCrud

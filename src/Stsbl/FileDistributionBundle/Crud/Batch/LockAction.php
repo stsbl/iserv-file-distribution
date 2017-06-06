@@ -9,6 +9,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class LockAction extends AbstractFileDistributionAction
 {
+    use Traits\NoopFormTrait;
+    
     protected $privileges = Privilege::LOCK;
 
     public function getName()

@@ -39,22 +39,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class GrantInternetAction extends AbstractFileDistributionAction
 {
+    use Traits\InternetTimeFormTrait;
+    
     protected $privileges = Privilege::INET_ROOMS;
-    
-    /**
-     * @var integer|string
-     */
-    private $until;
-    
-    /**
-     * Set until
-     * 
-     * @param integer|string $until
-     */
-    public function setUntil($until)
-    {
-        $this->until = $until;
-    }
     
     /**
      * {@inheritdoc}

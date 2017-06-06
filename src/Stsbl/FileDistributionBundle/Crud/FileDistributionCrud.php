@@ -203,7 +203,6 @@ class FileDistributionCrud extends AbstractCrud
         $this->routes[self::ACTION_INDEX]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:index';
         //$this->routes[self::ACTION_SHOW]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:show';
         $this->routes['batch_confirm']['_controller'] = 'StsblFileDistributionBundle:FileDistribution:confirmBatch';
-        $this->routes['batch']['_controller'] = 'StsblFileDistributionBundle:FileDistribution:batch';
     }
     
     /**

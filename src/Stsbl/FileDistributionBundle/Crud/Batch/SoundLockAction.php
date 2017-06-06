@@ -38,6 +38,8 @@ use Stsbl\FileDistributionBundle\Security\Privilege;
  */
 class SoundLockAction extends AbstractFileDistributionAction
 {
+    use Traits\NoopFormTrait;
+    
     protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
     
     /**

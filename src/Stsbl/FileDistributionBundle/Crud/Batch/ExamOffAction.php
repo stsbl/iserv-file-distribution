@@ -9,6 +9,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ExamOffAction extends AbstractFileDistributionAction
 {
+    use Traits\NoopFormTrait;
+    
     protected $privileges = Privilege::EXAM;
     
     public function getName()

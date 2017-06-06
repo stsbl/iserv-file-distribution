@@ -4,6 +4,9 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\HostBundle\Security\Privilege;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /*
  * The MIT License
@@ -45,13 +48,38 @@ class MessageAction extends AbstractFileDistributionAction
     private $message;
     
     /**
-     * Set message
-     * 
-     * @param string $message
+     * Allows the batch action to manipulate the form.
+     *
+     * This is called at the end of `prepareBatchActions`.
+     *
+     * @param FormInterface $form
      */
-    public function setMessage($message)
+    public function finalizeForm(FormInterface $form)
     {
-        $this->message = $message;
+        $form
+            ->add('rpc_message', TextareaType::class, [
+                'label' => _('Message'),
+                'attr' => [
+                    'rows' => 10,
+                    'cols' => 230,
+                    'placeholder' => _('Enter a message...')
+                ],
+                'constraints' => [
+                    new NotBlank()
+                ]
+            ])
+        ;
+    }
+    
+    /**
+     * Gets called with the full form data instead of `execute`.
+     *
+     * @param array $data
+     */
+    public function handleFormData(array $data)
+    {
+        $this->message = $data['rpc_message'];
+        return $this->execute($data['multi']);
     }
     
     /**
@@ -60,7 +88,7 @@ class MessageAction extends AbstractFileDistributionAction
     public function execute(ArrayCollection $entities) 
     {
         if ($this->message === null) {
-            throw new \InvalidArgumentException('No message set, you need to set it via setMessage()!');
+            throw new \InvalidArgumentException('No message set!');
         }
         
         /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */

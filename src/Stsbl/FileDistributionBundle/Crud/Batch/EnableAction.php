@@ -7,7 +7,12 @@ use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Security\Privilege;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /*
  * The MIT License
@@ -59,33 +64,71 @@ class EnableAction extends AbstractFileDistributionAction
     private $folderAvailability;
     
     /**
-     * Set file distribution title
-     * 
-     * @param string $title
+     * Allows the batch action to manipulate the form.
+     *
+     * This is called at the end of `prepareBatchActions`.
+     *
+     * @param FormInterface $form
      */
-    public function setTitle($title)
+    public function finalizeForm(FormInterface $form)
     {
-        $this->title = $title;
+        $form
+            ->add('title', TextType::class, [
+                'label' => _('File distribution title'),
+                'constraints' => [
+                    new NotBlank(['message' => _('Please enter a title for your file distribution.')])
+                ],
+                'attr' => [
+                    'placeholder' => _('Title for this file distribution'),
+                    'help_text' => _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.'),
+                    'required' => 'required'
+                ]
+            ]);
+        
+        $isolationAttr = [];   
+        if ($this->crud->getConfig()->get('FileDistributionHostIsolationDefault')) {
+            $isolationAttr['checked'] = 'checked';
+        }
+        $isolationAttr['help_text'] = _('Enable host isolation if you want to prevent that users can exchange files by sharing their accounts.');
+        
+        $form
+            ->add('isolation', CheckboxType::class, [
+                'label' => _('Host isolation'),
+                'attr' => $isolationAttr,
+            ])
+            ->add('folder_availability', ChoiceType::class, [
+                'label' => _('Availability of group folders and shares'),
+                'choices' => [
+                    _('Keep group folders and other shares available') => 'keep',
+                    _('Allow only read access to group folders and other shares') => 'readonly',
+                    _('Replace group folders and other shares with empty folders') => 'replace',
+                ],
+                'expanded' => true,
+                'required' => true,
+                'data' => $this->crud->getConfig()->get('FileDistributionFolderAvailabilityDefault'),
+                'constraints' => [
+                    new NotBlank(['message' => _('Please choose availability of group folders and shares.')]),
+                ]
+            ])
+        ;
     }
     
     /**
-     * Set file distribution isolation
-     * 
-     * @param boolean $isolation
+     * Gets called with the full form data instead of `execute`.
+     *
+     * @param array $data
      */
-    public function setIsolation($isolation)
+    public function handleFormData(array $data)
     {
-        $this->isolation = $isolation;
-    }
-    
-    /**
-     * Set file distribution folder availabilty
-     * 
-     * @param string $folderAvailability
-     */
-    public function setFolderAvailability($folderAvailability)
-    {
-        $this->folderAvailability = $folderAvailability;
+        $this->title = $data['title'];
+        if (empty($data['isolation'])) {
+            $this->isolation = false;
+        } else {
+            $this->isolation = (boolean)$data['isolation'];
+        }
+        $this->folderAvailability = $data['folder_availability'];
+        
+        return $this->execute($data['multi']);
     }
     
     /**

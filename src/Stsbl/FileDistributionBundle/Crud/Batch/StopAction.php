@@ -40,6 +40,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class StopAction extends AbstractFileDistributionAction
 {
+    use Traits\NoopFormTrait;
+    
     protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
     
     /**

@@ -6,25 +6,52 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ExamAction extends AbstractFileDistributionAction
 {
     protected $privileges = Privilege::EXAM;
-
+    
     /**
      * @var string
      */
     private $title;
     
     /**
-     * Set exam title
-     * 
-     * @param string $title
+     * Allows the batch action to manipulate the form.
+     *
+     * This is called at the end of `prepareBatchActions`.
+     *
+     * @param FormInterface $form
      */
-    public function setTitle($title)
+    public function finalizeForm(FormInterface $form)
     {
-        $this->title = $title;
+        $form
+            ->add('exam_title', TextType::class, [
+                'label' => _('Exam title'),
+                'constraints' => [
+                    new NotBlank(['message' => _('Please enter a title for your exam.')])
+                ],
+                'attr' => [
+                    'placeholder' => _('Title for this exam'),
+                    'required' => 'required'
+                ]
+            ])
+        ;
+    }
+    
+    /**
+     * Gets called with the full form data instead of `execute`.
+     *
+     * @param array $data
+     */
+    public function handleFormData(array $data)
+    {
+        $this->title = $data['exam_title'];
+        return $this->execute($data['multi']);
     }
     
     public function getName()
