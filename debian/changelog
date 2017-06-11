@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.06.12-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Revert conflicting of iserv3-crud, as it would cause the accidential removal of the module.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 12 Jun 2017 01:00:34 +0200
+
 stsbl-iserv-file-distribution (17.06.06-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
