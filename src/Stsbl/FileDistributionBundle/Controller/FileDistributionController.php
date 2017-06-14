@@ -4,17 +4,11 @@ namespace Stsbl\FileDistributionBundle\Controller;
 
 use IServ\CoreBundle\Form\Type\BooleanType;
 use IServ\CoreBundle\Util\Sudo;
-use IServ\CrudBundle\Crud\Batch\BatchActionInterface;
 use IServ\CrudBundle\Controller\CrudController;
 use IServ\CrudBundle\Table\ListHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints\NotBlank;
