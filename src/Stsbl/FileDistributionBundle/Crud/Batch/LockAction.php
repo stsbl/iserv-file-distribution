@@ -4,6 +4,7 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -40,18 +41,22 @@ class LockAction extends AbstractFileDistributionAction
         foreach ($entities as $key => $entity) {
             $skipOwnHost = false;
             
-            if ($entity->getIp() === $this->crud->getRequest()->getClientIp() && count($entities) > 1) {
+            if ($entity->getIp() === $this->crud->getRequest()->getClientIp()) {
                 $messages[] = $this->createFlashMessage('warning', _('Skipping own host!'));
                 unset($entities[$key]);
                 $skipOwnHost = true;
             }
             
             if (!$skipOwnHost) {
-                $messages[] = $this->createFlashMessage('success', __('Switched %s into exam mode.', (string)$entity->getName()));
+                $messages[] = $this->createFlashMessage('success', __('Locked %s.', (string)$entity->getName()));
             }
         }
         
-        $bag = $this->getFileDistributionManager()->lock($entities);
+        if (count($entities) > 1) {
+            $bag = $this->getFileDistributionManager()->lock($entities);
+        } else {
+            $bag = new FlashMessageBag();
+        }
         // add messsages created during work
         foreach ($messages as $message) {
             $bag->add($message);
