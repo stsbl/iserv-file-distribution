@@ -1,3 +1,13 @@
+stsbl-iserv-file-distribution (17.06.14-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Updated install file.
+  * Updated rules file.
+  * Updated build deps and rules.
+  * LockAction: Fixed flash message and skipping of own host.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Wed, 14 Jun 2017 23:11:24 +0200
+
 stsbl-iserv-file-distribution (17.06.12-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
