@@ -4,6 +4,7 @@ namespace Stsbl\FileDistributionBundle\Crud;
 
 use Doctrine\ORM\EntityManager;
 use IServ\CoreBundle\Service\Config;
+use IServ\CoreBundle\Util\Format;
 use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Table\Filter;
 use IServ\CrudBundle\Table\ListHandler;
@@ -926,7 +927,7 @@ class FileDistributionCrud extends AbstractCrud
                 'title' => null,
                 'user' => $user,
                 // HACK use twig filter here
-                'until' => $this->getContainer()->get('stsbl.internet.twig.extension.time')->smartDate($until),
+                'until' => Format::smartDate($until),
             ];
         }
         
