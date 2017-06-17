@@ -1,3 +1,12 @@
+stsbl-iserv-file-distribution (17.06.17-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * FileDistributionController: Cleaned use statements.
+  * Added GroupableBatchActionInterface to grouped batch actions.
+  * Rewrote List filter configuration using QueryBuilder expressions.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sat, 17 Jun 2017 16:16:53 +0200
+
 stsbl-iserv-file-distribution (17.06.14-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
