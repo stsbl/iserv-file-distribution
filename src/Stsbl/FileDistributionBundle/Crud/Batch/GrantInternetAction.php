@@ -3,6 +3,7 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -37,7 +38,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensourc.org/licenses/MIT>
  */
-class GrantInternetAction extends AbstractFileDistributionAction
+class GrantInternetAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
 {
     use Traits\InternetTimeFormTrait;
     

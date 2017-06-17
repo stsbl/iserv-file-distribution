@@ -3,6 +3,7 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\HostBundle\Security\Privilege;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
@@ -38,7 +39,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class MessageAction extends AbstractFileDistributionAction 
+class MessageAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
 {
     protected $privileges = Privilege::BOOT;
     

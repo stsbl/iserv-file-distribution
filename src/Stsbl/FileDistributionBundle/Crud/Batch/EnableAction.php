@@ -3,6 +3,7 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
@@ -44,7 +45,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class EnableAction extends AbstractFileDistributionAction 
+class EnableAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
 {
     protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
     

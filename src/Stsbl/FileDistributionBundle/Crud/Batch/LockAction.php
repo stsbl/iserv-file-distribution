@@ -3,12 +3,13 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class LockAction extends AbstractFileDistributionAction
+class LockAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
 {
     use Traits\NoopFormTrait;
     

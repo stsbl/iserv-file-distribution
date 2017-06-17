@@ -3,11 +3,12 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ExamOffAction extends AbstractFileDistributionAction
+class ExamOffAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
 {
     use Traits\NoopFormTrait;
     
