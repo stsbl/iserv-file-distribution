@@ -106,7 +106,7 @@ class FileDistribution implements CrudInterface
      */
     public function __toString()
     {
-        return (string)$this->hostname;
+        return $this->title;
     }
     
     /**

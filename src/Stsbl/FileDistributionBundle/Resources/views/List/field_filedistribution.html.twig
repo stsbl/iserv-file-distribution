@@ -2,7 +2,7 @@
 {% extends admin.getTemplate('list_field_base') %}
 
 {% block field %}
-    {% set fd = admin.getFileDistributionInfoById(value) %}
+    {% set fd = admin.getFileDistribution(object) %}
     
     {% if fd is not null %}
         <span title="{{ __('By: %s', fd.user) }}">{{ fd.plainTitle }}</span>
@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block value %}
-    {% set fd = admin.getFileDistributionInfoById(value) %}
+    {% set fd = admin.getFileDistribution(object) %}
     
     {% if fd is not null %}
         {{ fd.plainTitle }}

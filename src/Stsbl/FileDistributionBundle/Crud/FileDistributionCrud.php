@@ -15,6 +15,7 @@ use IServ\HostBundle\Util\Network;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
+use Stsbl\FileDistributionBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
@@ -525,7 +526,7 @@ class FileDistributionCrud extends AbstractCrud
     public function configureListFilter(ListHandler $listHandler) 
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
-        $yesExpr = '(parent.internet = true';
+        $yesExpr = $qb->expr()->eq('parent.internet', 'true');
         
         // add condition for NAC activation
         if ($this->isInternetAvailable()) {
@@ -535,20 +536,20 @@ class FileDistributionCrud extends AbstractCrud
                 ->where('n.ip = parent.ip')
             ;
             
-            $yesExpr .= ' OR '.$qb->expr()->exists($qb);
+            $yesExpr = $qb->expr()->orX($yesExpr, $qb->expr()->exists($qb));
         }
         
-        $yesExpr .= ') AND '.$qb->expr()->isNull('parent.overrideRoute');
+        $yesExpr = $qb->expr()->andX($yesExpr, $qb->expr()->isNull('parent.overrideRoute'));
         
         if ($this->isExamModeAvailable()) {
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
                 ->select('ex')
                 ->from('StsblFileDistributionBundle:Exam', 'ex')
-                ->where('ex.ip = parent.ip')
+                ->where($qb->expr()->eq('ex.ip', 'parent.ip'))
             ;
             
-            $yesExpr .= ' AND '.$qb->expr()->not($qb->expr()->exists($qb));
+            $yesExpr = $qb->expr()->andX($yesExpr, $qb->expr()->not($qb->expr()->exists($qb)));
         }
         
         $internetYesFilter = new Filter\ListExpressionFilter(_('Internet: yes'), $yesExpr);
@@ -558,17 +559,17 @@ class FileDistributionCrud extends AbstractCrud
             
         $listHandler->addListFilter($internetYesFilter);
         
-        $noExpr = '(parent.internet = false AND '.$qb->expr()->isNull('parent.overrideRoute').')';
+        $noExpr = $qb->expr()->andX($qb->expr()->eq('parent.internet', 'false'), $qb->expr()->isNull('parent.overrideRoute'));
         
         if ($this->isExamModeAvailable()) {
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
                 ->select('ex2')
                 ->from('StsblFileDistributionBundle:Exam', 'ex2')
-                ->where('ex2.ip = parent.ip')
+                ->where($qb->expr()->eq('ex2.ip', 'parent.ip'))
             ;
             
-            $noExpr .= ' AND '.$qb->expr()->not($qb->expr()->exists($qb));
+            $noExpr = $qb->expr()->andX($noExpr, $qb->expr()->not($qb->expr()->exists($qb)));
         }
         
         $internetNoFilter = new Filter\ListExpressionFilter(_('Internet: no'), $noExpr);
@@ -578,17 +579,17 @@ class FileDistributionCrud extends AbstractCrud
             
         $listHandler->addListFilter($internetNoFilter);
         
-        $grantedExpr = 'parent.overrideRoute = true';
+        $grantedExpr = $qb->expr()->eq('parent.overrideRoute', 'true');
 
         if ($this->isExamModeAvailable()) {
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
                 ->select('ex3')
                 ->from('StsblFileDistributionBundle:Exam', 'ex3')
-                ->where('ex3.ip = parent.ip')
+                ->where($qb->expr()->eq('ex3.ip', 'parent.ip'))
             ;
             
-            $grantedExpr .= ' AND '.$qb->expr()->not($qb->expr()->exists($qb));
+            $grantedExpr = $qb->expr()->andX($grantedExpr, $qb->expr()->not($qb->expr()->exists($qb)));
         }
         
         $internetGrantedFilter = new Filter\ListExpressionFilter(_('Internet: granted'), $grantedExpr);
@@ -598,17 +599,17 @@ class FileDistributionCrud extends AbstractCrud
             
         $listHandler->addListFilter($internetGrantedFilter);
         
-        $deniedExpr = 'parent.overrideRoute = false';
+        $deniedExpr = $qb->expr()->eq('parent.overrideRoute','false');
 
         if ($this->isExamModeAvailable()) {
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
                 ->select('ex4')
                 ->from('StsblFileDistributionBundle:Exam', 'ex4')
-                ->where('ex4.ip = parent.ip')
+                ->where($qb->expr()->eq('ex4.ip', 'parent.ip'))
             ;
             
-            $deniedExpr .= ' AND '.$qb->expr()->not($qb->expr()->exists($qb));
+            $deniedExpr = $qb->expr()->andX($deniedExpr, $qb->expr()->not($qb->expr()->exists($qb)));
         }
         
         $internetDeniedFilter = new Filter\ListExpressionFilter(_('Internet: forbidden'), $deniedExpr);
@@ -623,7 +624,7 @@ class FileDistributionCrud extends AbstractCrud
             $qb
                 ->select('e')
                 ->from('StsblFileDistributionBundle:Exam', 'e')
-                ->where('e.ip = parent.ip')
+                ->where($qb->expr()->eq('e.ip', 'parent.ip'))
             ;
             
             $examFilter = new Filter\ListExpressionFilter(_('Internet: exam mode'), $qb->expr()->exists($qb));
@@ -651,8 +652,8 @@ class FileDistributionCrud extends AbstractCrud
             $qb
                 ->select('e')
                 ->from('StsblFileDistributionBundle:FileDistribution', 'e')
-                ->where('e.ip = parent.ip')
-                ->andWhere('e.title = :title')
+                ->where($qb->expr()->eq('e.ip', 'parent.ip'))
+                ->andWhere($qb->expr()->eq('e.title', ':title'))
             ;
             
             $fdFilter = new Filter\ListExpressionFilter(__('File distribution: %s', $f->getPlainTitle()), $qb->expr()->exists($qb));
@@ -670,7 +671,7 @@ class FileDistributionCrud extends AbstractCrud
         $qb
             ->select('e')
             ->from('StsblFileDistributionBundle:FileDistribution', 'e')
-            ->where('e.ip = parent.ip')
+            ->where($qb->expr()->eq('e.ip', 'parent.ip'))
         ;
         
         $withFilter = new Filter\ListExpressionFilter(_('[With file distribution]'), $qb->expr()->exists($qb));    
@@ -691,7 +692,7 @@ class FileDistributionCrud extends AbstractCrud
         $qb
             ->select('fr')
             ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
-            ->where('fr.room = filter.name')
+            ->where($qb->expr()->eq('fr.room', 'filter.name'))
         ;
         $roomCondition = $qb->expr()->exists($qb);
         if ($this->getRoomMode() === true) {
@@ -712,7 +713,7 @@ class FileDistributionCrud extends AbstractCrud
             ->addListFilter((new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'name'))->setName('room')
                     ->allowAnyAndNone()
                     ->setPickerOptions(array('data-live-search' => 'true'))
-                    ->setWhereCondition($roomCondition.' AND '.$hostCondition)
+                    ->setWhereCondition($qb->expr()->andX($roomCondition, $hostCondition))
             )
             ->addListFilter((new Filter\ListSearchFilter(_('Search'), [
                 'name' => FilterSearch::TYPE_TEXT
@@ -779,13 +780,13 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * Checks if internet is granted to an ip via a NAC.
      * 
-     * @param string $ip
+     * @param Host $host
      * @return boolean
      */
-    private function isInternetGrantedViaNac($ip)
+    private function isInternetGrantedViaNac(Host $host)
     {
         $er = $this->getEntityManager()->getRepository('StsblInternetBundle:Nac');
-        $nac = $er->findOneBy(['ip' => $ip]);
+        $nac = $er->findOneBy(['ip' => $host->getIp()]);
         
         if ($nac === null) {
             return false;
@@ -797,14 +798,10 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * Get current internet state (yes, now, allowed, forbidden) for Host by his ip address.
      * 
-     * @param string $ip
+     * @param Host $host
      * @return string
      */
-    public function getInternetStateByIp($ip) {
-        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Host');
-        /* @var $host \Stsbl\FileDistributionBundle\Entity\Host */
-        $host = $er->findOneBy(['ip' => $ip]);
-        
+    public function getInternetState(Host $host) {
         if ($host === null) {
             return 'none';
         }
@@ -823,12 +820,27 @@ class FileDistributionCrud extends AbstractCrud
         }
         
         $qb = $this->getEntityManager()->createQueryBuilder($this->class);
-        $userCondition = '(SELECT MAX(s.act) FROM IServHostBundle:SambaUser s WHERE s.ip = :ip AND s.since=(SELECT MAX(v.since) FROM IServHostBundle:SambaUser v WHERE v.ip = :ip))';
-        
+        $subQb = clone $qb;
+        $subSubQb = clone $qb;
+
+        //$userCondition = '(SELECT MAX(s.act) FROM IServHostBundle:SambaUser s WHERE s.ip = :ip AND s.since=(SELECT MAX(v.since) FROM IServHostBundle:SambaUser v WHERE v.ip = :ip))';
+        $subSubQb
+            ->select($subSubQb->expr()->max('v.since'))
+            ->from('IServHostBundle:SambaUser', 'v')
+            ->where($qb->expr()->eq('v.ip', ':ip'))
+        ;
+
+        $subQb
+            ->select($subQb->expr()->max('s.act'))
+            ->from('IServHostBundle:SambaUser', 's')
+            ->where($qb->expr()->eq('s.ip', ':ip'))
+            ->andWhere($qb->expr()->in('s.since', $subSubQb->getDQL()))
+        ;
+
         $qb
             ->select('u')
             ->from('IServCoreBundle:User', 'u')
-            ->where('u.username = '.$userCondition)
+            ->where($qb->expr()->in('u.username', $subQb->getDQL()))
             ->setParameter('ip', $host->getIp())
         ;
         
@@ -856,7 +868,7 @@ class FileDistributionCrud extends AbstractCrud
             return 'no_priv';
         } else if ($overrideRoute === true) {
             return 'granted';
-        } else if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($ip) === true) {
+        } else if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($host) === true) {
             return 'yes_nac';
         } else if ($internetAlwaysGranted === true) {
             return 'yes_priv';
@@ -868,17 +880,13 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
-     * Get current internet lock explaination for Host by his ip address.
+     * Get current internet lock explanation for Host by his ip address.
      * 
-     * @param string $ip
+     * @param Host $host
      * @return array
      */
-    public function getInternetExplainationByIp($ip) 
+    public function getInternetExplanation(Host $host)
     {
-        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Host');
-        /* @var $host \Stsbl\FileDistributionBundle\Entity\Host */
-        $host = $er->findOneBy(['ip' => $ip]);
-        
         if ($host === null) {
             return null;
         }
@@ -891,7 +899,7 @@ class FileDistributionCrud extends AbstractCrud
             /* @var $examMode Stsbl\FileDistributionBundle\Entity\Exam */
             $examMode = $examRepository->find($host->getIp());
             
-            if (!is_null($examMode)) {
+            if ($examMode != null) {
                 return [
                     'title' => $examMode->getTitle(),
                     'user' => $examMode->getUser(),
@@ -908,7 +916,7 @@ class FileDistributionCrud extends AbstractCrud
             ];
         }
         
-        if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($host->getIp())) {
+        if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($host)) {
             /* @var $nac \Stsbl\InternetBundle\Entity\Nac */
             $nac = $this->getEntityManager()->getRepository('StsblInternetBundle:Nac')->findOneByIp($host->getIp());
             $user = $nac->getUser();
@@ -928,13 +936,13 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * Get file distribution info by id
      * 
-     * @param integer $id
+     * @param Host $host
      * @return \Stsbl\FileDistributionBundle\Entity\FileDistribution
      */
-    public function getFileDistributionInfoById($id)
+    public function getFileDistribution(Host $host)
     {
-        if ($id != null) {
-            return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution')->find($id);
+        if ($host != null) {
+            return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution')->findOneByIp($host->getIp());
         } else {
             return null;
         }
@@ -943,15 +951,15 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * Get user who locked a computer.
      * 
-     * @param string $ip
+     * @param Host $host
      * @return \IServ\CoreBundle\Entity\User
      */
-    public function getLockUser($ip)
+    public function getLockUser(Host $host)
     {  
         /* @var $lock \Stsbl\FileDistributionBundle\Entity\Lock */
-        $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Lock')->find($ip);
+        $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Lock')->find($host->getIp());
         
-        if (is_null($lock)) {
+        if ($lock === null) {
             return null;
         }
         
@@ -961,15 +969,15 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * Get user who locked the sound on a computer.
      * 
-     * @param string $ip
+     * @param Host $host
      * @return \IServ\CoreBundle\Entity\User
      */
-    public function getSoundLockUser($ip)
+    public function getSoundLockUser(Host $host)
     {  
         /* @var $lock \Stsbl\FileDistributionBundle\Entity\SoundLock */
-        $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock')->findOneByIp($ip);
+        $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock')->findOneByIp($host->getIp());
         
-        if (is_null($lock)) {
+        if ($lock === null) {
             return null;
         }
         

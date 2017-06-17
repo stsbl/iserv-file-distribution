@@ -3,7 +3,7 @@
 
 {% block field %}
     {% if value is not null %}
-        <span title="{{ __('By: %s', admin.getLockUser(value)) }}">{{ icon('legacy-lock') }}</span>
+        <span title="{{ __('By: %s', admin.getLockUser(object)) }}">{{ icon('legacy-lock') }}</span>
     {% endif %}
 {% endblock %}
 
