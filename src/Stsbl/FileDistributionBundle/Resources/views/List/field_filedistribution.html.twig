@@ -5,21 +5,33 @@
     {% set fd = admin.getFileDistribution(object) %}
     
     {% if fd is not null %}
-        <span title="{{ __('By: %s', fd.user) }}">{{ fd.plainTitle }}</span>
+        <span title="{{ __('By: %s', fd.user) }}"><strong>{{ fd.plainTitle }}</strong></span>
         {% if fd.user == app.user %}
             {% set path = 'Files/File-Distribution/' ~ fd.plainTitle %}
-            &nbsp;<a href="{{ path('file_list', {'path': path|base64_encode}) }}" title="{{ _('Open folder of this file distribution')  }}">{{ icon('legacy-folder') }}</a> 
+            &nbsp;<a href="{{ path('file_list', {'path': path|base64_encode}) }}" title="{{ _('Open folder of this file distribution')  }}">{{ icon('legacy-folder') }}</a>
         {% endif %}
+
+        {% if fd.isolation == true %}
+            &nbsp;<span title="{{ _('Host isolation activated') }}">{{ icon('fugue-arrow-stop') }}</span>
+        {% endif %}
+
+        {%  if fd.folderAvailability == 'readonly' %}
+            &nbsp;<span title="{{ _('Group folders and other Windows shares are only available for read only.') }}">{{ icon('fugue-lock--pencil') }}</span>
+        {%  elseif fd.folderAvailability == 'replace' %}
+            &nbsp;<span title="{{ _('Group folders and other Windows shares are replaced with empty folders.') }}">{{  icon('fugue-disk--minus') }}</span>
+        {%  endif %}
     {% endif %}
 {% endblock %}
 
 {% block value %}
     {% set fd = admin.getFileDistribution(object) %}
-    
-    {% if fd is not null %}
-        {{ fd.plainTitle }}
-    {% else %}
-        {# Hack to move section "Weitere" to bottom #}
-        zzzz_none
-    {% endif %}
+
+    {%  spaceless %}
+        {# prefix file distributions with aaaa_ and all other hosts with zzzz_ to move file distributions to top #}
+        {% if fd is not null %}
+            aaaa{{ fd.plainTitle }}
+        {% else %}
+            zzzz
+        {% endif %}
+    {%  endspaceless %}
 {% endblock %}

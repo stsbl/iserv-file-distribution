@@ -375,10 +375,7 @@ class FileDistributionCrud extends AbstractCrud
                     'sortType' => 'natural',
                     'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig',
                 ])
-                ->add('fileDistributionIsolation', null, [
-                    'label' => '', // no title in table
-                    'template' => 'StsblFileDistributionBundle:List:field_isolation.html.twig',
-            ]);
+            ;
         }
         
         // check for existing sound locks
@@ -402,14 +399,14 @@ class FileDistributionCrud extends AbstractCrud
         } else if ($activeFileDistributions || $activeSoundLocks) {
             if ($activeFileDistributions) {
                 // case: only file distributions
-                $sortOrder = [5, 1];
+                $sortOrder = [4, 1];
             } else {
                 // only sound locks
-                $sortOrder = [4, 1];
+                $sortOrder = [3, 1];
             }
         } else {
             // case: nothing of them
-            $sortOrder = [3, 1];
+            $sortOrder = [2, 1];
         }
         $listMapper
             ->add('room', null, [
