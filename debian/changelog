@@ -1,3 +1,15 @@
+stsbl-iserv-file-distribution (17.06.17-1) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Removed deprecated usage.
+  * Fixed sorting of file distributions.
+  * Moved file distribution meta information in file distribution column.
+  * Removed not longer required list template.
+  * Improved icon whitespacing.
+  * Updated l10n.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Sat, 17 Jun 2017 22:30:22 +0200
+
 stsbl-iserv-file-distribution (17.06.17-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
