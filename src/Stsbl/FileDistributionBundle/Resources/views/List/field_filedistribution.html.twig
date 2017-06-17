@@ -8,17 +8,17 @@
         <span title="{{ __('By: %s', fd.user) }}"><strong>{{ fd.plainTitle }}</strong></span>
         {% if fd.user == app.user %}
             {% set path = 'Files/File-Distribution/' ~ fd.plainTitle %}
-            &nbsp;<a href="{{ path('file_list', {'path': path|base64_encode}) }}" title="{{ _('Open folder of this file distribution')  }}">{{ icon('legacy-folder') }}</a>
+            <a href="{{ path('file_list', {'path': path|base64_encode}) }}" title="{{ _('Open folder of this file distribution')  }}">&nbsp;{{ icon('legacy-folder') }}</a>
         {% endif %}
 
         {% if fd.isolation == true %}
-            &nbsp;<span title="{{ _('Host isolation activated') }}">{{ icon('fugue-arrow-stop') }}</span>
+            <span title="{{ _('Host isolation activated') }}">&nbsp;{{ icon('fugue-arrow-stop') }}</span>
         {% endif %}
 
         {%  if fd.folderAvailability == 'readonly' %}
-            &nbsp;<span title="{{ _('Group folders and other Windows shares are only available for read only.') }}">{{ icon('fugue-lock--pencil') }}</span>
+            <span title="{{ _('Group folders and other Windows shares are only available for read only.') }}">&nbsp;{{ icon('fugue-lock--pencil') }}</span>
         {%  elseif fd.folderAvailability == 'replace' %}
-            &nbsp;<span title="{{ _('Group folders and other Windows shares are replaced with empty folders.') }}">{{  icon('fugue-disk--minus') }}</span>
+            <span title="{{ _('Group folders and other Windows shares are replaced with empty folders.') }}">&nbsp;{{ icon('fugue-disk--minus') }}</span>
         {%  endif %}
     {% endif %}
 {% endblock %}
