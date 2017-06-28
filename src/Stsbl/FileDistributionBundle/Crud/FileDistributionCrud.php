@@ -11,6 +11,7 @@ use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
+use IServ\HostBundle\Crud\ListFilterEventSubscriber;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
@@ -719,6 +720,10 @@ class FileDistributionCrud extends AbstractCrud
                 'name' => FilterSearch::TYPE_TEXT
             ])))
         ;
+
+        /* @var $om \IServ\CrudBundle\Doctrine\ORM\ORMObjectManager */
+        $om = $this->getObjectManager();
+        $listHandler->getFilterHandler()->addEventSubscriber(new ListFilterEventSubscriber($this->request, $om->getRepository('StsblFileDistributionBundle:Host')));
     }
     
     /**

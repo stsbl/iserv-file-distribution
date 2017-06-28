@@ -2,6 +2,7 @@
 // src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
 namespace Stsbl\FileDistributionBundle\Controller;
 
+use Doctrine\ORM\NoResultException;
 use IServ\CoreBundle\Form\Type\BooleanType;
 use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Controller\CrudController;
@@ -91,7 +92,7 @@ class FileDistributionController extends CrudController
     }
     
     /**
-     * Looksup for existing file distributions owned by user
+     * Looks up for existing file distributions owned by user
      * 
      * @param Request $request
      * @return JsonResponse
@@ -157,6 +158,30 @@ class FileDistributionController extends CrudController
         asort($suggestions);
         
         return new JsonResponse($suggestions);
+    }
+
+    /**
+     * Looks up current host name
+     *
+     * @Route("filedistribution/lookup/hostname", name="fd_filedistribution_lookup_hostname", options={"expose": true})
+     * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function lookupHostNameAction(Request $request)
+    {
+        try {
+            $host = $this->getDoctrine()->getManager()->getRepository('StsblFileDistributionBundle:Host')->findOneByIp($request->getClientIp());
+        } catch (NoResultException $e) {
+            $host = null;
+        }
+
+        $name = null;
+        if ($host != null) {
+            $name = $host->getName();
+        }
+
+        return new JsonResponse($name);
     }
     
     /**
@@ -237,6 +262,7 @@ class FileDistributionController extends CrudController
      * @param Request $request
      * @return Response
      * @Route("filedistribution/update.js", name="fd_filedistribution_update")
+     * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
      */
     public function updateAction(Request $request)
     {

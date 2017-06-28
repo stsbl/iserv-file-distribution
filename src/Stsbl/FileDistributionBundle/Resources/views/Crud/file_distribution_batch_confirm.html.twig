@@ -1,12 +1,13 @@
 {# src/Stsbl/FileDistirbutionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig #}
 {% extends "IServCrudBundle:Crud:batch_confirm.html.twig" %}
+{% import "StsblJavaScriptLibraryBundle::jquery.initialize.html.twig" as jqi %}
 
 {% block stylesheets %}
     {{ parent() }}
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => vendor/glyphicons-social.css -->
     {% endif %}
-    <link rel="stylesheet" href="{{ asset('/css/vendor/glyphicons-social.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('css/vendor/glyphicons-social.css') }}"/>
 
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => host.css -->
@@ -182,11 +183,25 @@
 
 {% block javascripts %}
     {{  parent() }}
-    
+
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => file-distribution.js -->
     {% endif %}
     {% javascripts '@StsblFileDistributionBundle/Resources/public/js/file-distribution.js' filter='?uglifyjs2' output='js/compiled/file-distribution.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {% if app.environment != 'prod' %}
+        <!-- file-distribution-autocomplete.js -->
+    {% endif %}
+    {% javascripts '@StsblFileDistributionBundle/Resources/public/js/file-distribution-autocomplete.js' filter='?uglifyjs2' output='js/compiled/file-distribution-autocomplete.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution-highlight.js -->
+    {% endif %}
+    {% javascripts '@StsblFileDistributionBundle/Resources/public/js/file-distribution-highlight.js' filter='?uglifyjs2' output='js/compiled/file-distribution-highlight.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     

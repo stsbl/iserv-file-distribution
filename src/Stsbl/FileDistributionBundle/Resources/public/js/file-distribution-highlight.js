@@ -23,6 +23,27 @@
  */
 
 /**
- * Provides IServ.FileDistribution object
+ * Enables highlighting of current host
  */
-IServ.FileDistribution = {};
+IServ.FileDistribution.Highlight = IServ.register(function (IServ) {
+    "use strict";
+
+    function initialize()
+    {
+        IServ.Loading.on('filedistribution.highlight');
+        $.getJSON(IServ.Routing.generate('fd_filedistribution_lookup_hostname'), function (currentHostname)
+        {
+            IServ.Loading.off('filedistribution.highlight');
+            if (currentHostname != null) {
+                $.initialize('#host_status_' + currentHostname, function () {
+                    $(this).parent().parent().addClass('highlight');
+                })
+            }
+        });
+    }
+
+    // Public API
+    return {
+        init: initialize
+    }
+}(IServ));

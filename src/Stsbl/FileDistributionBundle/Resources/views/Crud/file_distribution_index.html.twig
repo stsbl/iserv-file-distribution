@@ -1,5 +1,7 @@
 {# src/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig #}
 {% extends "IServCrudBundle:Crud:index.html.twig" %}
+{%  import "StsblJavaScriptLibraryBundle::jquery.initialize.html.twig" as jqi %}
+
 {% block stylesheets %}
     {{ parent() }}
     
@@ -55,7 +57,23 @@
 
 {% block javascripts %}
     {{ parent() }}
-    
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution.js -->
+    {% endif %}
+    {% javascripts '@StsblFileDistributionBundle/Resources/public/js/file-distribution.js' filter='?uglifyjs2' output='js/compiled/file-distribution.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {{ jqi.integrate() }}
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution-highlight.js -->
+    {% endif %}
+    {% javascripts '@StsblFileDistributionBundle/Resources/public/js/file-distribution-highlight.js' filter='?uglifyjs2' output='js/compiled/file-distribution-highlight.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => host.js -->
     {% endif %}

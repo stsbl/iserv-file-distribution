@@ -73,9 +73,9 @@ class FileDistributionSpecification extends AbstractSpecification
         ;
             
         if (true === $this->invert) {
-            return $qb->expr()->andX($qb->expr()->not($qb->expr()->exists($subQb)), $dqlAlias.'.controllable = true');
+            return $qb->expr()->andX($qb->expr()->not($qb->expr()->exists($subQb)), $qb->expr()->eq($dqlAlias.'.controllable', 'true'));
         } else {
-            return $qb->expr()->andX($qb->expr()->exists($subQb), $dqlAlias.'.controllable = true');
+            return $qb->expr()->andX($qb->expr()->exists($subQb), $qb->expr()->eq($dqlAlias.'.controllable', 'true'));
         }
     }
     
