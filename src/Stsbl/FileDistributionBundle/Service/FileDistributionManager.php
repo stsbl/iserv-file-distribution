@@ -41,7 +41,6 @@ use IServ\HostBundle\Service\HostStatus;
 class FileDistributionManager extends HostManager
 {
     // Commands
-    const NETRPC = '/usr/lib/iserv/netrpc';
     const FD_RPC = '/usr/lib/iserv/file_distribution_rpc';
     // Constants for file_distribution_rpc
     const FD_ON = 'fdon';
@@ -49,34 +48,8 @@ class FileDistributionManager extends HostManager
     const FD_SOUNDON = 'soundon';
     const FD_SOUNDOFF = 'soundoff';
     // Constants for netrpc
-    const NETRPC_MSG = 'msg';
     const NETRPC_EXAM_ON = 'examon';
     const NETRPC_EXAM_OFF = 'examoff';
-    
-    /**
-     * Execute netrpc command.
-     * Improved version with support for ARG environment variable.
-     *
-     * @param string $cmd
-     * @param array $args
-     * @param string $arg
-     * @return FlashMessageBag
-     */
-    public function netrpc($cmd, array $args = array(), $arg = null)
-    {
-        $env = ['SESSPW' => $this->securityHandler->getSessionPassword()];
-        
-        if ($arg != null) {
-            $env['ARG'] = $arg;
-        }
-        
-        return $this->shellMsg(
-            'sudo',
-            array_merge([self::NETRPC, $this->securityHandler->getUser()->getUsername(), $cmd], $args),
-            null,
-            $env
-        );
-    }
     
     /**
      * Execute file_distribution_rpc command.
@@ -145,7 +118,7 @@ class FileDistributionManager extends HostManager
     /**
      * Disable sound on hosts.
      * 
-     * @param Host\ArrayAccess $hosts
+     * @param Host|\ArrayAccess $hosts
      * @return FlashMessageBag
      */
     public function soundLock($hosts)
@@ -166,14 +139,18 @@ class FileDistributionManager extends HostManager
     
     /**
      * Send message to hosts.
-     * 
-     * @param Host\ArrayAccess $hosts
+     *
+     * @deprecated 
+     * @param Host|\ArrayAccess $hosts
      * @param string $msg
      * @return FlashMessageBag
      */
     public function msg($hosts, $msg)
     {
-        return $this->netrpc(self::NETRPC_MSG, $this->getIpsForHosts($hosts), $msg);
+        @trigger_error('msg() is deprecated and will removed in future versions. Use sendMessage() instead.',
+            E_USER_DEPRECATED);
+
+        return $this->sendMessage($hosts, $msg);
     }
     
     /**
