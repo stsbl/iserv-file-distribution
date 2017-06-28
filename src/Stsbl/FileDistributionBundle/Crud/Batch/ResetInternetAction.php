@@ -101,7 +101,7 @@ class ResetInternetAction extends AbstractFileDistributionAction implements Grou
      */
     public function getListIcon()
     {
-        return 'pro-rewind';
+        return 'repeat';
     }
     
     /**

@@ -135,7 +135,7 @@ class DenyInternetAction extends AbstractFileDistributionAction implements Group
      */
     public function getListIcon()
     {
-        return 'pro-remove-sign';
+        return 'minus-sign';
     }
     
     /**

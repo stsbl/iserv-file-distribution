@@ -62,9 +62,10 @@
     {% javascripts '@IServHostBundle/Resources/public/host.js' filter='?uglifyjs2' output='js/compiled/host.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript">
-        IServ.Host.updateStatus({{ status|json_encode|raw }});
-    </script>
+    {%  if app.environment != 'prod' %}
+        <!-- {{ _self }} => update.js -->
+    {%  endif %}
+    <script type="text/javascript" src="{{  path('fd_filedistribution_update') }}"></script>
 {% endblock %}
 
 {% block crud_table_row %}

@@ -8,9 +8,11 @@ use IServ\CrudBundle\Controller\CrudController;
 use IServ\CrudBundle\Table\ListHandler;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /*
@@ -68,7 +70,6 @@ class FileDistributionController extends CrudController
             }
             
             $ret['ip'] = $request->getClientIp();
-            $ret['status'] = $this->get('iserv.host.status')->get();
             $ret['room_available'] = $this->getDoctrine()->getRepository('StsblFileDistributionBundle:FileDistributionRoom')->isRoomAvailable();
         }
         
@@ -83,7 +84,6 @@ class FileDistributionController extends CrudController
         $ret = parent::confirmBatchAction($request);
         
         if (is_array($ret)) {
-            $ret['status'] = $this->get('iserv.host.status')->get();
             $ret['ip'] = $request->getClientIp();
         }
         
@@ -231,5 +231,22 @@ class FileDistributionController extends CrudController
         $ret['room_inclusion_form'] = $form->createView();
         
         return $ret;
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     * @Route("filedistribution/update.js", name="fd_filedistribution_update")
+     */
+    public function updateAction(Request $request)
+    {
+        $params = [
+          'status' => $this->get('iserv.host.status')->get()
+        ];
+
+        $render = $this->renderView('StsblFileDistributionBundle:FileDistribution:update.js.twig', $params);
+        $response = new Response($render);
+        $response->headers->set('Content-Type', 'text/javascript');
+        return $response;
     }
 }

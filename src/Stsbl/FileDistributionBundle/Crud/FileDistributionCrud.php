@@ -190,7 +190,9 @@ class FileDistributionCrud extends AbstractCrud
         $this->itemTitle = _p('file-distribution', 'Device');
         $this->id = 'filedistribution';
         $this->routesNamePrefix = 'fd_';
-        $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';        
+        $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';
+        $this->options['json'] = true;
+        $this->options['autoload'] = false;
         $this->templates['crud_index'] = 'StsblFileDistributionBundle:Crud:file_distribution_index.html.twig';
         $this->templates['crud_batch_confirm'] = 'StsblFileDistributionBundle:Crud:file_distribution_batch_confirm.html.twig';
     }

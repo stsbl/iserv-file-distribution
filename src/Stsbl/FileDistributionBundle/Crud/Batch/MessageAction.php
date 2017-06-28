@@ -137,7 +137,7 @@ class MessageAction extends AbstractFileDistributionAction implements GroupableB
      */
     public function getListIcon()
     {
-        return 'pro-message-flag';
+        return 'pro-message-full';
     }
     
     /**
