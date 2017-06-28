@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.06.28-2) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed missing import.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Wed, 28 Jun 2017 21:33:33 +0200
+
 stsbl-iserv-file-distribution (17.06.28-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
