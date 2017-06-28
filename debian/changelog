@@ -1,3 +1,11 @@
+stsbl-iserv-file-distribution (17.06.28-1) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed path of glyphicons-social.css.
+  * Restructured javascript code.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Wed, 28 Jun 2017 21:06:31 +0200
+
 stsbl-iserv-file-distribution (17.06.28-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
