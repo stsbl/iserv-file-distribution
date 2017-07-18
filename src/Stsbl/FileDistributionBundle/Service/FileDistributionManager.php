@@ -184,7 +184,7 @@ class FileDistributionManager extends HostManager
      * @throws \InvalidArgumentException
      * @return array string array of ips of the hosts, prefixed with '+' if online
      */
-    protected function getIpsForHosts($hosts)
+    public function getIpsForHosts($hosts)
     {
         if (!is_array($hosts) and !($hosts instanceof ArrayCollection)) {
             $hosts = array($hosts);
