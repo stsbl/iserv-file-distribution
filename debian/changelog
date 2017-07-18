@@ -1,3 +1,11 @@
+stsbl-iserv-file-distribution (17.07.18-1) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed extended description.
+  * Fixed duplicate alias.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Tue, 18 Jul 2017 06:24:30 +0200
+
 stsbl-iserv-file-distribution (17.07.18-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
