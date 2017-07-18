@@ -1,3 +1,12 @@
+stsbl-iserv-file-distribution (17.07.18-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Removed old FileDistributionManager methods.
+  * Fixed compatibility of FileDistributionManager with HostBundle update.
+  * Always remove lock database bridge.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Tue, 18 Jul 2017 02:17:22 +0200
+
 stsbl-iserv-file-distribution (17.06.28-2) experimental; urgency=medium
 
   [ Felix Jacobi ]
