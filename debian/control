@@ -10,8 +10,8 @@ Package: stsbl-iserv-file-distribution
 Architecture: all
 Depends: iserv-portal, stsbl-iserv3-js-libs, iserv3-school, iserv3-host, iserv-computer, stsbl-iserv-perl-lib
 Description: Dateiverteilung für IServ
- Ausgewählte Benutzer können Dateiverteilungen erstellen, dies sind spezielle
- Ordner innerhalb des eigenen Home-Verzeichnisses.
+ Ausgewählte Benutzer können Dateiverteilungen erstellen, dies sind
+ spezielle Ordner innerhalb des eigenen Home-Verzeichnisses.
  .
  Die Dateiverteilungen werden gerätebasiert konfiguriert, Benutzer die sich
  an einem Gerät anmelden, welches an einer Dateiverteilung teilnimmt,
@@ -20,16 +20,18 @@ Description: Dateiverteilung für IServ
  Die Zuteilung gestaltet sich dabei wie folgt:
  .
  - Laufwerk U: dient zur Ausgabe der Dateien, es stellt einen Ordner im
-   Homeverzeichnis des Benutzers dar, der die Dateiverteilung erstellt hat, 
-   hier werden zum Beispiel Aufgabenstellungen für Schüler hinterlegt.
+   Homeverzeichnis des Benutzers dar, der die Dateiverteilung erstellt
+   hat, hier werden zum Beispiel Aufgabenstellungen für Schüler 
+   hinterlegt.
  .
- - Laufwerk V: ist das sogenannte Rückgabelaufwerk, hier speichert der Benutzer
-   sein Ergebnis hin, dieses wird dann deutlich erkennbar aufgeschlüsselt
-   nach Rechnername und Benutzer wieder im Homeverzeichnis desjenigen abgelegt,
-   der die Dateiverteilung gestartet hat.
+ - Laufwerk V: ist das sogenannte Rückgabelaufwerk, hier speichert der
+   Benutzer sein Ergebnis hin, dieses wird dann deutlich erkennbar
+   aufgeschlüsselt nach Rechnername und Benutzer wieder im
+   Homeverzeichnis desjenigen abgelegt, der die Dateiverteilung gestartet 
+   hat.
  .
- Dieses Modul setzt die IServ Rechnersteuerung voraus, da einige Komponenten
- dieser verwenden werden.
+ Dieses Modul setzt die IServ Rechnersteuerung voraus, da einige
+ Komponenten dieser verwenden werden.
  .
  https://it.stsbl.de/wp-content/uploads/2017/02/stsbl-iserv-file-distribution.png
 Tag: suite::iserv:portal, role::plugin, implemented-in::php, implemented-in::perl, status::highlighted, status::recommended
