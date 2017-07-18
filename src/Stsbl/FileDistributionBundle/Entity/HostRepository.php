@@ -46,7 +46,7 @@ class HostRepository extends BaseHostRepository
         $ret['soundLock'] = '(SELECT sl.ip FROM StsblFileDistributionBundle:SoundLock sl WHERE sl.ip = parent.ip)';
         
         if (file_exists('/var/lib/dpkg/info/iserv-lock.list')) {
-            $ret['lock'] = '(SELECT l.ip FROM StsblFileDistributionBundle:Lock l WHERE l.ip = parent.ip)';
+            $ret['lock'] = '(SELECT l2.ip FROM StsblFileDistributionBundle:Lock l2 WHERE l2.ip = parent.ip)';
         }
         
         return $ret;
