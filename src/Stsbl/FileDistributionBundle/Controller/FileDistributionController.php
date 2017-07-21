@@ -138,8 +138,8 @@ class FileDistributionController extends CrudController
         $qb
             ->select('f')
             ->from('StsblFileDistributionBundle:FileDistribution', 'f')
-            ->where('f.user = :user')
-            ->andWhere('f.title LIKE :query ')
+            ->where($qb->expr()->eq('f.user', ':user'))
+            ->andWhere($qb->expr()->like('f.title', ':query'))
             ->setParameter(':user', $this->getUser())
             ->setParameter(':query', '%'.$query.'%')
         ;
@@ -158,6 +158,79 @@ class FileDistributionController extends CrudController
         
         asort($suggestions);
         
+        return new JsonResponse($suggestions);
+    }
+
+    /**
+     * Looks up for existing file distributions owned by user
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @Route("filedistribution/lookup/exam", name="fd_filedistribution_lookup_exam", options={"expose": true})
+     * @Security("is_granted('PRIV_EXAM')")
+     */
+    public function lookupExamAction(Request $request)
+    {
+        if (!file_exists('/var/lib/dpkg/info/iserv-exam.list')) {
+            throw $this->createNotFoundException('iserv-exam is currently not installed.');
+        }
+
+        $query = $request->get('query');
+
+        if (empty($query)) {
+            throw new \RuntimeException('query should not be empty.');
+        }
+
+        $this->get('iserv.sudo');
+
+        $suggestions = [];
+        $home = $this->getUser()->getHome();
+        $directory = $home.'/Exam/';
+
+        $directories = Sudo::glob($directory.'*/');
+
+        // add existing directories to suggestions
+        foreach ($directories as $directory) {
+            $basename = basename($directory);
+            if (Sudo::is_dir($directory.'Assignment') && Sudo::is_dir($directory.'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
+                $suggestions[$basename] = [
+                    'type' => 'existing',
+                    'label' => $basename,
+                    'value' => $basename,
+                    'extra' => _('Existing exam directory')
+                ];
+            }
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        /* @var $qb \Doctrine\ORM\QueryBuilder */
+        $qb = $em->createQueryBuilder(self::class);
+
+        // get current file distributions from database
+        $qb
+            ->select('e')
+            ->from('StsblFileDistributionBundle:Exam', 'e')
+            ->where($qb->expr()->eq('e.user',':user'))
+            ->andWhere($qb->expr()->like('e.title', ':query'))
+            ->setParameter(':user', $this->getUser())
+            ->setParameter(':query', '%'.$query.'%')
+        ;
+
+        /* @var $results \Stsbl\FileDistributionBundle\Entity\Exam[] */
+        $results = $qb->getQuery()->getResult();
+
+        foreach ($results as $result) {
+            $suggestions[$result->getTitle()] = [
+                'type' => 'running',
+                'label' => $result->getTitle(),
+                'value' => $result->getTitle(),
+                'extra' => _('Running exam')
+            ];
+        }
+
+        asort($suggestions);
+
         return new JsonResponse($suggestions);
     }
 

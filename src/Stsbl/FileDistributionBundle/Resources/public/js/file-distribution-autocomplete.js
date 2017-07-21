@@ -40,6 +40,12 @@ IServ.FileDistribution.Autocomplete = IServ.register(function (IServ) {
             suggestion: renderSuggestion
         }
     };
+    var thExamSource = {
+        remote: IServ.Routing.generate('fd_filedistribution_lookup_exam') + '?query=%QUERY',
+        templates: {
+            suggestion: renderSuggestion
+        }
+    };
     
     function registerCancelHandler()
     {
@@ -57,13 +63,15 @@ IServ.FileDistribution.Autocomplete = IServ.register(function (IServ) {
     function initialize()
     {
         var element = $('#iserv_crud_multi_select_title');
+        var examElement = $('#iserv_crud_multi_select_exam_title');
         
     	IServ.Autocomplete.make(element, thSource, thOptions);
-        
+        IServ.Autocomplete.make(examElement, thExamSource, thOptions);
+
         registerCancelHandler();
     }
     
-    //see mail compse.js
+    //see mail compose.js
     function renderSuggestion(data)
     {
         var icon;
