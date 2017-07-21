@@ -12,6 +12,7 @@ use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
 use IServ\HostBundle\Crud\ListFilterEventSubscriber;
+use IServ\HostBundle\Model\HostType;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
@@ -769,7 +770,7 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function isLockAvailable()
     {
-        return file_exists('/var/lib/dpkg/info/iserv-lock.list');
+        return $this->hasBundle('IServLockBundle');
     }
     
     /**
@@ -801,7 +802,7 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
-     * Get current internet state (yes, now, allowed, forbidden) for Host by his ip address.
+     * Get current internet state (yes, no, allowed, forbidden) for Host by his ip address.
      * 
      * @param Host $host
      * @return string
