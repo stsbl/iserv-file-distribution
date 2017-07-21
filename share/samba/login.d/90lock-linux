@@ -1,0 +1,25 @@
+#!/usr/bin/perl -CSDAL
+use warnings;
+use strict;
+use IServ::DB;
+use IServ::SSH;
+
+# run asynchronously
+fork and exit;
+open STDIN, "/dev/null" or die $!;
+open STDOUT, ">/dev/null" or die $!;
+open STDERR, ">/dev/null" or die $!;
+
+my ($act, $ip) = @ARGV;
+
+exit if not -f "/var/lib/dpkg/info/iserv-lock.list";
+
+if (IServ::DB::Do("SELECT 1 FROM lock WHERE IP = ?", $ip))
+{
+  IServ::SSH::ssh_run $ip, "iservlock lock";
+}
+else
+{
+  IServ::SSH::ssh_run $ip, "iservlock unlock";
+}
+
