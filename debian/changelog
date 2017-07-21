@@ -1,3 +1,12 @@
+stsbl-iserv-file-distribution (17.07.21-3) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed host counting during lock.
+  * Removed legacy methods.
+  * Added server-side login script for lock on linux.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 21 Jul 2017 20:26:01 +0200
+
 stsbl-iserv-file-distribution (17.07.21-2) experimental; urgency=medium
 
   [ Felix Jacobi ]
