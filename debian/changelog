@@ -1,3 +1,13 @@
+stsbl-iserv-file-distribution (17.07.21-1) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed compatibility with LockBundle.
+  * Fixed typos.
+  * Updated internet handling for using ComputerBundle.
+  * Use resources from LockBundle and dropped legacy lock handling.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 21 Jul 2017 16:50:32 +0200
+
 stsbl-iserv-file-distribution (17.07.21-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
