@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.07.21-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Re-relase with correct version number. No further changes.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 21 Jul 2017 12:12:57 +0200
+
 stsbl-iserv-file-distribution (17.07.20-0) experimental; urgency=medium
 
   [ Felix Jacobi ]
