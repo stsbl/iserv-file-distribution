@@ -747,6 +747,58 @@ class FileDistributionCrud extends AbstractCrud
             ->setGroup(_('File distribution'))
         ;
         $listHandler->addListFilter($withoutFilter);
+
+        if ($this->isExamModeAvailable()) {
+            $examRepository = $this->getEntityManager()->getRepository('StsblFileDistributionBundle:Exam');
+            $examFilterHash = [];
+            foreach ($examRepository->findAll() as $f) {
+                if (isset($examFilterHash[$f->getTitle()])) {
+                    // skip if we have already a filter for the exam
+                    continue;
+                }
+
+                $examFilterHash[$f->getTitle()] = true;
+
+                $qb = $this->getEntityManager()->createQueryBuilder();
+                $qb
+                    ->select('ex5')
+                    ->from('StsblFileDistributionBundle:Exam', 'ex5')
+                    ->where($qb->expr()->eq('ex5.ip', 'parent.ip'))
+                    ->andWhere($qb->expr()->eq('ex5.title', ':title'))
+                ;
+
+                $fdFilter = new Filter\ListExpressionFilter(__('Exam: %s', $f->getTitle()), $qb->expr()->exists($qb));
+
+                $fdFilter
+                    ->setParameters(['title' => $f->getTitle()])
+                    ->setName(sprintf('exam-%s', $f->getId()))
+                    ->setGroup(_('Exam'))
+                ;
+
+                $listHandler->addListFilter($fdFilter);
+            }
+
+            $qb = $this->getEntityManager()->createQueryBuilder();
+            $qb
+                ->select('e')
+                ->from('StsblFileDistributionBundle:Exam', 'e')
+                ->where($qb->expr()->eq('e.ip', 'parent.ip'))
+            ;
+
+            $withFilter = new Filter\ListExpressionFilter(_('[With exam]'), $qb->expr()->exists($qb));
+            $withFilter
+                ->setName(sprintf('exam-with'))
+                ->setGroup(_('Exam'))
+            ;
+            $listHandler->addListFilter($withFilter);
+
+            $withoutFilter = new Filter\ListExpressionFilter(_('[Without exam]'), $qb->expr()->not($qb->expr()->exists($qb)));
+            $withoutFilter
+                ->setName(sprintf('exam-without'))
+                ->setGroup(_('Exam'))
+            ;
+            $listHandler->addListFilter($withoutFilter);
+        }
         
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
