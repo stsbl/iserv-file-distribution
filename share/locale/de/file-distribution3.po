@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-07-21 21:53+0200\n"
+"POT-Creation-Date: 2017-07-21 22:17+0200\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -223,7 +223,7 @@ msgstr "Gerät"
 #: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:59
 #: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:114
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:484
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:773
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:825
 msgid "Room"
 msgstr "Raum"
 
@@ -743,6 +743,9 @@ msgid "Type"
 msgstr "Typ"
 
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:437
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:775
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:791
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:798
 msgid "Exam"
 msgstr "Klausur"
 
@@ -787,15 +790,19 @@ msgstr "[Mit Dateiverteilung]"
 msgid "[Without file distribution]"
 msgstr "[Ohne Dateiverteilung]"
 
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:778
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:770
+#, php-format
+msgid "Exam: %s"
+msgstr "Klausur: %s"
+
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:788
+msgid "[With exam]"
+msgstr "[Mit Klausur]"
+
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:795
+msgid "[Without exam]"
+msgstr "[Ohne Klausur]"
+
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:830
 msgid "Search"
 msgstr "Suchen"
-
-#~ msgid "No host selected!"
-#~ msgstr "Kein Gerät ausgewählt!"
-
-#~ msgid "Confirm action"
-#~ msgstr "Aktion bestätigen"
-
-#~ msgid "Switched %s into exam mode."
-#~ msgstr "%s wurde in den Klausurmodus versetzt."
