@@ -394,6 +394,10 @@ class FileDistributionCrud extends AbstractCrud
                 'sortType' => 'natural',
                 'template' => 'IServHostBundle:Crud:list_field_name.html.twig',
             ])
+            ->add('sambaUser', null, [
+                'label' => _('User'),
+                'template' => 'StsblFileDistributionBundle:List:field_sambauser.html.twig',
+            ])
             ->add('type', null, [
                 'label' => _('Type'),
                 'template' => 'IServHostBundle:Crud:list_field_type.html.twig', 
@@ -413,7 +417,7 @@ class FileDistributionCrud extends AbstractCrud
                     'label' => _('File distribution'),
                     'group' => true,
                     // sort in the following order: fileDistribution, name, room \o/
-                    'sortOrder' => [3, 1],
+                    'sortOrder' => [4, 1],
                     'sortType' => 'natural',
                     'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig',
                 ])
@@ -437,18 +441,18 @@ class FileDistributionCrud extends AbstractCrud
         // calculate sort order
         if ($activeFileDistributions && $activeSoundLocks) {
             // case: list with file distributions and sound locks
-            $sortOrder = [6, 1];
+            $sortOrder = [7, 1];
         } else if ($activeFileDistributions || $activeSoundLocks) {
             if ($activeFileDistributions) {
                 // case: only file distributions
-                $sortOrder = [4, 1];
+                $sortOrder = [5, 1];
             } else {
                 // only sound locks
-                $sortOrder = [3, 1];
+                $sortOrder = [4, 1];
             }
         } else {
             // case: nothing of them
-            $sortOrder = [2, 1];
+            $sortOrder = [3, 1];
         }
         $listMapper
             ->add('room', null, [
@@ -457,10 +461,6 @@ class FileDistributionCrud extends AbstractCrud
                 // sort in the following order: room, name, fileDistribution \o/
                 'sortOrder' => $sortOrder,
                 'sortType' => 'natural',
-            ])
-            ->add('sambaUser', null, [
-                'label' => _('User'),
-                'template' => 'StsblFileDistributionBundle:List:field_sambauser.html.twig',
             ])
             ->add('ipInternet', null, [
                 'label' => _('Internet Access'),

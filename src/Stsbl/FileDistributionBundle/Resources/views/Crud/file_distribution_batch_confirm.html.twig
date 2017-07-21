@@ -123,7 +123,7 @@
                     {% if not admin.isInLan() and item.sambaUserDisplay is not null %}
                         {{ _('Yes') }}
                     {% else %}
-                        {{ item.sambaUserDisplay }}
+                        {{ admin.accountToUser(item.sambaUser) }}
                     {% endif %}
                 </td>
             {% endblock %}
