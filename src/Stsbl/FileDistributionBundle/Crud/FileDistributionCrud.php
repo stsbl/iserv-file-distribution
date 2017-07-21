@@ -458,7 +458,7 @@ class FileDistributionCrud extends AbstractCrud
                 'sortOrder' => $sortOrder,
                 'sortType' => 'natural',
             ])
-            ->add('sambaUserDisplay', null, [
+            ->add('sambaUser', null, [
                 'label' => _('User'),
                 'template' => 'StsblFileDistributionBundle:List:field_sambauser.html.twig',
             ])

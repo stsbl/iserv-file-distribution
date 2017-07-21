@@ -6,5 +6,5 @@
 {% endblock %}
 
 {% block value %}
-    {{ admin.accountToUser(value) }}
+    {{ admin.accountToUser(value)|lower }}
 {% endblock %}
