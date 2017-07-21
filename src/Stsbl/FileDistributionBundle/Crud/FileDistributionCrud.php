@@ -459,24 +459,19 @@ class FileDistributionCrud extends AbstractCrud
 
         // calculate sort order
         if ($activeFileDistributions && $activeExams && $activeSoundLocks) {
-            $sortOrder = [8, 1];
+            $sortOrder = [7, 1];
         } else if (($activeFileDistributions || $activeExams) && $activeSoundLocks) {
             // case: list with (file distributions or exams) and sound locks
-            $sortOrder = [7, 1];
+            $sortOrder = [6, 1];
+        } else if ($activeExams && $activeFileDistributions) {
+            // case: list with file distributions and exams
+            $sortOrder = [6, 1];
         } else if ($activeFileDistributions || $activeSoundLocks || $activeExams) {
-            if ($activeExams) {
-                // case: only exams
-                $sortOrder = [6, 1];
-            } else if ($activeFileDistributions) {
-                // case: only file distributions
-                $sortOrder = [5, 1];
-            } else {
-                // only sound locks
-                $sortOrder = [4, 1];
-            }
+            // case: only exams or file distributions or sound locks
+            $sortOrder = [5, 1];
         } else {
             // case: nothing of them
-            $sortOrder = [3, 1];
+            $sortOrder = [4, 1];
         }
 
         $listMapper
