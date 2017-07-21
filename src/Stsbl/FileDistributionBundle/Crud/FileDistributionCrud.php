@@ -376,17 +376,18 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * {@inheritdoc}
      */
-    public function configureListFields(ListMapper $listMapper) 
+    public function configureListFields(ListMapper $listMapper)
     {
         //if ($this->em->getRepository('StsblFileDistributionBundle:FileDistribution')->exists()) {
         //    $this->options['sort'] = 'fileDistribution';
         //} else {
-            $this->options['sort'] = 'room';
+        $this->options['sort'] = 'room';
         //}
-        
+
         $activeFileDistributions = false;
         $activeSoundLocks = false;
-        
+        $activeExams = false;
+
         $listMapper
             ->add('name', null, [
                 'label' => _('Name'),
@@ -400,18 +401,17 @@ class FileDistributionCrud extends AbstractCrud
             ])
             ->add('type', null, [
                 'label' => _('Type'),
-                'template' => 'IServHostBundle:Crud:list_field_type.html.twig', 
+                'template' => 'IServHostBundle:Crud:list_field_type.html.twig',
                 'responsive' => 'desktop'
-            ])
-        ;
-         
+            ]);
+
         // check for existing file distribution
         $fileDistributionRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
-        
+
         // only add columns if we have file distributions
-        if (count($fileDistributionRepository->findAll()) > 0) {
+        if ($fileDistributionRepository->exists()) {
             $activeFileDistributions = true;
-            
+
             $listMapper
                 ->add('fileDistribution', null, [
                     'label' => _('File distribution'),
@@ -420,30 +420,54 @@ class FileDistributionCrud extends AbstractCrud
                     'sortOrder' => [4, 1],
                     'sortType' => 'natural',
                     'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig',
-                ])
-            ;
+                ]);
         }
-        
+
+        if ($this->isExamModeAvailable() && $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam')->exists()) {
+            $activeExams = true;
+
+            if ($activeFileDistributions) {
+                $sortOrder = [5, 1];
+            } else {
+                $sortOrder = [4, 1];
+            }
+
+            $listMapper
+                ->add('exam', null, [
+                    'label' => _('Exam'),
+                    'group' => true,
+                    // sort in the following order: exam, name, room \o/
+                    'sortOrder' => $sortOrder,
+                    'sortType' => 'natural',
+                    'template' => 'StsblFileDistributionBundle:List:field_exam.html.twig'
+                ]);
+        }
+
         // check for existing sound locks
         $soundLockRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock');
 
         // only add soundlock column if we have a sound lock
         if (count($soundLockRepository->findAll()) > 0) {
             $activeSoundLocks = true;
-            
+
             $listMapper->add('soundLock', null, [
                 'label' => '', // no title in table
                 'template' => 'StsblFileDistributionBundle:List:field_soundlock.html.twig',
                 'responsive' => 'min-tablet',
             ]);
         }
-        
+
         // calculate sort order
-        if ($activeFileDistributions && $activeSoundLocks) {
-            // case: list with file distributions and sound locks
+        if ($activeFileDistributions && $activeExams && $activeSoundLocks) {
+            $sortOrder = [8, 1];
+        } else if (($activeFileDistributions || $activeExams) && $activeSoundLocks) {
+            // case: list with (file distributions or exams) and sound locks
             $sortOrder = [7, 1];
-        } else if ($activeFileDistributions || $activeSoundLocks) {
-            if ($activeFileDistributions) {
+        } else if ($activeFileDistributions || $activeSoundLocks || $activeExams) {
+            if ($activeExams) {
+                // case: only exams
+                $sortOrder = [6, 1];
+            } else if ($activeFileDistributions) {
                 // case: only file distributions
                 $sortOrder = [5, 1];
             } else {
@@ -454,6 +478,7 @@ class FileDistributionCrud extends AbstractCrud
             // case: nothing of them
             $sortOrder = [3, 1];
         }
+
         $listMapper
             ->add('room', null, [
                 'label' => _('Room'),
@@ -971,7 +996,7 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
-     * Get file distribution info by id
+     * Get file distribution
      * 
      * @param Host $host
      * @return \Stsbl\FileDistributionBundle\Entity\FileDistribution
@@ -980,6 +1005,21 @@ class FileDistributionCrud extends AbstractCrud
     {
         if ($host != null) {
             return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution')->findOneByIp($host->getIp());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get exam
+     *
+     * @param Host $host
+     * @return \Stsbl\FileDistributionBundle\Entity\Exam
+     */
+    public function getExam(Host $host)
+    {
+        if ($host != null) {
+            return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam')->findOneByIp($host->getIp());
         } else {
             return null;
         }

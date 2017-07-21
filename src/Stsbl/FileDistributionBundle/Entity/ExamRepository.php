@@ -1,8 +1,9 @@
 <?php
-
+// src/Stsbl/FileDistributionBundle/Entity/ExamRepository.php
 namespace Stsbl\FileDistributionBundle\Entity;
 
-use IServ\HostBundle\Entity\HostRepository as BaseHostRepository;
+use Doctrine\ORM\NoResultException;
+use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
 
 /*
  * The MIT License
@@ -29,24 +30,30 @@ use IServ\HostBundle\Entity\HostRepository as BaseHostRepository;
  */
 
 /**
+ * Repository class for FileDistribution
+ *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class HostRepository extends BaseHostRepository
+class ExamRepository extends EntitySpecificationRepository
 {
-    public function getDecoratorColumns() 
+    /**
+     * Checks if there's at least on file distribution.
+     * 
+     * @return boolean
+     */
+    public function exists()
     {
-        $ret = parent::getDecoratorColumns();
+        $qb = $this->createQueryBuilder('c')
+            ->select('1')
+            ->setMaxResults(1)
+        ;
         
-        $ret['ipInternet'] = '(parent.ip)';
-        $ret['fileDistribution'] = '(SELECT f.id FROM StsblFileDistributionBundle:FileDistribution f WHERE f.ip = parent.ip)';
-        $ret['soundLock'] = '(SELECT sl.ip FROM StsblFileDistributionBundle:SoundLock sl WHERE sl.ip = parent.ip)';
-
-        // TODO ?
-        if (file_exists('/var/lib/dpkg/info/iserv-exam.list')) {
-            $ret['exam'] = '(SELECT e.title FROM StsblFileDistributionBundle:Exam e WHERE e.ip = parent.ip)';
+        try {
+            $qb->getQuery()->getSingleScalarResult();
+            return true;
+        } catch (NoResultException $e) {
+            return false;
         }
-        
-        return $ret;
     }
 }

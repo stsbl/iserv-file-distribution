@@ -1,0 +1,26 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/List/field_exam.html.twig #}
+{% extends admin.getTemplate('list_field_base') %}
+
+{% block field %}
+      {% if value is not null %}
+        {% set exam = admin.getExam(object) %}
+        <span title="{{ __('By: %s', exam.user) }}"><strong>{{ exam.title }}</strong></span>
+        {% if exam.user == app.user %}
+            {% set path = 'Files/Exam/' ~ value %}
+            <a href="{{ path('file_list', {'path': path|base64_encode}) }}" title="{{ _('Open folder of this exam')  }}">&nbsp;{{ icon('legacy-folder') }}</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block value %}
+    {%  spaceless %}
+        {% if value is not null %}
+            {% set exam = admin.getExam(object) %}
+
+            {# prefix exams with aaaa_ and all other hosts with zzzz_ to move exams to top #}
+            aaaa{{ exam.title }}
+        {% else %}
+            zzzz
+        {% endif %}
+    {%  endspaceless %}
+{% endblock %}
