@@ -107,7 +107,7 @@ class DenyInternetAction extends AbstractFileDistributionAction implements Group
     }
     
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -115,7 +115,7 @@ class DenyInternetAction extends AbstractFileDistributionAction implements Group
     }
     
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function getLabel() 
     {
@@ -157,6 +157,7 @@ class DenyInternetAction extends AbstractFileDistributionAction implements Group
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return boolean
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {

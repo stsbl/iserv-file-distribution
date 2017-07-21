@@ -53,12 +53,12 @@ class LockAction extends AbstractFileDistributionAction implements GroupableBatc
             }
         }
         
-        if (count($entities) > 1) {
-            $bag = $this->getFileDistributionManager()->lock($entities);
-        } else {
-            $bag = new FlashMessageBag();
-        }
-        // add messsages created during work
+        //if (count($entities) > 1) {
+            $bag = $this->crud->getLockManager()->lock($entities);
+        //} else {
+        //    $bag = new FlashMessageBag();
+        //}
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
@@ -69,6 +69,7 @@ class LockAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return boolean
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {

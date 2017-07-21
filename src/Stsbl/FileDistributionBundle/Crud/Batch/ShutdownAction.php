@@ -46,7 +46,7 @@ class ShutdownAction extends AbstractFileDistributionAction implements Groupable
         }
         
         $bag = $this->getFileDistributionManager()->shutdown($entities);
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }

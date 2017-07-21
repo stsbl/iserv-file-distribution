@@ -56,7 +56,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
         }
         
         $bag = $this->getFileDistributionManager()->soundLock($entities);
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }

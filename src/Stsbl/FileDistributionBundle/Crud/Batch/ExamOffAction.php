@@ -48,7 +48,7 @@ class ExamOffAction extends AbstractFileDistributionAction implements GroupableB
         }
             
         $bag = $this->getFileDistributionManager()->examOff($entities);
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
@@ -59,6 +59,7 @@ class ExamOffAction extends AbstractFileDistributionAction implements GroupableB
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return boolean
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {

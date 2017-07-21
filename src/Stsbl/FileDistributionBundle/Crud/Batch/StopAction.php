@@ -124,6 +124,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return boolean
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {

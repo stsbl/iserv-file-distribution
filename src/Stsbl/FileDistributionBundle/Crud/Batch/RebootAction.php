@@ -46,7 +46,7 @@ class RebootAction extends AbstractFileDistributionAction implements GroupableBa
         }
         
         $bag = $this->getFileDistributionManager()->reboot($entities);
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }

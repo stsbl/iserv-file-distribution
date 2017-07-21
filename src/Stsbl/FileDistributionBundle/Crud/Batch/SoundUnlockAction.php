@@ -56,7 +56,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
         }
         
         $bag = $this->getFileDistributionManager()->soundUnlock($entities);
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }

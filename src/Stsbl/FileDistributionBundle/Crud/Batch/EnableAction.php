@@ -118,6 +118,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
      * Gets called with the full form data instead of `execute`.
      *
      * @param array $data
+     * @return FlashMessageBag
      */
     public function handleFormData(array $data)
     {
@@ -187,7 +188,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     }
 
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -195,7 +196,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     }
     
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function getLabel() 
     {
@@ -237,6 +238,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return boolean
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {

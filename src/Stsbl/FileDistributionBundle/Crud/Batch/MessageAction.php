@@ -4,6 +4,7 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Security\Privilege;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
@@ -76,6 +77,7 @@ class MessageAction extends AbstractFileDistributionAction implements GroupableB
      * Gets called with the full form data instead of `execute`.
      *
      * @param array $data
+     * @return FlashMessageBag
      */
     public function handleFormData(array $data)
     {

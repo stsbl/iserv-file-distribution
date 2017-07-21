@@ -48,6 +48,7 @@ class ExamAction extends AbstractFileDistributionAction implements GroupableBatc
      * Gets called with the full form data instead of `execute`.
      *
      * @param array $data
+     * @return FlashMessageBag
      */
     public function handleFormData(array $data)
     {
@@ -121,6 +122,7 @@ class ExamAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return boolean
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {

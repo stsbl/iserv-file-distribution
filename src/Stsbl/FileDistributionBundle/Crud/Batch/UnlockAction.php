@@ -42,8 +42,8 @@ class UnlockAction extends AbstractFileDistributionAction implements GroupableBa
             $messages[] = $this->createFlashMessage('success', __('%s unlocked successful.', (string)$entity->getName()));
         }
         
-        $bag = $this->getFileDistributionManager()->unlock($entities);
-        // add messsages created during work
+        $bag = $this->crud->getLockManager()->unlock($entities);
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
@@ -54,6 +54,7 @@ class UnlockAction extends AbstractFileDistributionAction implements GroupableBa
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return boolean
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {

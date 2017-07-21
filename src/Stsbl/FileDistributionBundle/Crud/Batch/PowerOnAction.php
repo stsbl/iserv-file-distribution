@@ -48,7 +48,7 @@ class PowerOnAction extends AbstractFileDistributionAction implements GroupableB
         }
         
         $bag = $this->getFileDistributionManager()->wol($entities);
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }

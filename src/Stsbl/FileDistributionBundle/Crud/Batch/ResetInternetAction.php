@@ -64,7 +64,7 @@ class ResetInternetAction extends AbstractFileDistributionAction implements Grou
         }
         
         $bag = $this->getFileDistributionManager()->activation();
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
@@ -73,7 +73,7 @@ class ResetInternetAction extends AbstractFileDistributionAction implements Grou
     }
     
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -81,7 +81,7 @@ class ResetInternetAction extends AbstractFileDistributionAction implements Grou
     }
     
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
     public function getLabel() 
     {
@@ -123,6 +123,7 @@ class ResetInternetAction extends AbstractFileDistributionAction implements Grou
     /**
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return boolean
      */
     public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
     {

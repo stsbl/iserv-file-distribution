@@ -46,7 +46,7 @@ class LogOffAction extends AbstractFileDistributionAction implements GroupableBa
         }
         
         $bag = $this->getFileDistributionManager()->logoff($entities);
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
