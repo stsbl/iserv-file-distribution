@@ -710,10 +710,10 @@ class FileDistributionCrud extends AbstractCrud
             
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
-                ->select('e')
-                ->from('StsblFileDistributionBundle:FileDistribution', 'e')
-                ->where($qb->expr()->eq('e.ip', 'parent.ip'))
-                ->andWhere($qb->expr()->eq('e.title', ':title'))
+                ->select('f2')
+                ->from('StsblFileDistributionBundle:FileDistribution', 'f2')
+                ->where($qb->expr()->eq('f2.ip', 'parent.ip'))
+                ->andWhere($qb->expr()->eq('f2.title', ':title'))
             ;
             
             $fdFilter = new Filter\ListExpressionFilter(__('File distribution: %s', $f->getPlainTitle()), $qb->expr()->exists($qb));
@@ -729,9 +729,9 @@ class FileDistributionCrud extends AbstractCrud
         
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
-            ->select('e')
-            ->from('StsblFileDistributionBundle:FileDistribution', 'e')
-            ->where($qb->expr()->eq('e.ip', 'parent.ip'))
+            ->select('f3')
+            ->from('StsblFileDistributionBundle:FileDistribution', 'f3')
+            ->where($qb->expr()->eq('f3.ip', 'parent.ip'))
         ;
         
         $withFilter = new Filter\ListExpressionFilter(_('[With file distribution]'), $qb->expr()->exists($qb));    
@@ -780,9 +780,9 @@ class FileDistributionCrud extends AbstractCrud
 
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
-                ->select('e')
-                ->from('StsblFileDistributionBundle:Exam', 'e')
-                ->where($qb->expr()->eq('e.ip', 'parent.ip'))
+                ->select('ex6')
+                ->from('StsblFileDistributionBundle:Exam', 'ex6')
+                ->where($qb->expr()->eq('ex6.ip', 'parent.ip'))
             ;
 
             $withFilter = new Filter\ListExpressionFilter(_('[With exam]'), $qb->expr()->exists($qb));
