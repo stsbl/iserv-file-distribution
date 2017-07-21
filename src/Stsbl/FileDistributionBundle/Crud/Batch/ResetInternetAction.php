@@ -5,6 +5,7 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -51,19 +52,14 @@ class ResetInternetAction extends AbstractFileDistributionAction implements Grou
     {
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\Host[] */
         $messages = [];
-        
+
+        $this->crud->getInternet()->reset($entities);
+
         foreach ($entities as $e) {
-            $e->setOverrideRoute(null);
-            $e->setOverrideUntil(null);
-            $e->setOverrideBy(null);
-            
-            $this->crud->getEntityManager()->persist($e);
-            $this->crud->getEntityManager()->flush();
-            
             $messages[] = $this->createFlashMessage('success', __('Reset internet access for %s.', (string)$e));
         }
         
-        $bag = $this->getFileDistributionManager()->activation();
+        $bag = new FlashMessageBag();
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);

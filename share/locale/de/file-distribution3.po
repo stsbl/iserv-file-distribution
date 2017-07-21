@@ -1,107 +1,104 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-17 19:59+0200\n"
+"POT-Creation-Date: 2017-07-21 13:47+0200\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:62
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:132
 msgid "none"
 msgstr "keine"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:171
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:399
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:679
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:688
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:711
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:734
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:963
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:241
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:469
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:749
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:758
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:781
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:804
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1033
 #, php-format
 msgid "By: %s"
 msgstr "Von: %s"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:185
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:255
 msgid "Open folder of this file distribution"
 msgstr "Ordner dieser Dateiverteilung öffnen"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:198
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:268
 msgid "Host isolation activated"
 msgstr "Geräteisolation aktiviert"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:211
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:281
 msgid ""
 "Group folders and other Windows shares are only available for read only."
-msgstr ""
-"Gruppenordner und andere Windows-Freigaben sind nur lesbar."
+msgstr "Gruppenordner und andere Windows-Freigaben sind nur lesbar."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:220
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:290
 msgid "Group folders and other Windows shares are replaced with empty folders."
 msgstr ""
 "Gruppenordner und andere Windows-Freigaben sind mit leeren Ordnern ersetzt."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:523
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:555
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:697
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:713
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:720
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:785
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:806
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:820
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2107
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2293
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:593
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:625
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:767
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:783
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:790
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:855
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:876
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:890
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2273
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2459
 msgid "Yes"
 msgstr "Ja"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:679
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:688
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:711
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:749
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:758
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:781
 #, php-format
 msgid "Until: %s"
 msgstr "Bis: %s"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:681
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:771
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:751
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:841
 msgid "Forbidden"
 msgstr "Verboten"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:690
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:778
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:760
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:848
 msgid "Granted"
 msgstr "Erlaubt"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:704
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:727
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:792
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:813
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:774
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:797
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:862
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:883
 msgid "No"
 msgstr "Nein"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:720
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:727
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:806
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:813
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:790
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:797
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:876
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:883
 msgid "Privilege"
 msgstr "Recht"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:734
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:804
 #, php-format
 msgid "Title: %s"
 msgstr "Titel: %s"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:736
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:799
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:80
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:39
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:80
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:806
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:869
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:81
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:39
 msgid "Exam Mode"
 msgstr "Klausurmodus"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:963
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1033
 msgid "Sound is disabled on host"
 msgstr "Ton ist auf dem Gerät deaktiviert"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1068
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1138
 msgid ""
 "Here you can change, which hosts filtered by room are available in the file "
 "distribution."
@@ -109,11 +106,11 @@ msgstr ""
 "Hier können Sie ändern, welche Geräte gefiltert nach Raum in der "
 "Dateiverteilung verfügbar sind."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1075
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1145
 msgid "Host management"
 msgstr "Geräteverwaltung"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1075
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1145
 #, php-format
 msgid ""
 "To exclude single hosts from the file distribution set the \"controllable\" "
@@ -122,11 +119,11 @@ msgstr ""
 "Um einzelne Geräte von der Dateiverteilung auszuschließen, setzen Sie die "
 "Einstellung \"Steuerbar\" in der %s auf Nein."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1088
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1158
 msgid "Room availability"
 msgstr "Raumverfügbarkeit"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1095
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1165
 msgid ""
 "Select if all rooms except the one in the following list or only the rooms "
 "which are in the list are available."
@@ -134,23 +131,23 @@ msgstr ""
 "Wählen Sie, ob alle Räume, außer die, welche in der folgenden Liste sind "
 "oder nur die, welche in der folgenden Liste sind, verfügbar sind."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1323
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1396
 msgctxt "file-distribution"
 msgid "Configuration required"
 msgstr "Konfiguration erforderlich"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1332
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1405
 msgid "You need to configure available rooms before you can use this module!"
 msgstr ""
 "Sie müssen die verfügbaren Räume konfigurieren, bevor Sie dieses Modul "
 "nutzen können!"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1340
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1406
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1413
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1479
 msgid "Manage available rooms"
 msgstr "Verfügbare Räume verwalten"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1346
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1419
 msgid ""
 "This module needs addtional configuration. Please contact your IServ "
 "Administrator!"
@@ -158,23 +155,23 @@ msgstr ""
 "Dieses Modul benögtigt zusätzliche Konfiguration. Bitte kontaktieren Sie "
 "Ihren IServ Administrator!"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1361
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1434
 #, php-format
 msgid ""
 "The files for the distribution \"%s\" must resided in the following folder:"
 msgstr ""
 "Die Dateien für die Verteilung \"%s\" werden in folgenden Ordner abgelegt:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1367
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1440
 #, php-format
 msgid "Files/File-Distribution/%s"
 msgstr "Dateien/File-Distribution/%s"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1774
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1940
 msgid "Only hosts which are member of the Windows Domain are supported."
 msgstr "Nur Geräte, die Mitglied der Windows-Domäne sind, werden unterstützt."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1819
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1985
 msgid ""
 "For the users who are logging in on this hosts, there will created two "
 "addtional network drives for file distribution assignment and return."
@@ -182,8 +179,7 @@ msgstr ""
 "Für die Benutzer, die sich auf diesen Geräten anmelden, werden zwei "
 "zusätzliche Netzlaufwerke für die Dateiverteilung- und rückgabe erstellt."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1841
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:84
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2007
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:84
 msgid ""
 "The folder path where you will find the assignment folder and the returns "
@@ -192,7 +188,7 @@ msgstr ""
 "Der Ordnerpfad wo Sie den Verteilungsordner und die Rückgaben finden, ist "
 "Dateien/File-Distribution/<Titel>."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1864
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2030
 msgid ""
 "Select if you want to grant access to the group folders and other file "
 "shares on the Portalserver."
@@ -200,12 +196,11 @@ msgstr ""
 "Wählen Sie aus, ob Sie Zugriff auf die Gruppenordner und andere "
 "Dateifreigaben auf dem Portalserver gewähren wollen."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1887
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2053
 msgid "Enable host isolation"
 msgstr "Geräteisolation aktivieren"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1893
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:93
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2059
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:93
 msgid ""
 "Enable host isolation if you want to prevent that users can exchange files "
@@ -214,32 +209,27 @@ msgstr ""
 "Aktivieren Sie die Gerätenisolation, wenn Sie verhindern wollen, dass "
 "Benutzer Dateien austauschen können durch das Teilen ihrer Accounts."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2010
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2193
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2176
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2359
 msgid "Host"
 msgstr "Gerät"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2014
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2197
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:59
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:114
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:415
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:713
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2180
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2363
 #: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:59
 #: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:114
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:413
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:711
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:417
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:715
 msgid "Room"
 msgstr "Raum"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2018
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2201
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:435
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:433
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2184
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2367
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:437
 msgid "User"
 msgstr "Benutzer"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2147
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2313
 msgid ""
 "You can not enable file distributions for the following entries, because "
 "there it is already enabled:"
@@ -247,7 +237,7 @@ msgstr ""
 "Sie können die Dateiverteilung für die folgenden Einträge nicht aktivieren, "
 "da Sie dort bereits aktiviert ist:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2153
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2319
 msgid ""
 "File distribution is not enabled for the following entries or are not are "
 "allowed to stop the file distribution there:"
@@ -255,29 +245,24 @@ msgstr ""
 "Dateiverteilung ist für die folgenden Einträge nicht aktiviert oder Sie "
 "dürfen die Dateiverteilung dort nicht beenden:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2249
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php:22
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2415
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php:22
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Service/FileDistributionManager.php:369
-#: src/Stsbl/FileDistributionBundle/Service/FileDistributionManager.php:369
+#: src/Stsbl/FileDistributionBundle/Service/FileDistributionManager.php:346
 msgid "Cannot wake host \"%host%\" because it has no MAC address set."
 msgstr ""
 "Kann Gerät \"%host%\" nicht aufwecken, da keine MAC-Adresse gesetzt ist."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:29
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:29
 msgid "Use file distribution"
 msgstr "Dateiverteilung verwenden"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:30
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:30
 msgid "Manage available rooms for file distribution"
 msgstr "Für die Dateiverteilung verfügbare Räume verwalten"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:33
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:33
 msgid ""
 "Someone started a file distribution for your host. To access the files, "
@@ -287,12 +272,10 @@ msgstr ""
 "Dateien zuzugreifen, klicken Sie auf das Symbol \"Auf bereitgestellte "
 "Dateien zugreifen\" auf dem Desktop."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:36
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:36
 msgid "Select host isolation by default"
 msgstr "Geräteisolation standardmäßig auswählen"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:37
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:37
 msgid ""
 "If enabled, the checkbox \"host isolation\" will be selected by default if a "
@@ -301,12 +284,10 @@ msgstr ""
 "Wenn aktiviert, wird das Auswahlfeld \"Geräteisolierung\" standardmäßig "
 "angewählt, wenn eine neue Dateiverteilung aktiviert wird."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:38
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:38
 msgid "Default selection of \"Availability of group folders and shares\""
 msgstr "Standardauswahl von \"Verfügbarkeit von Gruppenordnern und Freigaben\""
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:39
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:39
 msgid ""
 "Select which option will selected for this option, if a new file "
@@ -315,111 +296,82 @@ msgstr ""
 "Wählen Sie, welche Wahl für diese Option standardmäßig getroffen wird, wenn "
 "eine neue Dateiverteilung aktiviert wird."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:40
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:103
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:40
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:103
 msgid "Keep group folders and other shares available"
 msgstr "Gruppenordner und andere Freigaben verfügbar lassen"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:41
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:104
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:41
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:104
 msgid "Allow only read access to group folders and other shares"
 msgstr "Nur Lesezugriff auf Gruppenordner und andere Freigaben zulassen"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:42
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:105
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:42
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:105
 msgid "Replace group folders and other shares with empty folders"
 msgstr "Gruppenordner und andere Freigaben mit leeren Ordnern ersetzen"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:43
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:43
 msgid "Module: File Distribution"
 msgstr "Modul: Dateiverteilung"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:46
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:46
 msgid "The computer is already in exam mode."
 msgstr "Der Computer ist bereits im Klausurmodus."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:47
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:47
 msgid "The computer is already locked."
 msgstr "Der Computer ist bereits gesperrt."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:48
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:48
 msgid "The room is already in the list."
 msgstr "Der Raum ist bereits in der Liste."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:49
 #: src/Stsbl/FileDistributionBundle/Resources/translations/messages.php:49
 msgid "File distribution is already enabled for this host."
 msgstr "Dateiverteilung ist bereits für dieses Gerät aktiviert."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:52
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:71
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:168
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:122
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:234
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:188
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:370
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:664
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:680
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:687
 #: src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:52
 #: src/Stsbl/FileDistributionBundle/EventListener/MenuListener.php:71
 #: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:168
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:122
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:234
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:189
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:371
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:662
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:678
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:685
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:235
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:191
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:375
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:666
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:682
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:689
 msgid "File distribution"
 msgstr "Dateiverteilung"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:125
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:125
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:127
 msgid "Existing file distribution directory"
 msgstr "Existierendes Dateiverteilungsverzeichnis"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:153
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:153
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:155
 msgid "Running file distribution"
 msgstr "Laufende Dateiverteilung"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:184
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:184
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:210
 msgid "All rooms except the following"
 msgstr "Alle Räume, außer die folgenden"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:185
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:185
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:211
 msgid "The following rooms"
 msgstr "Folgende Räume"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:191
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:191
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:217
 msgid "Save"
 msgstr "Speichern"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:228
-#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:228
+#: src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php:254
 msgid "Room settings updated successful."
 msgstr "Raumeinstellungen erfolgreich aktualisiert."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:58
 #: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:58
 msgid "Rooms"
 msgstr "Räume"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php:27
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php:27
 msgid ""
 "Cancels a sent shutdown/reboot/log off command on the selected computers."
@@ -427,11 +379,6 @@ msgstr ""
 "Abbrechen eines gesendetes Kommandos zum Herunterfahren/Neustart/Abmelden "
 "der ausgewählten Computer."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php:37
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php:37
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php:37
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php:37
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php:37
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php:37
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php:37
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php:37
@@ -440,87 +387,67 @@ msgstr ""
 msgid "Start & Shutdown"
 msgstr "Starten & Herunterfahren"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php:45
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php:45
 #, php-format
 msgid "Canceled schuelded actions for %s."
 msgstr "Geplante Aktionen für %s abgebrochen."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php:22
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php:22
 msgctxt "host"
 msgid "Reboot"
 msgstr "Neustarten"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php:27
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php:27
 msgid "Reboots the selected computers."
 msgstr "Ausgewählte Computer neustarten"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php:45
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php:45
 #, php-format
 msgid "Sent reboot command to %s."
 msgstr "Neustart-Befehl an %s gesendet."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:63
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:63
 #, php-format
 msgid "Reset internet access for %s."
 msgstr "Internetzugriff für %s zurückgesetzt."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:88
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:88
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:96
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:96
 msgid "Reset internet access of the selected hosts to the default value."
 msgstr ""
 "Internetzugriff für die gewählten Geräte auf den Standardwert zurücksetzten."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:120
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php:153
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:154
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:558
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:578
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:598
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:618
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:634
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php:120
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php:153
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:154
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:556
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:576
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:596
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:616
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:632
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:560
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:580
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:600
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:620
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:636
 msgid "Internet"
 msgstr "Internet"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php:92
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php:92
 #, php-format
 msgid "Granted internet access for %s."
 msgstr "Internetzugriff für %s erlaubt."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php:121
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php:121
 msgid "Grant"
 msgstr "Erlauben"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php:129
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php:129
 msgid "Grant internet access to the selected hosts."
 msgstr "Den gewählten Geräten Internetzugriff gewähren."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php:25
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php:25
 msgid "Lock"
 msgstr "Sperren"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php:30
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php:30
 msgid ""
 "Locks the selected computers. The logged-in users cannot use the computers "
@@ -529,274 +456,217 @@ msgstr ""
 "Sperrt die ausgewählten Computer. Die angemeldeten Benutzer können die "
 "Computer nicht benutzen, während diese gesperrt sind."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php:46
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:98
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:159
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php:46
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:98
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:159
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:99
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:160
 msgid "Skipping own host!"
 msgstr "Überspringe eigenes Gerät!"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php:52
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php:52
 #, php-format
 msgid "Locked %s."
-msgstr ""
+msgstr "%s gesperrt."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php:22
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php:22
 msgid "Shutdown"
 msgstr "Herunterfahren"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php:27
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php:27
 msgid "Shuts the selected computers down."
 msgstr "Fährt die gewählten Computer herunter."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php:45
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php:45
 #, php-format
 msgid "Sent shutdown command to %s."
 msgstr "Herunterfahr-Befehl an %s gesendet."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:55
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:55
 #, php-format
 msgid "Enabled sound on %s."
 msgstr "Ton aktiviert auf %s."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:79
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:65
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:79
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:65
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:66
 msgid "Enable"
 msgstr "Aktivieren"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:87
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:87
 msgid "Enable sound on the selected hosts."
 msgstr "Ton auf den gewählten Geräten aktivieren."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:111
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:112
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php:111
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:112
 msgid "Sound"
 msgstr "Ton"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:55
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:55
 #, php-format
 msgid "Disabled sound on %s."
 msgstr "Ton deaktiviert auf %s."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:80
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:24
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:80
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:24
 msgid "Disable"
 msgstr "Deaktivieren"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:88
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php:88
 msgid "Disable sound on the selected hosts."
 msgstr "Ton auf den gewählten Geräten deaktivieren."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:61
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:61
 #, php-format
 msgid "You are not allowed to disable file distribution for %s."
 msgstr "Sie dürfen die Dateiverteilung für %s nicht deaktivieren"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:64
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:64
 #, php-format
 msgid "Disabled file distribution for %s."
 msgstr "Dateiverteilung für %s deaktiviert."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:90
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:90
 msgid "Stop"
 msgstr "Beenden"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:98
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php:98
 msgid "Stop the running file distribution for the selected hosts."
 msgstr "Eine laufende Dateiverteilung für die gewählten Geräte beenden."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:35
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:35
 msgid "Exam title"
 msgstr "Klausur-Titel"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:37
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:37
 msgid "Please enter a title for your exam."
 msgstr "Bitte geben Sie einen Titel für Ihre Klausur ein."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:40
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:40
 msgid "Title for this exam"
 msgstr "Titel für diese Klausur"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:70
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:70
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:71
 msgid "Switch the selected computers into exam mode."
 msgstr "Die gewählten Computer in den Klausurmodus versetzen."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:92
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:153
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:92
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:153
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:93
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:154
 msgid "Title should not be empty!"
 msgstr "Titel sollte nicht leer sein!"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:104
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:104
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php:105
 #, php-format
 msgid "Switched %s to exam mode."
 msgstr "%s in den Klausurmodus versetzt."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:29
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:29
 msgid "Disable exam mode on the selected computers."
 msgstr "Klausurmodus auf den gewählten Computern deaktivieren."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:47
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php:47
 #, php-format
 msgid "Disabled exam mode on %s."
 msgstr "Klausurmodus auf %s deaktiviert."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:78
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:78
 msgid "File distribution title"
 msgstr "Dateiverteilungs-Titel"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:80
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:80
 msgid "Please enter a title for your file distribution."
 msgstr "Bitte geben Sie einen Titel für Ihre Dateiverteilung ein."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:83
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:83
 msgid "Title for this file distribution"
 msgstr "Titel für diese Dateiverteilung"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:97
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:97
 msgid "Host isolation"
 msgstr "Geräteisolation"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:101
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:101
 msgid "Availability of group folders and shares"
 msgstr "Verfügbarkeit von Gruppenordnern und Freigaben"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:111
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:111
 msgid "Please choose availability of group folders and shares."
 msgstr "Bitte wählen Sie die Verfügbar von Gruppenordnern und Freigaben"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:166
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:166
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:167
 #, php-format
 msgid "You are not allowed to enable file distribution for %s."
 msgstr "Sie dürfen die Dateiverteilung für %s nicht aktivieren."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:169
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:169
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:170
 #, php-format
 msgid "Enabled file distribution for %s."
 msgstr "Dateiverteilung für %s aktiviert."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:202
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:202
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:203
 msgid "Start"
 msgstr "Starten"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:210
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:210
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:211
 msgid "Start a file distribution for the selected hosts."
 msgstr "Eine Dateiverteilung für die gewählten Geräte beginnen."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:93
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:93
 #, php-format
 msgid "Denied internet access for %s."
 msgstr "Internetzugriff für %s gesperrt."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:122
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:122
 msgid "Deny"
 msgstr "Verbieten"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:130
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php:130
 msgid "Deny internet access for the selected hosts."
 msgstr "Internetzugriff für die gewählten Geräte sperren."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php:24
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php:24
 msgid "Unlock"
 msgstr "Entsperren"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php:29
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php:29
 msgid "Unlocks the selected computers."
 msgstr "Ausgewählte Computer entsperren"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php:42
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php:42
 #, php-format
 msgid "%s unlocked successful."
 msgstr "%s erfolgreich entsperrt."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:62
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:62
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:63
 msgid "Message"
 msgstr "Nachricht"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:66
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:66
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:67
 msgid "Enter a message..."
 msgstr "Geben Sie eine Nachricht ein..."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:99
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:99
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:101
 #, php-format
 msgid "Sent message to %s."
 msgstr "Nachricht an %s gesendet."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:124
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:124
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:126
 msgid "Send message"
 msgstr "Nachricht senden"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:132
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:132
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:134
 msgid "Send message to the selected hosts."
 msgstr "Nachricht an die gewählten Geräte versenden."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:156
-#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:156
+#: src/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php:158
 msgid "Communication"
 msgstr "Kommunikation"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:57
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:57
 msgid "Duration"
 msgstr "Dauer"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:59
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:59
 msgid "Please select the duration."
 msgstr "Bitte wählen Sie die Dauer."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:62
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:63
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:64
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:62
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:63
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:64
@@ -806,9 +676,6 @@ msgid_plural "%d minutes"
 msgstr[0] "Eine Minute"
 msgstr[1] "%d Minuten"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:65
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:66
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:67
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:65
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:66
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:67
@@ -818,109 +685,89 @@ msgid_plural "%d hours"
 msgstr[0] "Eine Stunde"
 msgstr[1] "%d Stunden"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:68
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php:68
 msgid "Today"
 msgstr "Heute"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php:22
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php:22
 msgid "Power On"
 msgstr "Einschalten"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php:27
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php:27
 msgid "Sends Wake-on-LAN packets to the selected computers to wake them."
 msgstr ""
 "Sendet Wake-on-LAN-Pakete an die ausgewählten Computer um sie aufzuwecken."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php:46
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php:46
 #, php-format
 msgid "Sent power on command to %s."
 msgstr "Einschalt-Befehl an %s gesendet."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php:22
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php:22
 msgid "Log Off"
 msgstr "Abmelden"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php:27
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php:27
 msgid "Forces users on the selected computers to log out."
 msgstr "Zwingt die Benutzer an den ausgewählten Computern zum Abmelden."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php:45
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php:45
 #, php-format
 msgid "Sent log off command to %s."
 msgstr "Abmelde-Befehl an %s gesendet."
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:189
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:190
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:192
 msgctxt "file-distribution"
 msgid "Device"
 msgstr "Gerät"
 
 # sprintf
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:349
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:350
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:354
 msgid "Name"
 msgstr "Name"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:355
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:356
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:360
 msgid "Type"
 msgstr "Typ"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:439
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:437
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:441
 msgid "Internet Access"
 msgstr "Internetzugriff"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:555
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:553
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:557
 msgid "Internet: yes"
 msgstr "Internet: Ja"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:575
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:573
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:577
 msgid "Internet: no"
 msgstr "Internet: Nein"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:595
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:593
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:597
 msgid "Internet: granted"
 msgstr "Internet: Erlaubt"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:615
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:613
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:617
 msgid "Internet: forbidden"
 msgstr "Internet: Verboten"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:630
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:628
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:632
 msgid "Internet: exam mode"
 msgstr "Internet: Klausurmodus"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:659
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:657
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:661
 #, php-format
 msgid "File distribution: %s"
 msgstr "Dateiverteilung: %s"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:677
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:675
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:679
 msgid "[With file distribution]"
 msgstr "[Mit Dateiverteilung]"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:684
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:682
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:686
 msgid "[Without file distribution]"
 msgstr "[Ohne Dateiverteilung]"
 
-#: debian/stsbl-iserv-file-distribution/usr/share/iserv/src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:718
-#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:716
+#: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:720
 msgid "Search"
 msgstr "Suchen"
 

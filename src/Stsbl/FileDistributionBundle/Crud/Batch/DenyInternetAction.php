@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Query\ResultSetMapping;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -53,52 +54,23 @@ class DenyInternetAction extends AbstractFileDistributionAction implements Group
         $messages = [];
         
         if ($this->until === null) {
-            throw new \InvalidArgumentException('until is not defined! You need to set it via setUntil()!');
+            throw new \InvalidArgumentException('until is not defined!');
         }
         
         if ($this->until === 'today') {
-            $overrideUntil = new \DateTime(date('y-m-d 23:59 O', time()));
+            $overrideUntil = new \DateTime('tomorrow midnight');
         } else {
-            $overrideUntil = new \DateTime(date('y-m-d H:i O', time() + $this->until * 60));
+            $overrideUntil = new \DateTime(sprintf('now + %d minutes', (int)$this->until));
         }
+
+        $this->crud->getInternet()->deny($entities, $overrideUntil);
         
         foreach ($entities as $e) {
-            // does not work as boolean?!
-            $e->setOverrideRoute('false');
-            $e->setOverrideUntil($overrideUntil);
-            $e->setOverrideBy($this->crud->getUser()->getUsername());
-            
-            $this->crud->getEntityManager()->persist($e);
-            $this->crud->getEntityManager()->flush();
-            
-            // disable NACs
-            if ($this->crud->isInternetAvailable()) {
-                $nacs = $this->crud->getEntityManager()->getRepository('StsblInternetBundle:Nac')->findBy(['ip' => $e->getIp()]);
-                
-                /* @var $n \Stsbl\InternetBundle\Entity\Nac */
-                foreach ($nacs as $n) {
-                    $nac = $n->getNac();
-                    $rsm = new ResultSetMapping();
-                    /* @var $nq \Doctrine\ORM\NativeQuery */
-                    $nq = $this->crud->getEntityManager()->createNativeQuery('UPDATE nacs SET Remain = Timer - now(), '.
-                    'Timer = null, IP = null WHERE NAC = :1 AND Timer IS NOT NULL', $rsm);
-                
-                    $nq
-                        ->setParameter(1, $nac)
-                        ->execute()
-                    ;
-                }
-            }
-            
             $messages[] = $this->createFlashMessage('success', __('Denied internet access for %s.', (string)$e));
         }
         
-        if ($this->crud->isInternetAvailable()) {
-            $this->crud->getContainer()->get('stsbl.internet.nac_manager')->inetTimer();
-        }
-        
-        $bag = $this->getFileDistributionManager()->activation();
-        // add messsages created during work
+        $bag = new FlashMessageBag();
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
