@@ -1,3 +1,11 @@
+stsbl-iserv-file-distribution (17.07.20-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed typos.
+  * Switched to hasBundle for iserv-lock.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 21 Jul 2017 12:09:12 +0200
+
 stsbl-iserv-file-distribution (17.07.18-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
