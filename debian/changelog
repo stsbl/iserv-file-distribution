@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (17.07.21-2) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Fixed supressing of own device during lock.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Fri, 21 Jul 2017 16:58:29 +0200
+
 stsbl-iserv-file-distribution (17.07.21-1) experimental; urgency=medium
 
   [ Felix Jacobi ]
