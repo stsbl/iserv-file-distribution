@@ -312,16 +312,6 @@ class FileDistributionManager extends HostManager
     }
     
     /**
-     * Execute activation command.
-     * 
-     * @return FlashMessageBag STDOUT and STDERR contents as FlashMessageBag
-     */
-    public function activation()
-    {
-        return $this->shellMsgError('sudo', '/usr/lib/iserv/activation');
-    }
-    
-    /**
      * {@inheritdoc}
      */
     public function wol($hosts)

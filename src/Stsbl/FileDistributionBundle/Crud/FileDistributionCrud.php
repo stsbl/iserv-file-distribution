@@ -83,7 +83,17 @@ class FileDistributionCrud extends AbstractCrud
      * @var FileDistributionManager
      */
     private $manager;
-    
+
+    /**
+     * @var \IServ\LockBundle\Service\LockManager
+     */
+    private $lockManager;
+
+    /**
+     * @var \IServ\ComputerBundle\Service\Internet
+     */
+    private $internet;
+
     /**
      * @var Container
      */
@@ -160,6 +170,26 @@ class FileDistributionCrud extends AbstractCrud
     }
 
     /**
+     * Get lock manager
+     *
+     * @return \IServ\LockBundle\Service\LockManager|null
+     */
+    public function getLockManager()
+    {
+        return $this->lockManager;
+    }
+
+    /**
+     * Get the internet ;)
+     *
+     * @return \IServ\ComputerBundle\Service\Internet|null
+     */
+    public function getInternet()
+    {
+        return $this->internet;
+    }
+
+    /**
      * Get container
      * 
      * @return Container
@@ -179,6 +209,14 @@ class FileDistributionCrud extends AbstractCrud
         $this->config = $this->container->get('iserv.config');
         $this->request = $this->container->get('request_stack')->getCurrentRequest();
         $this->manager = $this->container->get('stsbl.filedistribution.manager');
+
+        if ($this->container->has('iserv.lock.manager')) {
+            $this->lockManager = $this->container->get('iserv.lock.manager');
+        }
+
+        if ($this->container->has('iserv.host.internet')) {
+            $this->internet = $this->container->get('iserv.host.internet');
+        }
     }
     
     /**
@@ -384,7 +422,7 @@ class FileDistributionCrud extends AbstractCrud
         
         // check for existing sound locks
         $soundLockRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock');
-        
+
         // only add soundlock column if we have a sound lock
         if (count($soundLockRepository->findAll()) > 0) {
             $activeSoundLocks = true;
@@ -420,19 +458,6 @@ class FileDistributionCrud extends AbstractCrud
                 'sortOrder' => $sortOrder,
                 'sortType' => 'natural',
             ])
-        ;
-        
-        if ($this->isLockAvailable() && count($this->getObjectManager()->getRepository('StsblFileDistributionBundle:Lock')->findAll()) > 0) {
-            $listMapper
-                ->add('lock', null, [
-                    'label' => '', // no title in table
-                    'template' => 'StsblFileDistributionBundle:List:field_lock.html.twig',
-                    'responsive' => 'min-tablet',
-                    'sortType' => 'natural',
-            ]);
-        }
-        
-        $listMapper
             ->add('sambaUserDisplay', null, [
                 'label' => _('User'),
                 'template' => 'StsblFileDistributionBundle:List:field_sambauser.html.twig',
@@ -443,6 +468,14 @@ class FileDistributionCrud extends AbstractCrud
                 'sortType' => 'natural',
             ]);
         ;
+
+        if ($this->isLockAvailable() && count($this->getObjectManager()->getRepository('IServLockBundle:Lock')->findAll()) > 0) {
+            $listMapper
+                ->add('locker', null, [
+                    'label' => _('Locked by'),
+                    'template' => 'StsblFileDistributionBundle:List:field_locker.html.twig'
+                ]);
+        }
     }
     
     /**
@@ -764,8 +797,6 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * Check if lock module is installed on the IServ.
      * 
-     * @todo Switch to hasBundle() or something similar, when lock/host control is ported to IServ 3.
-     * 
      * @return boolean
      */
     public function isLockAvailable()
@@ -955,24 +986,6 @@ class FileDistributionCrud extends AbstractCrud
     }
     
     /**
-     * Get user who locked a computer.
-     * 
-     * @param Host $host
-     * @return \IServ\CoreBundle\Entity\User
-     */
-    public function getLockUser(Host $host)
-    {  
-        /* @var $lock \Stsbl\FileDistributionBundle\Entity\Lock */
-        $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Lock')->find($host->getIp());
-        
-        if ($lock === null) {
-            return null;
-        }
-        
-        return $lock->getUser();
-    }
-    
-    /**
      * Get user who locked the sound on a computer.
      * 
      * @param Host $host
@@ -988,5 +1001,20 @@ class FileDistributionCrud extends AbstractCrud
         }
         
         return $lock->getUser();
+    }
+
+    /**
+     * Convert account to User entity
+     *
+     * @param string $act
+     * @return \IServ\CoreBundle\Entity\User
+     */
+    public function accountToUser($act = null)
+    {
+        if ($act === null) {
+            return null;
+        }
+
+        return $this->getEntityManager()->getRepository('IServCoreBundle:User')->find($act);
     }
 }

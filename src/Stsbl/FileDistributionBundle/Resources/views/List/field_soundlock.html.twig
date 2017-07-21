@@ -3,7 +3,7 @@
 
 {% block field %}
     {% if value is not null %}
-        {% set user = admin.getSoundLockUser(value) %}
+        {% set user = admin.getSoundLockUser(object) %}
         <span title="{{ _('Sound is disabled on host') ~ '. ' ~ __('By: %s', user) }}">{{ icon('fugue-speaker-volume-control-mute') }}</span>
     {% endif %}
 {% endblock %}

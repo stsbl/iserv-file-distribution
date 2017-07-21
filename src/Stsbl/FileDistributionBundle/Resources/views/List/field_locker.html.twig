@@ -1,0 +1,10 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/List/field_lcoker.html.twig #}
+{% extends admin.getTemplate('list_field_base') %}
+
+{% block field %}
+    {{ admin.accountToUser(value) }}
+{% endblock %}
+
+{% block value %}
+    {{ admin.accountToUser(value) }}
+{% endblock %}

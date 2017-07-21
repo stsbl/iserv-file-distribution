@@ -3,7 +3,6 @@
 namespace Stsbl\FileDistributionBundle\Entity\Specification;
 
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use IServ\CrudBundle\Doctrine\Specification\AbstractSpecification;
 
