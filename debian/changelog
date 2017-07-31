@@ -1,3 +1,19 @@
+stsbl-iserv-file-distribution (17.07.31-0) experimental; urgency=medium
+
+  [ Felix Jacobi ]
+  * Updated samba user handling.
+  * Moved user field to left.
+  * Added additional exam column.
+  * Added autocompletion for exam mode title.
+  * Added exam title filter.
+  * Updated l10n.
+  * Fixed filter aliases.
+  * Fixed calculating of sort order.
+  * Updated phpdoc.
+  * Removed wrong dependencies.
+
+ -- Stadtteilschule Blankenese <repository@stsbl.de>  Mon, 31 Jul 2017 19:04:53 +0200
+
 stsbl-iserv-file-distribution (17.07.21-4) experimental; urgency=medium
 
   [ Felix Jacobi ]
