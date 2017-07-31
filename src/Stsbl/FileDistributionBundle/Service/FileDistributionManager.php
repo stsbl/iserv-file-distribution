@@ -50,7 +50,7 @@ class FileDistributionManager extends HostManager
     // Constants for netrpc
     const NETRPC_EXAM_ON = 'examon';
     const NETRPC_EXAM_OFF = 'examoff';
-    
+
     /**
      * Execute file_distribution_rpc command.
      *
@@ -58,6 +58,7 @@ class FileDistributionManager extends HostManager
      * @param array $args
      * @param string $arg
      * @param boolean $isolation
+     * @param boolean $folderAvailability
      * @return FlashMessageBag
      */
     public function fileDistributionRpc($cmd, array $args = array(), $arg = null, $isolation = null, $folderAvailability = null)

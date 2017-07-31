@@ -281,12 +281,13 @@ class FileDistributionCrud extends AbstractCrud
     {
         return $this->isAllowedToEdit($object, $user);
     }
-    
-    /** 
+
+    /**
      * Checks if user is allowed to stop a file distribution
-     * 
+     *
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return bool
      */
     public function isAllowedToStop(CrudInterface $object, UserInterface $user = null) 
     {
@@ -302,12 +303,13 @@ class FileDistributionCrud extends AbstractCrud
         
         return true;
     }
-    
-    /** 
+
+    /**
      * Checks if user is allowed to enable a file distribution
-     * 
+     *
      * @param CrudInterface $object
      * @param UserInterface $user
+     * @return bool
      */
     public function isAllowedToEnable(CrudInterface $object, UserInterface $user = null)
     {
