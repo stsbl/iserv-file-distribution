@@ -5,7 +5,6 @@ namespace Stsbl\FileDistributionBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\HostBundle\Entity\Host as BaseHost;
-use IServ\Webdav\File;
 
 /*
  * The MIT License
