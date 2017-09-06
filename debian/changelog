@@ -1,8 +1,8 @@
 stsbl-iserv-file-distribution (17.09.07-0) experimental; urgency=medium
 
-  * UNRELEASED
+  * Fixed usement of undefined property.
 
- -- Felix Jacobi <felix.jacobi@iserv.eu>  Thu, 07 Sep 2017 00:49:09 +0200
+ -- Felix Jacobi <felix.jacobi@iserv.eu>  Thu, 07 Sep 2017 00:49:36 +0200
 
 stsbl-iserv-file-distribution (17.07.31-0) experimental; urgency=medium
 
