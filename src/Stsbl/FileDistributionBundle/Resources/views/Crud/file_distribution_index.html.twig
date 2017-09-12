@@ -13,7 +13,7 @@
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => host.css -->
     {% endif %}
-    {% stylesheets '@IServHostBundle/Resources/public/host.css' filter='cssrewrite' filter='?uglifycss' output='css/compiled/host.css' %}
+    {% stylesheets '@IServHostBundle/Resources/public/css/host.css' filter='cssrewrite' filter='?uglifycss' output='css/compiled/host.css' %}
      <link rel="stylesheet" href="{{ asset_url }}">
     {% endstylesheets %}
     
@@ -77,7 +77,7 @@
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => host.js -->
     {% endif %}
-    {% javascripts '@IServHostBundle/Resources/public/host.js' filter='?uglifyjs2' output='js/compiled/host.js' %}
+    {% javascripts '@IServHostBundle/Resources/public/js/host.js' filter='?uglifyjs2' output='js/compiled/host.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     {%  if app.environment != 'prod' %}
