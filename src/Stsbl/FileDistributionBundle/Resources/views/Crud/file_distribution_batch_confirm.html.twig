@@ -3,10 +3,13 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => vendor/glyphicons-social.css -->
     {% endif %}
-    <link rel="stylesheet" href="{{ asset('css/vendor/glyphicons-social.css') }}"/>
+    {% stylesheets '@glyphicons_social_css' filter='cssrewrite' filter='?uglifycss' output='css/vendor/glyphicons-social.css' %}
+    <link rel="stylesheet" href="{{ asset_url }}">
+    {% endstylesheets %}
 
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => host.css -->
