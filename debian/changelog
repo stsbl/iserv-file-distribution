@@ -1,3 +1,12 @@
+stsbl-iserv-file-distribution (17.09.28-0) experimental; urgency=medium
+
+  * Fixed host assets path.
+  * l10n: Resolved conflicts with iserv3-lock.
+  * Fixed glyphicons social handling.
+  * Fixed permissions.
+
+ -- Felix Jacobi <felix.jacobi@iserv.eu>  Thu, 28 Sep 2017 04:10:10 +0200
+
 stsbl-iserv-file-distribution (17.09.07-0) experimental; urgency=medium
 
   * Fixed usement of undefined property.
