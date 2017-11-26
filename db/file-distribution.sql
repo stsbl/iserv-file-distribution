@@ -21,7 +21,10 @@ CREATE TABLE file_distribution (
 
 CREATE TABLE file_distribution_rooms (
     ID                  SERIAL          PRIMARY KEY,
-    Room		TEXT,
+    Room		TEXT            --UNIQUE <-- chkdb -> nix verstehen
+                                        REFERENCES rooms(Name)
+					    ON DELETE CASCADE
+					    ON UPDATE CASCADE,
     Room_ID		INT		UNIQUE
                                         REFERENCES rooms(ID)
 					    ON DELETE CASCADE
