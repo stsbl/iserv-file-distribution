@@ -801,7 +801,7 @@ class FileDistributionCrud extends AbstractCrud
         $qb
             ->select('fr')
             ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
-            ->where($qb->expr()->eq('fr.room', 'filter.name'))
+            ->where($qb->expr()->eq('fr.room', 'filter.id'))
         ;
         $roomCondition = $qb->expr()->exists($qb);
         if ($this->getRoomMode() === true) {
@@ -812,14 +812,14 @@ class FileDistributionCrud extends AbstractCrud
         $qb2
             ->select('h')
             ->from('StsblFileDistributionBundle:Host', 'h')
-            ->where('h.room = filter.name')
+            ->where('h.room = filter.id')
             ->andWhere('h.controllable = true')
         ;
-        
+
         $hostCondition = $qb->expr()->exists($qb2);
         
         $listHandler
-            ->addListFilter((new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'name'))->setName('room')
+            ->addListFilter((new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'id'))->setName('room')
                     ->allowAnyAndNone()
                     ->setPickerOptions(array('data-live-search' => 'true'))
                     ->setWhereCondition($qb->expr()->andX($roomCondition, $hostCondition))

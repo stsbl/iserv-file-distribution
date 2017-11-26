@@ -51,8 +51,10 @@ class FileDistributionRoomRepository extends EntitySpecificationRepository
             ->from('IServRoomBundle:Room', 'r')
         ;
         
-        $subQb = $this->createQueryBuilder('c')
-            ->where('c.room = r.name')
+        $subQb = $this->createQueryBuilder('c');
+
+        $subQb
+            ->where($subQb->expr()->eq('c.room', 'r.id'))
         ;
         
         if (FileDistributionCrud::getRoomMode() === true) {
@@ -60,14 +62,10 @@ class FileDistributionRoomRepository extends EntitySpecificationRepository
         } else {
             $qb->where($qb->expr()->exists($subQb));
         }
-        
-        try {
-            if (count($qb->getQuery()->getResult()) > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (NoResultException $e) {
+
+        if (count($qb->getQuery()->getResult()) > 0) {
+            return true;
+        } else {
             return false;
         }
     }

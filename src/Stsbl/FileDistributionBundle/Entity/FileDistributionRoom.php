@@ -54,7 +54,7 @@ class FileDistributionRoom implements CrudInterface
     
     /**
      * @ORM\ManyToOne(targetEntity="\IServ\RoomBundle\Entity\Room")
-     * @ORM\JoinColumn(name="room", referencedColumnName="name", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="room_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotBlank()
      * 
      * @var Room

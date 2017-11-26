@@ -122,7 +122,7 @@ class IncludeRoomAdmin extends AbstractAdmin
                     ->resetDqlParts()
                     ->select('fr')
                     ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
-                    ->where('fr.room = r.name')
+                    ->where($subQb->expr()->eq('fr.room', 'r.id'))
                 ;
                 
                 return $er->createQueryBuilder('r')

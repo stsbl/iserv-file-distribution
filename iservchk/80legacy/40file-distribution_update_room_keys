@@ -1,0 +1,5 @@
+Test "file distribution: update rooms serial usage"
+  "grep ^40file-distribution_update_room_keys /var/lib/iserv/config/update.log"
+  "psql iserv postgres -c \"
+    UPDATE file_distribution_rooms SET room_id = (SELECT id FROM rooms WHERE name = room)\" &&
+   echo 40file-distribution_update_room_keys >> /var/lib/iserv/config/update.log"

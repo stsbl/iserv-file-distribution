@@ -15,16 +15,17 @@ CREATE TABLE file_distribution (
                                             ON DELETE CASCADE,
     FolderAvailability  TEXT            NOT NULL CHECK (FolderAvailability IN
         ('readonly', 'replace', 'keep')),
-    ISOLATION           BOOLEAN         NOT NULL,
+    Isolation           BOOLEAN         NOT NULL,
     UNIQUE(IP)
 );
 
 CREATE TABLE file_distribution_rooms (
     ID                  SERIAL          PRIMARY KEY,
-    Room		TEXT		NOT NULL
-                                        REFERENCES rooms(Name)
-                                            ON DELETE CASCADE
-                                            ON UPDATE CASCADE
+    Room		TEXT,
+    Room_ID		INT		UNIQUE
+                                        REFERENCES rooms(ID)
+					    ON DELETE CASCADE
+					    ON UPDATE CASCADE
 );
 
 CREATE UNIQUE INDEX file_distribution_rooms_room_key ON file_distribution_rooms (Room);
