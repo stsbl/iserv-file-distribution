@@ -17,6 +17,7 @@ Depends:
   iserv3-school,
   stsbl-iserv-perl-lib,
   stsbl-iserv3-js-libs,
+  stsbl-iserv3-maintenance,
 Description: Dateiverteilung für IServ
  Ausgewählte Benutzer können Dateiverteilungen erstellen, dies sind
  spezielle Ordner innerhalb des eigenen Home-Verzeichnisses.
