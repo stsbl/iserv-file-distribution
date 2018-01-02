@@ -1,2 +1,8 @@
 # by design
 stsbl-iserv-file-distribution: extra-license-file usr/share/doc/stsbl-iserv-file-distribution/LICENSE
+
+# by design (image url)
+stsbl-iserv-file-distribution: extended-description-line-too-long
+
+# bogus (is not a shell script)
+stsbl-iserv-file-distribution: shell-script-fails-syntax-check usr/share/iserv/iconf/var/lib/stsbl/file-distribution/scripts/setup.sh/00file-distribution.templ
