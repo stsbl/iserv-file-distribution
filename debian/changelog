@@ -1,3 +1,13 @@
+stsbl-iserv-file-distribution (18.01.03-1) experimental; urgency=medium
+
+  * Fixed permissions
+  * Added license
+  * Updated copyright
+  * Added lintian overrides
+  * Updated lintian rules
+
+ -- Felix Jacobi <felix.jacobi@stsbl.de>  Wed, 03 Jan 2018 00:31:30 +0100
+
 stsbl-iserv-file-distribution (17.11.26-4) experimental; urgency=medium
 
   * Readded foreign key for legacy name column
