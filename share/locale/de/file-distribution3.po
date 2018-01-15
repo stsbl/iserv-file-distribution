@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-23 01:51+0200\n"
+"POT-Creation-Date: 2018-01-15 18:12+0100\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -50,8 +50,8 @@ msgstr "Ordner dieser Klausur öffnen"
 #: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1037
 #: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1058
 #: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1072
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2452
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2638
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2487
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2673
 msgid "Yes"
 msgstr "Ja"
 
@@ -135,23 +135,23 @@ msgstr ""
 "Wählen Sie, ob alle Räume, außer die, welche in der folgenden Liste sind "
 "oder nur die, welche in der folgenden Liste sind, verfügbar sind."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1578
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1594
 msgctxt "file-distribution"
 msgid "Configuration required"
 msgstr "Konfiguration erforderlich"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1587
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1603
 msgid "You need to configure available rooms before you can use this module!"
 msgstr ""
 "Sie müssen die verfügbaren Räume konfigurieren, bevor Sie dieses Modul "
 "nutzen können!"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1595
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1661
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1611
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1677
 msgid "Manage available rooms"
 msgstr "Verfügbare Räume verwalten"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1601
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1617
 msgid ""
 "This module needs addtional configuration. Please contact your IServ "
 "Administrator!"
@@ -159,23 +159,23 @@ msgstr ""
 "Dieses Modul benögtigt zusätzliche Konfiguration. Bitte kontaktieren Sie "
 "Ihren IServ Administrator!"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1616
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1632
 #, php-format
 msgid ""
 "The files for the distribution \"%s\" must resided in the following folder:"
 msgstr ""
 "Die Dateien für die Verteilung \"%s\" werden in folgenden Ordner abgelegt:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1622
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:1638
 #, php-format
 msgid "Files/File-Distribution/%s"
 msgstr "Dateien/File-Distribution/%s"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2119
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2154
 msgid "Only hosts which are member of the Windows Domain are supported."
 msgstr "Nur Geräte, die Mitglied der Windows-Domäne sind, werden unterstützt."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2164
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2199
 msgid ""
 "For the users who are logging in on this hosts, there will created two "
 "addtional network drives for file distribution assignment and return."
@@ -183,7 +183,7 @@ msgstr ""
 "Für die Benutzer, die sich auf diesen Geräten anmelden, werden zwei "
 "zusätzliche Netzlaufwerke für die Dateiverteilung- und rückgabe erstellt."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2186
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2221
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:84
 msgid ""
 "The folder path where you will find the assignment folder and the returns "
@@ -192,7 +192,7 @@ msgstr ""
 "Der Ordnerpfad wo Sie den Verteilungsordner und die Rückgaben finden, ist "
 "Dateien/File-Distribution/<Titel>."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2209
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2244
 msgid ""
 "Select if you want to grant access to the group folders and other file "
 "shares on the Portalserver."
@@ -200,11 +200,11 @@ msgstr ""
 "Wählen Sie aus, ob Sie Zugriff auf die Gruppenordner und andere "
 "Dateifreigaben auf dem Portalserver gewähren wollen."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2232
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2267
 msgid "Enable host isolation"
 msgstr "Geräteisolation aktivieren"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2238
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2273
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php:93
 msgid ""
 "Enable host isolation if you want to prevent that users can exchange files "
@@ -213,13 +213,13 @@ msgstr ""
 "Aktivieren Sie die Gerätenisolation, wenn Sie verhindern wollen, dass "
 "Benutzer Dateien austauschen können durch das Teilen ihrer Accounts."
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2355
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2538
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2390
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2573
 msgid "Host"
 msgstr "Gerät"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2359
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2542
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2394
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2577
 #: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:59
 #: src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php:114
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:481
@@ -227,13 +227,13 @@ msgstr "Gerät"
 msgid "Room"
 msgstr "Raum"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2363
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2546
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2398
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2581
 #: src/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php:401
 msgid "User"
 msgstr "Benutzer"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2492
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2527
 msgid ""
 "You can not enable file distributions for the following entries, because "
 "there it is already enabled:"
@@ -241,7 +241,7 @@ msgstr ""
 "Sie können die Dateiverteilung für die folgenden Einträge nicht aktivieren, "
 "da Sie dort bereits aktiviert ist:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2498
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2533
 msgid ""
 "File distribution is not enabled for the following entries or are not are "
 "allowed to stop the file distribution there:"
@@ -249,7 +249,7 @@ msgstr ""
 "Dateiverteilung ist für die folgenden Einträge nicht aktiviert oder Sie "
 "dürfen die Dateiverteilung dort nicht beenden:"
 
-#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2594
+#: /tmp/file-distribution-StsblFileDistributionBundle.twig.php:2629
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php:22
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -465,7 +465,7 @@ msgid ""
 "Locks the selected computers. The logged-in users cannot use the computers "
 "while they are locked."
 msgstr ""
-"Sperrt die ausgewählten computer. Die eingeloggten Nutzer können die "
+"Sperrt die ausgewählten Computer. Die eingeloggten Nutzer können die "
 "Computer nicht nutzen, wenn sie gesperrt sind."
 
 #: src/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php:46
