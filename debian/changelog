@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (18.02.01-1) experimental; urgency=medium
+
+  * Updated translation
+  * Remove old database bridge
+
+ -- Felix Jacobi <felix.jacobi@stsbl.de>  Thu, 01 Feb 2018 23:49:33 +0100
+
 stsbl-iserv-file-distribution (18.01.03-1) experimental; urgency=medium
 
   * Fixed permissions
