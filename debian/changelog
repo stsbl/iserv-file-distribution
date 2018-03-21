@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (18.03.21-1) experimental; urgency=medium
+
+  * Fixed usage of samba user property
+  * Updated packaging
+
+ -- Felix Jacobi <felix.jacobi@stsbl.de>  Wed, 21 Mar 2018 21:56:02 +0100
+
 stsbl-iserv-file-distribution (18.02.01-1) experimental; urgency=medium
 
   * Updated translation
