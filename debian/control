@@ -8,7 +8,8 @@ Homepage: https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution
 
 Package: stsbl-iserv-file-distribution
 Architecture: all
-Depends:
+Depends: ${misc:Depends},
+  ${perl:Depends},
   iserv-computer,
   iserv-portal,
   iserv3-core,
@@ -18,6 +19,7 @@ Depends:
   stsbl-iserv-perl-lib,
   stsbl-iserv3-js-libs,
   stsbl-iserv3-maintenance,
+Xb-Private-IServ-Revision: ${iserv:Revision}
 Description: Dateiverteilung für IServ
  Ausgewählte Benutzer können Dateiverteilungen erstellen, dies sind
  spezielle Ordner innerhalb des eigenen Home-Verzeichnisses.
