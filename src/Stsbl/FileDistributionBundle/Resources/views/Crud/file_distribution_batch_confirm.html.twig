@@ -175,10 +175,10 @@
     <td><span class="host_status" data-host-id="{{ item.id }}" id="host_status_{{ item.id }}"></span>&nbsp;{{ item }}</td>
     <td>{{ item.room }}</td>
     <td>
-        {% if not admin.isInLan() and item.sambaUserDisplay is not null %}
+        {% if not admin.isInLan() and item.sambaUser is not null %}
             {{ _('Yes') }}
         {% else %}
-            {{ item.sambaUserDisplay }}
+            {{ admin.accountToUser(item.sambaUser) }}
         {% endif %}
     </td>
 {% endblock %}
