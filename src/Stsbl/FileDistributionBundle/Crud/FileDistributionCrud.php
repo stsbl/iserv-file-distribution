@@ -836,7 +836,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
 
         /* @var $om \IServ\CrudBundle\Doctrine\ORM\ORMObjectManager */
         $om = $this->getObjectManager();
-        $listHandler->getFilterHandler()->addEventSubscriber(new ListFilterEventSubscriber($this->request, $om->getRepository('StsblFileDistributionBundle:Host')));
+        $listHandler->getFilterHandler()->addEventSubscriber(new ListFilterEventSubscriber($this->getRequest(), $om->getRepository('StsblFileDistributionBundle:Host')));
     }
     
     /**
