@@ -11,7 +11,7 @@ use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
-use IServ\HostBundle\Crud\ListFilterEventSubscriber;
+use IServ\ComputerBundle\Crud\ListFilterEventSubscriber;
 use IServ\HostBundle\Model\HostType;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
