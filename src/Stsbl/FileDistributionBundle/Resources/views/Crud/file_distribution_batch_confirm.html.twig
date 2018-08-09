@@ -189,17 +189,17 @@
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => file-distribution.js -->
     {% endif %}
-    <script type="text/javascript" src="{{ asset('js/file-distribution.js', 'stsbl-file-distribution') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/file-distribution.js', 'stsbl_file_distribution') }}"></script>
 
     {% if app.environment != 'prod' %}
         <!-- file-distribution-autocomplete.js -->
     {% endif %}
-    <script type="text/javascript" src="{{ asset('js/file-distribution-autcomplete.js', 'stsbl-file-distribution') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/file-distribution-autcomplete.js', 'stsbl_file_distribution') }}"></script>
 
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => file-distribution-highlight.js -->
     {% endif %}
-    <script type="text/javascript" src="{{ asset('js/file-distribution-highlight.js', 'stsbl-file-distribution') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/file-distribution-highlight.js', 'stsbl_file_distribution') }}"></script>
 
     {# FIXME #}
     {% if app.environment != 'prod' %}

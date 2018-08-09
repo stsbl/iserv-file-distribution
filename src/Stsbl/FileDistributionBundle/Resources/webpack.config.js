@@ -8,7 +8,7 @@ let webpackConfig = {
         'js/file-distribution': './assets/js/file-distribution.js',
         'js/file-distribution-autocomplete': './assets/js/file-distribution-autocomplete.js',
         'js/file-distribution-highlight': './assets/js/file-distribution-highlight.js',
-        'css/file-distribution.css': './assets/less/file-distribution.less',
+        'css/file-distribution': './assets/less/file-distribution.less',
     },
 };
 
