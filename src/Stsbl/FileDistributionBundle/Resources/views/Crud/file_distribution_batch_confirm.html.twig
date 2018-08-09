@@ -189,24 +189,19 @@
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => file-distribution.js -->
     {% endif %}
-    {% javascripts '@StsblFileDistributionBundle/Resources/public/js/file-distribution.js' filter='?uglifyjs2' output='js/compiled/file-distribution.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    <script type="text/javascript" src="{{ asset('js/file-distribution.js', 'stsbl-file-distribution') }}"></script>
 
     {% if app.environment != 'prod' %}
         <!-- file-distribution-autocomplete.js -->
     {% endif %}
-    {% javascripts '@StsblFileDistributionBundle/Resources/public/js/file-distribution-autocomplete.js' filter='?uglifyjs2' output='js/compiled/file-distribution-autocomplete.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    <script type="text/javascript" src="{{ asset('js/file-distribution-autcomplete.js', 'stsbl-file-distribution') }}"></script>
 
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => file-distribution-highlight.js -->
     {% endif %}
-    {% javascripts '@StsblFileDistributionBundle/Resources/public/js/file-distribution-highlight.js' filter='?uglifyjs2' output='js/compiled/file-distribution-highlight.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-    
+    <script type="text/javascript" src="{{ asset('js/file-distribution-highlight.js', 'stsbl-file-distribution') }}"></script>
+
+    {# FIXME #}
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => host.js -->
     {% endif %}
