@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (18.09.12-1) experimental; urgency=medium
+
+  * Moved to webpack
+  * Updated build rules for webpack support
+
+ -- Felix Jacobi <felix.jacobi@stsbl.de>  Wed, 12 Sep 2018 01:14:05 +0200
+
 stsbl-iserv-file-distribution (18.05.17-1) experimental; urgency=medium
 
   * Fixed event subscriber
