@@ -7,23 +7,17 @@
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => vendor/glyphicons-social.css -->
     {% endif %}
-    {% stylesheets '@glyphicons_social_css' filter='cssrewrite' filter='?uglifycss' output='css/vendor/glyphicons-social.css' %}
-    <link rel="stylesheet" href="{{ asset_url }}">
-    {% endstylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/glyphicons-social.css', 'base') }}">
 
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => host.css -->
     {% endif %}
-    {% stylesheets '@IServHostBundle/Resources/public/css/host.css' filter='cssrewrite' filter='?uglifycss' output='css/compiled/host.css' %}
-     <link rel="stylesheet" href="{{ asset_url }}">
-    {% endstylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/host.css', 'host') }}" />
     
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => file-distribution.css -->
     {% endif %}
-    {% stylesheets output='css/compiled/file-distribution.css' '@StsblFileDistributionBundle/Resources/public/css/file-distribution.less' filter='cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/file-distribution.css', 'stsbl_file_distribution') }}" />
 {% endblock %}
 
 {% block crud_table %}
@@ -201,13 +195,10 @@
     {% endif %}
     <script type="text/javascript" src="{{ asset('js/file-distribution-highlight.js', 'stsbl_file_distribution') }}"></script>
 
-    {# FIXME #}
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => host.js -->
     {% endif %}
-    {% javascripts '@IServHostBundle/Resources/public/js/host.js' filter='?uglifyjs2' output='js/compiled/host.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+    <script type="text/javascript" src="{{ asset('js/host.js', 'host') }}"></script>
 
     {%  if app.environment != 'prod' %}
         <!-- {{ _self }} => update.js -->
