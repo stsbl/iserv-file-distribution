@@ -1,5 +1,9 @@
 # src/Stsbl/FileDistributionBundle/Resources/config/services.yml
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
     stsbl.filedistribution.crud.file_distribution:
         class: Stsbl\FileDistributionBundle\Crud\FileDistributionCrud
         arguments: [Stsbl\FileDistributionBundle\Entity\Host]
@@ -23,9 +27,13 @@ services:
           - { name: kernel.event_listener, event: iserv_portal.menu_admin, method: onBuildAdminMenu } # Tells IServ about the admin menu method
     
     stsbl.filedistribution.manager:
-        class: Stsbl\FileDistributionBundle\Service\FileDistributionManager
-        arguments: ["@doctrine.orm.entity_manager", "@iserv.shell", "@iserv.config", "@iserv.security_handler", "@iserv.host.status"]
-        
+        parent: Stsbl\FileDistributionBundle\Service\FileDistributionManager
+        deprecated: 'The service id "%service_id%" is deprecated, switch to "Stsbl\FileDistributionBundle\Service\FileDistributionManager" via dependency injection instead.'
+        autowire: true
+        autoconfigure: false
+
+    Stsbl\FileDistributionBundle\Service\FileDistributionManager: ~
+
     stsbl.filedistribution.twig.extension.base64:
         class: Stsbl\FileDistributionBundle\Twig\Extension\Base64
         tags :

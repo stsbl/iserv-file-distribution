@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use IServ\CoreBundle\Service\Config;
 use IServ\CoreBundle\Util\Format;
 use IServ\CrudBundle\Crud\AbstractCrud;
+use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
 use IServ\CrudBundle\Table\Filter;
 use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
@@ -18,11 +19,13 @@ use IServ\HostBundle\Util\Network;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -57,8 +60,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionCrud extends AbstractCrud
+class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * @var EntityManager
      */
@@ -93,29 +98,11 @@ class FileDistributionCrud extends AbstractCrud
      * @var \IServ\ComputerBundle\Service\Internet
      */
     private $internet;
-
-    /**
-     * @var Container
-     */
-    private $container;
     
     /**
      * @var bool
      */
     private static $roomMode;
-    
-    /* SETTERS */
-    
-    /**
-     * Set container
-     * 
-     * @param Container $container
-     */
-    public function setContainer(Container $container) 
-    {
-        $this->container = $container;
-        $this->initServices();
-    }
     
     /* GETTERS */
     
@@ -126,6 +113,11 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getEntityManager()
     {
+        if (null === $this->em) {
+            /** @noinspection MissingService */
+            $this->em = $this->container->get('doctrine.orm.entity_manager');
+        }
+
         return $this->em;
     }
     
@@ -136,6 +128,10 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getSession()
     {
+        if (null === $this->session) {
+            $this->session = $this->container->get('session');
+        }
+
         return $this->session;
     }
     
@@ -146,6 +142,10 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getConfig()
     {
+        if (null === $this->config) {
+            $this->config = $this->container->get('iserv.config');
+        }
+
         return $this->config;
     }
     
@@ -156,6 +156,10 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getRequest()
     {
+        if (null === $this->request) {
+            $this->request = $this->container->get('request_stack')->getCurrentRequest();
+        }
+
         return $this->request;
     }
     
@@ -166,6 +170,10 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getFileDistributionManager()
     {
+        if (null === $this->manager) {
+            $this->manager = $this->container->get('stsbl.filedistribution.manager');
+        }
+
         return $this->manager;
     }
 
@@ -176,6 +184,10 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getLockManager()
     {
+        if (null === $this->lockManager && $this->container->has('iserv.lock.manager')) {
+            $this->lockManager = $this->container->get('iserv.lock.manager');
+        }
+
         return $this->lockManager;
     }
 
@@ -186,39 +198,23 @@ class FileDistributionCrud extends AbstractCrud
      */
     public function getInternet()
     {
+        if (null === $this->internet && $this->container->has('iserv.host.internet')) {
+            $this->internet = $this->container->get('iserv.host.internet');
+        }
+
         return $this->internet;
     }
 
     /**
      * Get container
      * 
-     * @return Container
+     * @return \Symfony\Component\DependencyInjection\ContainerInterface
      */
     public function getContainer()
     {
         return $this->container;
     }
-    
-    /**
-     * Initializes required services using <tt>Container</tt>.
-     */
-    private function initServices()
-    {
-        $this->em = $this->container->get('doctrine.orm.entity_manager');
-        $this->session = $this->container->get('session');
-        $this->config = $this->container->get('iserv.config');
-        $this->request = $this->container->get('request_stack')->getCurrentRequest();
-        $this->manager = $this->container->get('stsbl.filedistribution.manager');
 
-        if ($this->container->has('iserv.lock.manager')) {
-            $this->lockManager = $this->container->get('iserv.lock.manager');
-        }
-
-        if ($this->container->has('iserv.host.internet')) {
-            $this->internet = $this->container->get('iserv.host.internet');
-        }
-    }
-    
     /**
      * {@inheritdoc}
      */
@@ -355,6 +351,7 @@ class FileDistributionCrud extends AbstractCrud
         /* @var $object \Stsbl\FileDistributionBundle\Entity\Host */
         /* @var $er \Doctrine\ORM\EntityRepository */
         /* @var $fileDistribution \Stsbl\FileDistributionBundle\Entity\FileDistribution */
+        /** @noinspection PhpUndefinedMethodInspection */
         $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
         try {
             $fileDistribution = $er->findOneBy(['ip' => $object->getIp()]);
@@ -408,6 +405,7 @@ class FileDistributionCrud extends AbstractCrud
             ]);
 
         // check for existing file distribution
+        /** @noinspection PhpUndefinedMethodInspection */
         $fileDistributionRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
 
         // only add columns if we have file distributions
@@ -425,6 +423,8 @@ class FileDistributionCrud extends AbstractCrud
                 ]);
         }
 
+        /** @noinspection PhpUndefinedMethodInspection */
+        // TODO Switch to ExamBundle
         if ($this->isExamModeAvailable() && $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam')->exists()) {
             $activeExams = true;
 
@@ -446,6 +446,8 @@ class FileDistributionCrud extends AbstractCrud
         }
 
         // check for existing sound locks
+        /** @noinspection PhpUndefinedMethodInspection *
+        /** @var \IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository $soundLockRepository */
         $soundLockRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock');
 
         // only add soundlock column if we have a sound lock
@@ -491,6 +493,7 @@ class FileDistributionCrud extends AbstractCrud
             ]);
         ;
 
+        /** @noinspection PhpUndefinedMethodInspection */
         if ($this->isLockAvailable() && count($this->getObjectManager()->getRepository('IServLockBundle:Lock')->findAll()) > 0) {
             $listMapper
                 ->add('locker', null, [
@@ -512,7 +515,7 @@ class FileDistributionCrud extends AbstractCrud
          * In this case the isGranted calls will not work and throw
          * an exception.
          */
-        $hasToken = $this->getContainer()->get('security.token_storage')->getToken() != null;
+        $hasToken = $this->getContainer()->get('security.token_storage')->getToken() !== null;
         
         // Lock
         if ((!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::LOCK)) && $this->isLockAvailable()) {
@@ -693,11 +696,13 @@ class FileDistributionCrud extends AbstractCrud
             
             $listHandler->addListFilter($examFilter);
         }
-        
+
+        /** @noinspection PhpUndefinedMethodInspection */
         $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
         
         $fileDistributionFilterHash = [];
         foreach ($er->findAll() as $f) {
+            /** @var $f FileDistribution */
             if (isset($fileDistributionFilterHash[$f->getPlainTitle()])) {
                 // skip if we have already a filter for the distribution
                 continue;
@@ -831,7 +836,7 @@ class FileDistributionCrud extends AbstractCrud
 
         /* @var $om \IServ\CrudBundle\Doctrine\ORM\ORMObjectManager */
         $om = $this->getObjectManager();
-        $listHandler->getFilterHandler()->addEventSubscriber(new ListFilterEventSubscriber($this->request, $om->getRepository('StsblFileDistributionBundle:Host')));
+        $listHandler->getFilterHandler()->addEventSubscriber(new ListFilterEventSubscriber($this->getRequest(), $om->getRepository('StsblFileDistributionBundle:Host')));
     }
     
     /**
@@ -859,13 +864,11 @@ class FileDistributionCrud extends AbstractCrud
     /**
      * Check if exam mode is installed on the IServ.
      * 
-     * @todo Switch to hasBundle() or something similar, when exam mode is ported to IServ 3.
-     * 
      * @return boolean
      */
     public function isExamModeAvailable()
     {
-        return file_exists('/var/lib/dpkg/info/iserv-exam.list');
+        return $this->hasBundle('IServExamBundle');
     }
 
     /**
@@ -905,12 +908,13 @@ class FileDistributionCrud extends AbstractCrud
         
         return true;
     }
-    
+
     /**
      * Get current internet state (yes, no, allowed, forbidden) for Host by his ip address.
-     * 
+     *
      * @param Host $host
      * @return string
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getInternetState(Host $host) {
         if ($host === null) {
@@ -921,6 +925,8 @@ class FileDistributionCrud extends AbstractCrud
         $internet = $host->getInternet();
         
         if ($this->isExamModeAvailable()) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            /** @var EntitySpecificationRepository $examRepository */
             $examRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam');
             
             $examMode = $examRepository->find($host->getIp());
@@ -929,7 +935,8 @@ class FileDistributionCrud extends AbstractCrud
                 return 'exam';
             }
         }
-        
+
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
         $qb = $this->getEntityManager()->createQueryBuilder($this->class);
         $subQb = clone $qb;
         $subSubQb = clone $qb;
@@ -1005,9 +1012,11 @@ class FileDistributionCrud extends AbstractCrud
         $overrideRoute = $host->getOverrideRoute();
         
         if ($this->isExamModeAvailable()) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            /** @var EntitySpecificationRepository $examRepository */
             $examRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam');
             
-            /* @var $examMode Stsbl\FileDistributionBundle\Entity\Exam */
+            /* @var $examMode \Stsbl\FileDistributionBundle\Entity\Exam */
             $examMode = $examRepository->find($host->getIp());
             
             if ($examMode != null) {
@@ -1029,6 +1038,7 @@ class FileDistributionCrud extends AbstractCrud
         
         if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($host)) {
             /* @var $nac \Stsbl\InternetBundle\Entity\Nac */
+            /** @noinspection PhpUndefinedMethodInspection */
             $nac = $this->getEntityManager()->getRepository('StsblInternetBundle:Nac')->findOneByIp($host->getIp());
             $user = $nac->getUser();
             $until = $nac->getTimer();
@@ -1053,6 +1063,7 @@ class FileDistributionCrud extends AbstractCrud
     public function getFileDistribution(Host $host)
     {
         if ($host != null) {
+            /** @noinspection PhpUndefinedMethodInspection */
             return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution')->findOneByIp($host->getIp());
         } else {
             return null;
@@ -1068,6 +1079,7 @@ class FileDistributionCrud extends AbstractCrud
     public function getExam(Host $host)
     {
         if ($host != null) {
+            /** @noinspection PhpUndefinedMethodInspection */
             return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam')->findOneByIp($host->getIp());
         } else {
             return null;
@@ -1083,6 +1095,7 @@ class FileDistributionCrud extends AbstractCrud
     public function getSoundLockUser(Host $host)
     {  
         /* @var $lock \Stsbl\FileDistributionBundle\Entity\SoundLock */
+        /** @noinspection PhpUndefinedMethodInspection */
         $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock')->findOneByIp($host->getIp());
         
         if ($lock === null) {
