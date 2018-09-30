@@ -1,6 +1,8 @@
 {# src/Stsbl/FileDistirbutionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig #}
 {% extends "IServCrudBundle:Crud:batch_confirm.html.twig" %}
 
+{# @var batchAction \IServ\CrudBundle\Crud\Batch\AbstractBatchAction #}
+
 {% block stylesheets %}
     {{ parent() }}
 
@@ -106,6 +108,7 @@
 {% endblock %}
 
 {% block crud_table_row %}
+    {% set ip = app.request.clientIp %}
     {% spaceless %}
         <tr{% if ip == item.ip %} class="highlight"{% endif %}>
             {% block crud_table_cells %}
@@ -116,10 +119,10 @@
                 </td>
                 <td>{{ item.room }}</td>
                 <td>
-                    {% if not admin.isInLan() and item.sambaUser is not null %}
+                    {% if not batchAction.hostExtension.isInLan() and item.sambaUser is not null %}
                         {{ _('Yes') }}
                     {% else %}
-                        {{ admin.accountToUser(item.sambaUser) }}
+                        {{ batchAction.hostExtension.accountToUser(item.sambaUser) }}
                     {% endif %}
                 </td>
             {% endblock %}
@@ -169,10 +172,10 @@
     <td><span class="host_status" data-host-id="{{ item.id }}" id="host_status_{{ item.id }}"></span>&nbsp;{{ item }}</td>
     <td>{{ item.room }}</td>
     <td>
-        {% if not admin.isInLan() and item.sambaUser is not null %}
+        {% if not batchAction.hostExtension.isInLan() and item.sambaUser is not null %}
             {{ _('Yes') }}
         {% else %}
-            {{ admin.accountToUser(item.sambaUser) }}
+            {{ batchAction.hostExtension.accountToUser(item.sambaUser) }}
         {% endif %}
     </td>
 {% endblock %}

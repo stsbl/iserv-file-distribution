@@ -1,13 +1,8 @@
-<?php
-// src/Stsbl/FileDistributionBundle/StsblFileDistributionBundle.php
-namespace Stsbl\FileDistributionBundle;
+<?php declare(strict_types = 1);
+// src/Stsbl/FileDistributionBundle/DependencyInjection/ManagerAwareTrait.php
+namespace Stsbl\FileDistributionBundle\DependencyInjection;
 
-use IServ\CoreBundle\Routing\AutoloadRoutingBundleInterface;
-use Stsbl\FileDistributionBundle\DependencyInjection\Compiler\ManagerAwarePass;
-use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Stsbl\FileDistributionBundle\DependencyInjection\StsblFileDistributionExtension;
+use Stsbl\FileDistributionBundle\Crud\HostExtension;
 
 /*
  * The MIT License
@@ -35,27 +30,30 @@ use Stsbl\FileDistributionBundle\DependencyInjection\StsblFileDistributionExtens
 
 /**
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
- * @license MIT License <https://opensource.org/licenses/MIT>
+ * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class StsblFileDistributionBundle extends Bundle implements AutoloadRoutingBundleInterface
+trait HostExtensionAwareTrait
 {
     /**
-     * {@inheritdoc}
+     * @var HostExtension
      */
-    public function build(ContainerBuilder $container)
-    {
-        $container->registerForAutoconfiguration(ManagerAwareInterface::class)
-            ->addTag(ManagerAwareInterface::MANAGER_AWARE_TAG)
-        ;
+    private $hostExtension;
 
-        $container->addCompilerPass(new ManagerAwarePass());
+    /**
+     * @return HostExtension
+     */
+    public function getHostExtension(): HostExtension
+    {
+        return $this->hostExtension;
     }
 
     /**
-     * {@inheritdoc}
+     * @required
+     *
+     * @param HostExtension $hostExtension
      */
-    public function getContainerExtension()
+    public function setHostExtension(HostExtension $hostExtension)/*: void*/
     {
-        return new StsblFileDistributionExtension();
+        $this->hostExtension = $hostExtension;
     }
 }

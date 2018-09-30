@@ -3,31 +3,43 @@
 namespace Stsbl\FileDistributionBundle\Crud;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use IServ\ComputerBundle\Crud\ListFilterEventSubscriber;
+use IServ\ComputerBundle\Service\Internet;
+use IServ\CoreBundle\Service\BundleDetector;
 use IServ\CoreBundle\Service\Config;
 use IServ\CoreBundle\Util\Format;
 use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
+use IServ\CrudBundle\Entity\CrudInterface;
+use IServ\CrudBundle\Mapper\ListMapper;
 use IServ\CrudBundle\Table\Filter;
 use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
-use IServ\CrudBundle\Entity\CrudInterface;
-use IServ\CrudBundle\Mapper\ListMapper;
-use IServ\ComputerBundle\Crud\ListFilterEventSubscriber;
 use IServ\HostBundle\Model\HostType;
+use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
+use IServ\LockBundle\Service\LockManager;
+use Psr\Container\ContainerInterface;
 use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
+use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareInterface;
+use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
+use Stsbl\FileDistributionBundle\Entity\FileDistributionRepository;
 use Stsbl\FileDistributionBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /*
@@ -60,9 +72,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterface
+class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInterface
 {
-    use ContainerAwareTrait;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * @var EntityManager
@@ -108,7 +123,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Get entity manager
-     * 
+     *
      * @return EntityManager|null
      */
     public function getEntityManager()
@@ -123,7 +138,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Get session
-     * 
+     *
      * @return Session|null
      */
     public function getSession()
@@ -137,7 +152,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Get config
-     * 
+     *
      * @return Config|config
      */
     public function getConfig()
@@ -151,7 +166,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Get request
-     * 
+     *
      * @return Request|null
      */
     public function getRequest()
@@ -165,7 +180,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Get manager
-     * 
+     *
      * @return FileDistributionManager|null
      */
     public function getFileDistributionManager()
@@ -207,12 +222,20 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
 
     /**
      * Get container
-     * 
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface
+     *
+     * @return ContainerInterface
      */
-    public function getContainer()
+    public function getContainer(): ContainerInterface
     {
         return $this->container;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function setContainer(ContainerInterface $container)/*: void*/
+    {
+        $this->container = $container;
     }
 
     /**
@@ -236,7 +259,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     /**
      * {@inheritdoc}
      */
-    protected function buildRoutes() 
+    protected function buildRoutes()
     {
         parent::buildRoutes();
         
@@ -248,7 +271,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     /**
      * {@inheritdoc}
      */
-    public function isAllowedToView(CrudInterface $object = null, UserInterface $user = null) 
+    public function isAllowedToView(CrudInterface $object = null, UserInterface $user = null)
     {
         // disable show action, it is useless here
         return false;
@@ -257,7 +280,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     /**
      * {@inheritdoc}
      */
-    public function isAllowedToAdd(UserInterface $user = null) 
+    public function isAllowedToAdd(UserInterface $user = null)
     {
         return false;
     }
@@ -273,7 +296,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     /**
      * {@inheritdoc}
      */
-    public function isAllowedToDelete(CrudInterface $object = null, UserInterface $user = null) 
+    public function isAllowedToDelete(CrudInterface $object = null, UserInterface $user = null)
     {
         return $this->isAllowedToEdit($object, $user);
     }
@@ -285,7 +308,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
      * @param UserInterface $user
      * @return bool
      */
-    public function isAllowedToStop(CrudInterface $object, UserInterface $user = null) 
+    public function isAllowedToStop(CrudInterface $object, UserInterface $user = null)
     {
         $fileDistribution = $this->getFileDistributionForHost($object);
         
@@ -293,7 +316,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
             return false;
         }
         
-        if ($this->getUser() !== $fileDistribution->getUser()) {
+        if ($user !== $fileDistribution->getUser()) {
             return false;
         }
         
@@ -311,7 +334,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     {
         $fileDistribution = $this->getFileDistributionForHost($object);
         
-        if($fileDistribution === null) {
+        if ($fileDistribution === null) {
             return true;
         } else {
             return false;
@@ -320,7 +343,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Get current room filter mode
-     * 
+     *
      * @return bool
      */
     public static function getRoomMode()
@@ -364,7 +387,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Checks if current request comes from LAN
-     * 
+     *
      * @return bool
      */
     public function isInLan()
@@ -556,14 +579,24 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
             $this->batchActions->add(new Batch\ExamAction($this));
             $this->batchActions->add(new Batch\ExamOffAction($this));
         }
-        
+
+        foreach ($this->batchActions as $batchAction) {
+            if ($batchAction instanceof ManagerAwareInterface) {
+                $batchAction->setFileDistributionManager($this->getFileDistributionManager());
+            }
+
+            if ($batchAction instanceof HostExtensionAwareInterface) {
+                $batchAction->setHostExtension($this->container->get(HostExtension::class));
+            }
+        }
+
         return $this->batchActions;
     }
     
     /**
      * {@inheritdoc}
      */
-    protected function getRoutePattern($action, $id, $entityBased = true) 
+    protected function getRoutePattern($action, $id, $entityBased = true)
     {
         if ('index' === $action) {
             return sprintf('%s', $this->id);
@@ -575,7 +608,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     /**
      * {@inheritdoc}
      */
-    public function isAuthorized() 
+    public function isAuthorized()
     {
         return $this->isGranted(Privilege::USE_FD) && $this->isGranted(HostPrivilege::BOOT);
     }
@@ -682,9 +715,9 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
         if ($this->isExamModeAvailable()) {
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb
-                ->select('e')
-                ->from('StsblFileDistributionBundle:Exam', 'e')
-                ->where($qb->expr()->eq('e.ip', 'parent.ip'))
+                ->select('e3')
+                ->from('StsblFileDistributionBundle:Exam', 'e3')
+                ->where($qb->expr()->eq('e3.ip', 'parent.ip'))
             ;
             
             $examFilter = new Filter\ListExpressionFilter(_('Internet: exam mode'), $qb->expr()->exists($qb));
@@ -698,6 +731,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
         }
 
         /** @noinspection PhpUndefinedMethodInspection */
+        /** @var FileDistributionRepository $er */
         $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
         
         $fileDistributionFilterHash = [];
@@ -858,12 +892,12 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
      */
     public function hasBundle($name)
     {
-        return array_key_exists($name, $this->getContainer()->getParameter('kernel.bundles'));
+        return $this->container->get(BundleDetector::class)->isLoaded($name);
     }
     
     /**
      * Check if exam mode is installed on the IServ.
-     * 
+     *
      * @return boolean
      */
     public function isExamModeAvailable()
@@ -873,7 +907,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
 
     /**
      * Check if lock module is installed on the IServ.
-     * 
+     *
      * @return boolean
      */
     public function isLockAvailable()
@@ -883,7 +917,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Check if Internet GUI is installed on the IServ.
-     * 
+     *
      * @return boolean
      */
     public function isInternetAvailable()
@@ -893,7 +927,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Checks if internet is granted to an ip via a NAC.
-     * 
+     *
      * @param Host $host
      * @return boolean
      */
@@ -916,7 +950,8 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
      * @return string
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getInternetState(Host $host) {
+    public function getInternetState(Host $host)
+    {
         if ($host === null) {
             return 'none';
         }
@@ -982,24 +1017,26 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
         
         if ($overrideRoute === false) {
             return 'forbidden';
-        } else if ($internetAlwaysDenied === true) {
+        } elseif ($internetAlwaysDenied === true) {
             return 'no_priv';
-        } else if ($overrideRoute === true) {
+        } elseif ($overrideRoute === true) {
             return 'granted';
-        } else if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($host) === true) {
+        } elseif ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($host) === true) {
             return 'yes_nac';
-        } else if ($internetAlwaysGranted === true) {
+        } elseif ($internetAlwaysGranted === true) {
             return 'yes_priv';
-        } else if ($internet === true) {
+        } elseif ($internet === true) {
             return 'yes';
-        } else if ($internet === false) {
+        } elseif ($internet === false) {
             return 'no';
         }
+
+        return 'yes';
     }
     
     /**
      * Get current internet lock explanation for Host by his ip address.
-     * 
+     *
      * @param Host $host
      * @return array
      */
@@ -1046,7 +1083,6 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
             return [
                 'title' => null,
                 'user' => $user,
-                // HACK use twig filter here
                 'until' => Format::smartDate($until),
             ];
         }
@@ -1056,7 +1092,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Get file distribution
-     * 
+     *
      * @param Host $host
      * @return \Stsbl\FileDistributionBundle\Entity\FileDistribution
      */
@@ -1088,12 +1124,12 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
     
     /**
      * Get user who locked the sound on a computer.
-     * 
+     *
      * @param Host $host
      * @return \IServ\CoreBundle\Entity\User
      */
     public function getSoundLockUser(Host $host)
-    {  
+    {
         /* @var $lock \Stsbl\FileDistributionBundle\Entity\SoundLock */
         /** @noinspection PhpUndefinedMethodInspection */
         $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock')->findOneByIp($host->getIp());
@@ -1118,5 +1154,25 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
         }
 
         return $this->getEntityManager()->getRepository('IServCoreBundle:User')->find($act);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedServices()
+    {
+        return [
+            'doctrine.orm.entity_manager' => EntityManagerInterface::class,
+            'iserv.config' => Config::class,
+            'iserv.host.internet' => '?' . Internet::class,
+            'iserv.lock.manager' => '?' . LockManager::class,
+            'request_stack' => RequestStack::class,
+            'security.authorization_checker' => AuthorizationCheckerInterface::class,
+            'security.token_storage' => TokenStorageInterface::class,
+            'session' => SessionInterface::class,
+            'stsbl.filedistribution.manager' => FileDistributionManager::class,
+            BundleDetector::class => BundleDetector::class,
+            HostExtension::class => HostExtension::class,
+        ];
     }
 }

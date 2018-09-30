@@ -2,15 +2,11 @@
 // src/Stsbl/FileDistributionBundle/Service/FileDistributionManager.php
 namespace Stsbl\FileDistributionBundle\Service;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
 use IServ\CoreBundle\Security\Core\SecurityHandler;
-use IServ\CoreBundle\Service\Config;
 use IServ\CoreBundle\Service\Shell;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Entity\Host;
 use IServ\HostBundle\Service\HostManager;
-use IServ\HostBundle\Service\HostStatus;
 
 /*
  * The MIT License

@@ -1,13 +1,8 @@
-<?php
-// src/Stsbl/FileDistributionBundle/StsblFileDistributionBundle.php
-namespace Stsbl\FileDistributionBundle;
+<?php declare(strict_types = 1);
+// src/Stsbl/FileDistributionBundle/DependencyInjection/ManagerAwareTrait.php
+namespace Stsbl\FileDistributionBundle\DependencyInjection;
 
-use IServ\CoreBundle\Routing\AutoloadRoutingBundleInterface;
-use Stsbl\FileDistributionBundle\DependencyInjection\Compiler\ManagerAwarePass;
-use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Stsbl\FileDistributionBundle\DependencyInjection\StsblFileDistributionExtension;
+use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
 
 /*
  * The MIT License
@@ -35,27 +30,30 @@ use Stsbl\FileDistributionBundle\DependencyInjection\StsblFileDistributionExtens
 
 /**
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
- * @license MIT License <https://opensource.org/licenses/MIT>
+ * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class StsblFileDistributionBundle extends Bundle implements AutoloadRoutingBundleInterface
+trait ManagerAwareTrait
 {
     /**
-     * {@inheritdoc}
+     * @var FileDistributionManager
      */
-    public function build(ContainerBuilder $container)
-    {
-        $container->registerForAutoconfiguration(ManagerAwareInterface::class)
-            ->addTag(ManagerAwareInterface::MANAGER_AWARE_TAG)
-        ;
+    private $fileDistributionManager;
 
-        $container->addCompilerPass(new ManagerAwarePass());
+    /**
+     * @return FileDistributionManager
+     */
+    public function getFileDistributionManager(): FileDistributionManager
+    {
+        return $this->fileDistributionManager;
     }
 
     /**
-     * {@inheritdoc}
+     * @required
+     *
+     * @param FileDistributionManager $fileDistributionManager
      */
-    public function getContainerExtension()
+    public function setFileDistributionManager(FileDistributionManager $fileDistributionManager)/*: void*/
     {
-        return new StsblFileDistributionExtension();
+        $this->fileDistributionManager = $fileDistributionManager;
     }
 }

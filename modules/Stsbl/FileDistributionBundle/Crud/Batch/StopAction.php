@@ -3,9 +3,17 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use IServ\ComputerBundle\Crud\Batch\AbstractHostAction;
+use IServ\ComputerBundle\Crud\HostControlCrud;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
+use IServ\CrudBundle\Entity\FlashMessage;
+use IServ\HostBundle\Entity\Host;
+use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareInterface;
+use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareTrait;
+use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
+use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareTrait;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -39,29 +47,43 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class StopAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+class StopAction extends AbstractHostAction implements
+    GroupableBatchActionInterface,
+    HostExtensionAwareInterface,
+    ManagerAwareInterface
 {
-    use Traits\NoopFormTrait;
-    
-    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    use HostExtensionAwareTrait, ManagerAwareTrait;
+
+    /**
+     * @var HostControlCrud
+     */
+    protected $crud;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $privileges = Privilege::USE_FD;
     
     /**
      * {@inheritodc}
      */
-    public function execute(ArrayCollection $entities) 
-    { 
-        /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
+    public function execute(ArrayCollection $entities)
+    {
+        /* @var $entities FileDistribution[] */
         $user = $this->crud->getUser();
         $messages = [];
         
         foreach ($entities as $key => $entity) {
-            /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
+            /* @var $entity Host */
             if (!$this->isAllowedToExecute($entity, $user)) {
                 // remove unallowed hosts
-                $messages[] = $this->createFlashMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
+                $messages[] = new FlashMessage(
+                    'error',
+                    __('You are not allowed to disable file distribution for %s.', $entity->getName())
+                );
                 unset($entities[$key]);
             } else {
-                $messages[] = $this->createFlashMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
+                $messages[] = new FlashMessage('success', __('Disabled file distribution for %s.', $entity->getName()));
             }
         }
 
@@ -85,7 +107,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * {@inheritodc}
      */
-    public function getLabel() 
+    public function getLabel()
     {
         return _('Stop');
     }
@@ -93,7 +115,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * {@inheritdoc}
      */
-    public function getTooltip() 
+    public function getTooltip()
     {
         return _('Stop the running file distribution for the selected hosts.');
     }
@@ -126,8 +148,17 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
      * @param UserInterface $user
      * @return boolean
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user)
     {
-        return $this->crud->isAllowedToStop($object, $user);
+        /** @var $object Host */
+        return $this->getHostExtension()->getPrivilegeDetector()->isAllowedToStop($object, $user);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplate()/*: ?string*/
+    {
+        return 'StsblFileDistributionBundle:Crud:file_distribution_batch_confirm.html.twig';
     }
 }

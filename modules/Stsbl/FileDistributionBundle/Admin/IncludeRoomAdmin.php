@@ -51,7 +51,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    protected function configure() 
+    protected function configure()
     {
         parent::configure();
         
@@ -64,7 +64,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     
     /**
      * Set logger
-     * 
+     *
      * @param Logger $logger
      */
     public function setLogger(Logger $logger)
@@ -100,7 +100,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    public function isAllowedToDelete(CrudInterface $object = null, UserInterface $user = null) 
+    public function isAllowedToDelete(CrudInterface $object = null, UserInterface $user = null)
     {
         return true;
     }

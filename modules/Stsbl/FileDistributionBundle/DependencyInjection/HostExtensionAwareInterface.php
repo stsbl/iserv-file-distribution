@@ -1,13 +1,8 @@
-<?php
-// src/Stsbl/FileDistributionBundle/StsblFileDistributionBundle.php
-namespace Stsbl\FileDistributionBundle;
+<?php declare(strict_types = 1);
+// src/Stsbl/FileDistributionBundle/DependencyInjection/HostExtensionAwareInterface.php
+namespace Stsbl\FileDistributionBundle\DependencyInjection;
 
-use IServ\CoreBundle\Routing\AutoloadRoutingBundleInterface;
-use Stsbl\FileDistributionBundle\DependencyInjection\Compiler\ManagerAwarePass;
-use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Stsbl\FileDistributionBundle\DependencyInjection\StsblFileDistributionExtension;
+use Stsbl\FileDistributionBundle\Crud\HostExtension;
 
 /*
  * The MIT License
@@ -35,27 +30,13 @@ use Stsbl\FileDistributionBundle\DependencyInjection\StsblFileDistributionExtens
 
 /**
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
- * @license MIT License <https://opensource.org/licenses/MIT>
+ * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class StsblFileDistributionBundle extends Bundle implements AutoloadRoutingBundleInterface
+interface HostExtensionAwareInterface
 {
     /**
-     * {@inheritdoc}
+     * @param HostExtension $hostExtension
      */
-    public function build(ContainerBuilder $container)
-    {
-        $container->registerForAutoconfiguration(ManagerAwareInterface::class)
-            ->addTag(ManagerAwareInterface::MANAGER_AWARE_TAG)
-        ;
-
-        $container->addCompilerPass(new ManagerAwarePass());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getContainerExtension()
-    {
-        return new StsblFileDistributionExtension();
-    }
+    public function setHostExtension(HostExtension $hostExtension)/*: void*/;
 }
+

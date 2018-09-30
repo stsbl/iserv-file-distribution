@@ -1,13 +1,12 @@
-<?php
-// src/Stsbl/FileDistributionBundle/StsblFileDistributionBundle.php
-namespace Stsbl\FileDistributionBundle;
+<?php declare(strict_types = 1);
+// src/Stsbl/FileDistributionBundle/DependencyInjection/Compiler/ManagerAwarePass.php
+namespace Stsbl\FileDistributionBundle\DependencyInjection\Compiler;
 
-use IServ\CoreBundle\Routing\AutoloadRoutingBundleInterface;
-use Stsbl\FileDistributionBundle\DependencyInjection\Compiler\ManagerAwarePass;
 use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
+use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Stsbl\FileDistributionBundle\DependencyInjection\StsblFileDistributionExtension;
+use Symfony\Component\DependencyInjection\Reference;
 
 /*
  * The MIT License
@@ -32,30 +31,24 @@ use Stsbl\FileDistributionBundle\DependencyInjection\StsblFileDistributionExtens
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-/**
+ 
+/** 
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
- * @license MIT License <https://opensource.org/licenses/MIT>
+ * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class StsblFileDistributionBundle extends Bundle implements AutoloadRoutingBundleInterface
+class ManagerAwarePass implements CompilerPassInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function process(ContainerBuilder $container)
     {
-        $container->registerForAutoconfiguration(ManagerAwareInterface::class)
-            ->addTag(ManagerAwareInterface::MANAGER_AWARE_TAG)
-        ;
+        $services = $container->findTaggedServiceIds(ManagerAwareInterface::MANAGER_AWARE_TAG);
 
-        $container->addCompilerPass(new ManagerAwarePass());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getContainerExtension()
-    {
-        return new StsblFileDistributionExtension();
+        foreach ($services as $service => $attributes) {
+            $container->getDefinition($service)
+                ->addMethodCall('setFileDistributionManager', [new Reference(FileDistributionManager::class)])
+            ;
+        }
     }
 }

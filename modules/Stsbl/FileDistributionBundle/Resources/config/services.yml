@@ -21,16 +21,12 @@ services:
             - { name: iserv.crud }
             
     stsbl.filedistribution.menu:
-        class: Stsbl\FileDistributionBundle\EventListener\MenuListener # Out MenuListener Class
+        class: Stsbl\FileDistributionBundle\EventListener\MenuListener
         tags:
-          - { name: kernel.event_listener, event: iserv_portal.menu_main, method: onBuildMainMenu } # Tells IServ about the main menu method
-          - { name: kernel.event_listener, event: iserv_portal.menu_admin, method: onBuildAdminMenu } # Tells IServ about the admin menu method
-    
-    stsbl.filedistribution.manager:
-        parent: Stsbl\FileDistributionBundle\Service\FileDistributionManager
-        deprecated: 'The service id "%service_id%" is deprecated, switch to "Stsbl\FileDistributionBundle\Service\FileDistributionManager" via dependency injection instead.'
-        autowire: true
-        autoconfigure: false
+          - { name: kernel.event_listener, event: iserv_portal.menu_main, method: onBuildMainMenu }
+          - { name: kernel.event_listener, event: iserv_portal.menu_admin, method: onBuildAdminMenu }
+
+    Stsbl\FileDistributionBundle\Crud\HostExtension: ~
 
     Stsbl\FileDistributionBundle\Service\FileDistributionManager: ~
 
@@ -38,3 +34,6 @@ services:
         class: Stsbl\FileDistributionBundle\Twig\Extension\Base64
         tags :
           - { name: twig.extension }
+
+imports:
+    - { resource: legacy_aliases.yml }

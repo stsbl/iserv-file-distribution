@@ -3,8 +3,15 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use IServ\ComputerBundle\Crud\Batch\AbstractHostAction;
+use IServ\ComputerBundle\Crud\HostControlCrud;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
+use IServ\CrudBundle\Entity\FlashMessage;
 use IServ\HostBundle\Security\Privilege as HostPrivilege;
+use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareInterface;
+use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareTrait;
+use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
+use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareTrait;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
 /*
@@ -37,22 +44,30 @@ use Stsbl\FileDistributionBundle\Security\Privilege;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class SoundLockAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+class SoundLockAction extends AbstractHostAction implements GroupableBatchActionInterface, ManagerAwareInterface
 {
-    use Traits\NoopFormTrait;
-    
-    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
-    
+    use ManagerAwareTrait;
+
+    /**
+     * @var HostControlCrud
+     */
+    protected $crud;
+
+    /**
+     * @var string
+     */
+    protected $privilege = Privilege::USE_FD;
+
     /**
      * {@inheritdoc}
      */
-    public function execute(ArrayCollection $entities) 
+    public function execute(ArrayCollection $entities)
     {
         /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
         $messages = [];
         
         foreach ($entities as $entity) {
-            $messages[] = $this->createFlashMessage('success', __('Disabled sound on %s.', (string)$entity->getName()));
+            $messages[] = new FlashMessage('success', __('Disabled sound on %s.', $entity->getName()));
         }
         
         $bag = $this->getFileDistributionManager()->soundLock($entities);
@@ -67,7 +82,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritdoc}
      */
-    public function getName() 
+    public function getName()
     {
         return 'soundlock';
     }
@@ -75,7 +90,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritodc}
      */
-    public function getLabel() 
+    public function getLabel()
     {
         return _('Disable');
     }
@@ -83,7 +98,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritdoc}
      */
-    public function getTooltip() 
+    public function getTooltip()
     {
         return _('Disable sound on the selected hosts.');
     }
@@ -107,8 +122,16 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritdoc}
      */
-    public function getGroup() 
+    public function getGroup()
     {
         return _('Sound');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplate()/*: ?string*/
+    {
+        return 'StsblFileDistributionBundle:Crud:file_distribution_batch_confirm.html.twig';
     }
 }

@@ -3,10 +3,18 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use IServ\ComputerBundle\Crud\Batch\AbstractHostAction;
+use IServ\ComputerBundle\Crud\HostControlCrud;
+use IServ\CrudBundle\Crud\Batch\FormExtendingBatchActionInterface;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
+use IServ\CrudBundle\Entity\FlashMessage;
 use IServ\CrudBundle\Entity\FlashMessageBag;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
+use IServ\HostBundle\Entity\Host;
+use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareInterface;
+use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareTrait;
+use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
+use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareTrait;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -45,9 +53,23 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class EnableAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+class EnableAction extends AbstractHostAction implements
+    FormExtendingBatchActionInterface,
+    GroupableBatchActionInterface,
+    HostExtensionAwareInterface,
+    ManagerAwareInterface
 {
-    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    use HostExtensionAwareTrait, ManagerAwareTrait;
+
+    /**
+     * @var HostControlCrud
+     */
+    protected $crud;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $privilege = Privilege::USE_FD;
     
     /**
      * @var string
@@ -55,7 +77,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     private $title;
     
     /**
-     * @var boolean
+     * @var bool
      */
     private $isolation;
     
@@ -65,11 +87,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     private $folderAvailability;
     
     /**
-     * Allows the batch action to manipulate the form.
-     *
-     * This is called at the end of `prepareBatchActions`.
-     *
-     * @param FormInterface $form
+     * {@inheritdoc}
      */
     public function finalizeForm(FormInterface $form)
     {
@@ -81,16 +99,18 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
                 ],
                 'attr' => [
                     'placeholder' => _('Title for this file distribution'),
-                    'help_text' => _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.'),
+                    'help_text' => _('The folder path where you will find the assignment folder and the returns will ' .
+                        'be Files/File-Distribution/<Title>.'),
                     'required' => 'required'
                 ]
             ]);
         
-        $isolationAttr = [];   
-        if ($this->crud->getConfig()->get('FileDistributionHostIsolationDefault')) {
+        $isolationAttr = [];
+        if ($this->getHostExtension()->getConfig()->get('FileDistributionHostIsolationDefault')) {
             $isolationAttr['checked'] = 'checked';
         }
-        $isolationAttr['help_text'] = _('Enable host isolation if you want to prevent that users can exchange files by sharing their accounts.');
+        $isolationAttr['help_text'] = _('Enable host isolation if you want to prevent that users can exchange files ' .
+            'by sharing their accounts.');
         
         $form
             ->add('isolation', CheckboxType::class, [
@@ -115,10 +135,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     }
     
     /**
-     * Gets called with the full form data instead of `execute`.
-     *
-     * @param array $data
-     * @return FlashMessageBag
+     * {@inheritdoc}
      */
     public function handleFormData(array $data)
     {
@@ -126,7 +143,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
         if (empty($data['isolation'])) {
             $this->isolation = false;
         } else {
-            $this->isolation = (boolean)$data['isolation'];
+            $this->isolation = (bool)$data['isolation'];
         }
         $this->folderAvailability = $data['folder_availability'];
         
@@ -134,10 +151,10 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     }
     
     /**
-     * {@inheritodc}
+     * {@inheritdoc}
      */
-    public function execute(ArrayCollection $entities) 
-    {      
+    public function execute(ArrayCollection $entities)
+    {
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
         $user = $this->crud->getUser();
         $messages = [];
@@ -151,29 +168,38 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
             $skipOwnHost = false;
             
             if (empty($this->title)) {
-               $messages[] = $this->createFlashMessage('error', _('Title should not be empty!'));
-               $error = true;
-               break;
-            } 
+                $messages[] = new FlashMessage('error', _('Title should not be empty!'));
+                $error = true;
+                break;
+            }
             
             if ($entity->getIp() === $this->crud->getRequest()->getClientIp() && count($entities) > 1) {
-                $messages[] = $this->createFlashMessage('warning', _('Skipping own host!'));
+                $messages[] = new FlashMessage('warning', _('Skipping own host!'));
                 unset($entities[$key]);
                 $skipOwnHost = true;
             }
             
             if (!$this->isAllowedToExecute($entity, $user)) {
                 // remove unallowed hosts
-                $messages[] = $this->createFlashMessage('error', __('You are not allowed to enable file distribution for %s.', (string)$entity->getName()));
+                $messages[] = new FlashMessage(
+                    'error',
+                    __('You are not allowed to enable file distribution for %s.', $entity->getName())
+                );
                 unset($entities[$key]);
-            } else if (!$skipOwnHost) {
-                $messages[] = $this->createFlashMessage('success', __('Enabled file distribution for %s.', (string)$entity->getName()));
+            } elseif (!$skipOwnHost) {
+                $messages[] = new FlashMessage(
+                    'success',
+                    __('Enabled file distribution for %s.', $entity->getName())
+                );
             }
         }
         
         // only execute rpc, if we have no errors and at least one entity
         if (!$error && count($entities) > 0) {
-            $bag = $this->getFileDistributionManager()->enableFileDistribution($entities, $this->title, $this->isolation, $this->folderAvailability);
+            $bag = $this
+                ->getFileDistributionManager()
+                ->enableFileDistribution($entities, $this->title, $this->isolation, $this->folderAvailability)
+            ;
         } else {
             $bag = new FlashMessageBag();
         }
@@ -182,7 +208,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
             $bag->add($message);
         }
         
-        $this->session->set('fd_title', $this->title);
+        $this->getHostExtension()->getSession()->set('fd_title', $this->title);
         
         return $bag;
     }
@@ -198,7 +224,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     /**
      * {@inheritdoc}
      */
-    public function getLabel() 
+    public function getLabel()
     {
         return _('Start');
     }
@@ -206,7 +232,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     /**
      * {@inheritdoc}
      */
-    public function getTooltip() 
+    public function getTooltip()
     {
         return _('Start a file distribution for the selected hosts.');
     }
@@ -240,8 +266,17 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
      * @param UserInterface $user
      * @return boolean
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user)
     {
-        return $this->crud->isAllowedToEnable($object, $user);
+        /** @var $object Host */
+        return $this->getHostExtension()->getPrivilegeDetector()->isAllowedToEnable($object);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTemplate()/*: ?string*/
+    {
+        return 'StsblFileDistributionBundle:Crud:file_distribution_batch_confirm.html.twig';
     }
 }
