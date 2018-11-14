@@ -1,0 +1,26 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_rooms_index.html.twig #}
+{% extends "IServCrudBundle:Crud:index.html.twig" %}
+
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            {{ _('Here you can change, which hosts filtered by room are available in the file distribution.') }}
+            {% if is_granted('PRIV_HOST_MANAGE') %}
+                {{ __('To exclude single hosts from the file distribution set the "controllable" setting in the %s to no.', 
+                    '<a href="' ~ path('admin_host_index') ~'">' ~ _('Host management') ~ '</a>')|raw }}
+            {% endif %}
+        </div>       
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {{ _('Room availability') }}
+            </h3>
+        </div>
+        <div class="panel-body">
+            <p>{{ _('Select if all rooms except the one in the following list or only the rooms which are in the list are available.') }}</p>
+            {{ form(room_inclusion_form, {'style': 'inline'}) }}
+        </div>
+    </div>
+    {{ parent() }}
+{% endblock %}

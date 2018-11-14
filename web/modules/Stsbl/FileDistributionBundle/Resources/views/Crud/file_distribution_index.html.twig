@@ -1,0 +1,86 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig #}
+{% extends "IServCrudBundle:Crud:index.html.twig" %}
+{%  import "StsblJavaScriptLibraryBundle::jquery.initialize.html.twig" as jqi %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => glyphicons-social.css -->
+    {% endif %}
+    <link rel="stylesheet" href="{{ asset('css/glyphicons-social.css', 'base') }}">
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => host.css -->
+    {% endif %}
+    <link rel="stylesheet" href="{{ asset('css/host.css', 'host') }}" />
+    
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution.css -->
+    {% endif %}
+    <link rel="stylesheet" href="{{ asset('css/file-distribution.css', 'stsbl_file_distribution') }}" />
+{% endblock %}
+
+{% block content %}
+    {% if not room_available %}
+        <h3>{{ _p('file-distribution', 'Configuration required') }}</h3>
+        <hr />
+        <div class="alert alert-warning">
+            {% if admin.user.hasRole('ROLE_ADMIN') and is_granted('PRIV_FILE_DISTRIBUTION_ROOMS') %}
+                <p>{{ _('You need to configure available rooms before you can use this module!') }}</p>
+                <p><a class="btn btn-default" href="{{ path('admin_filedistribution_rooms_index') }}">{{ icon('door') }} {{ _('Manage available rooms') }}</a></p>
+            {% else %}
+                {{ _('This module needs addtional configuration. Please contact your IServ Administrator!') }}
+            {% endif %}
+        </div>
+    {% else %}
+        {% if display_msg %}
+            <div class="alert alert-info">
+                {{ __('The files for the distribution "%s" must resided in the following folder:', path.title) }} <a href="{{ path('file_list', {'path': path.encoded }) }}">{{ icon('legacy-folder')|raw }} {{ __('Files/File-Distribution/%s', path.title) }}</a>
+            </div>
+        {% endif %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block crud_actions %}
+    {% if admin.user.hasRole('ROLE_ADMIN') and is_granted('PRIV_FILE_DISTRIBUTION_ROOMS') %}
+        <div class="list-actions">
+            <a class="btn btn-default" href="{{ path('admin_filedistribution_rooms_index') }}">{{ icon('door') }} {{ _('Manage available rooms') }}</a>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution.js -->
+    {% endif %}
+    <script type="text/javascript" src="{{ asset('js/file-distribution.js', 'stsbl_file_distribution') }}"></script>
+
+    {{ jqi.integrate() }}
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution-highlight.js -->
+    {% endif %}
+    <script type="text/javascript" src="{{ asset('js/file-distribution-highlight.js', 'stsbl_file_distribution') }}"></script>
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => host.js -->
+    {% endif %}
+    <script type="text/javascript" src="{{ asset('js/host.js', 'host') }}"></script>
+
+    {%  if app.environment != 'prod' %}
+        <!-- {{ _self }} => update.js -->
+    {%  endif %}
+    <script type="text/javascript" src="{{  path('fd_filedistribution_update') }}"></script>
+{% endblock %}
+
+{% block crud_table_row %}
+    {% spaceless %}
+        <tr{% if ip == item.ip %} class="highlight"{% endif %}>
+            {{ block('crud_table_cells') }}
+        </tr>
+    {% endspaceless %}
+{% endblock crud_table_row %}

@@ -1,0 +1,207 @@
+{# src/Stsbl/FileDistirbutionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig #}
+{% extends "IServCrudBundle:Crud:batch_confirm.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => vendor/glyphicons-social.css -->
+    {% endif %}
+    <link rel="stylesheet" href="{{ asset('css/glyphicons-social.css', 'base') }}">
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => host.css -->
+    {% endif %}
+    <link rel="stylesheet" href="{{ asset('css/host.css', 'host') }}" />
+    
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution.css -->
+    {% endif %}
+    <link rel="stylesheet" href="{{ asset('css/file-distribution.css', 'stsbl_file_distribution') }}" />
+{% endblock %}
+
+{% block crud_table %}
+    {% if batchAction.getName() == 'enable' %}
+        <div class="alert alert-warning">
+            {{ _('Only hosts which are member of the Windows Domain are supported.') }}
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block crud_table_foot %}
+    {% set colspan = 3 %}
+    <tfoot>
+        {% if confirmForm.form.actions.enable is defined %}
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                <span class="fd-help-text">{{ _('For the users who are logging in on this hosts, there will created two addtional network drives for file distribution assignment and return.') }}</span>
+            </td></tr>
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_label(confirmForm.form.title) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.title) }}
+                    <span class="help-block">{{ _('The folder path where you will find the assignment folder and the returns will be Files/File-Distribution/<Title>.')|escape('html') }}</span>
+                </div>
+            </td></tr>
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_label(confirmForm.form.folder_availability) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.folder_availability) }}
+                    <span class="help-block">{{ _('Select if you want to grant access to the group folders and other file shares on the Portalserver.')|escape('html') }}</span>
+                </div>
+            </td></tr>
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_label(confirmForm.form.isolation) }}
+                <div class="col-lg-10">
+                    <div class="checkbox">
+                        <label for="iserv_crud_multi_select_isolation">
+                            {{ form_widget(confirmForm.form.isolation) }}&nbsp;{{ _('Enable host isolation') }}
+                        </label>
+                    </div>
+                    <span class="help-block">{{ _('Enable host isolation if you want to prevent that users can exchange files by sharing their accounts.') }}</span>
+               </div>
+            </td></tr>
+        {% endif %}
+        {% if confirmForm.form.actions.exam is defined %}
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_label(confirmForm.form.exam_title) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.exam_title) }}
+                </div>
+            </td></tr>
+        {% endif %}
+        {% if confirmForm.form.actions.message is defined %}
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_label(confirmForm.form.rpc_message) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.rpc_message) }}
+                </div>
+            </td></tr>
+        {% endif %}
+        {% if (confirmForm.form.actions.inetgrant is defined) or (confirmForm.form.actions.inetdeny is defined) %}
+            <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                {{ form_label(confirmForm.form.inet_duration) }}
+                <div class="col-lg-10">
+                    {{ form_widget(confirmForm.form.inet_duration) }}
+                </div> 
+            </td></tr>
+        {% endif %}
+        <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}> 
+            <div class="batch-actions">
+                {{ form_widget(confirmForm.form.actions, {'style': null}) }}
+            </div>
+        </td></tr>
+    </tfoot>
+{% endblock %}
+
+{% block crud_table_body %}
+    <thead>
+        <tr>
+            <th>{{ _('Host') }}</th>
+            <th>{{ _('Room') }}</th>
+            <th>{{ _('User') }}</th>
+        </tr>
+    </thead>
+    {{ parent() }}
+{% endblock %}
+
+{% block crud_table_row %}
+    {% spaceless %}
+        <tr{% if ip == item.ip %} class="highlight"{% endif %}>
+            {% block crud_table_cells %}
+                {% set form = confirmForm.form.multi|slice(loop.index0, 1)[0] %}
+                <td>
+                    <input type="hidden" name="{{ form.vars.full_name }}" value="{{ form.vars.value }}" />
+                    <span class="host_status" data-host-id="{{ item.id }}" id="host_status_{{ item.id }}"></span>&nbsp;{{ item }}
+                </td>
+                <td>{{ item.room }}</td>
+                <td>
+                    {% if not admin.isInLan() and item.sambaUser is not null %}
+                        {{ _('Yes') }}
+                    {% else %}
+                        {{ admin.accountToUser(item.sambaUser) }}
+                    {% endif %}
+                </td>
+            {% endblock %}
+        </tr>
+    {% endspaceless %}
+{% endblock %}
+                
+{% block crud_disallowed_table %}
+{% if not disallowedItems is empty %}
+    <div class="panel panel-warning mt">
+        <div class="panel-heading">
+            {% if batchAction.getName() == 'enable' %}
+                {{ _('You can not enable file distributions for the following entries, because there it is already enabled:') }}
+            {% else %}
+                {{ _('File distribution is not enabled for the following entries or are not are allowed to stop the file distribution there:') }}
+            {% endif %}
+        </div>
+        <table class="table table-bordered">
+            {% block crud_disallowed_table_body %}
+                <thead>
+                    <tr>
+                        <th>{{ _('Host') }}</th>
+                        <th>{{ _('Room') }}</th>
+                        <th>{{ _('User') }}</th>
+                    </tr>
+                </thead>
+                {{ parent() }}
+            {% endblock %}
+            {% block crud_disallowed_table_foot %}
+                {% set colspan = 3 %}
+                {% if items is empty %}
+                    <tfoot>
+                        <tr><td{% if colspan is defined%} colspan="{{ colspan }}"{% endif %}>
+                            <div class="batch-actions">
+                                <a class="btn btn-default" href="{{ admin.generateUrl('index') }}">{{ icon('remove') }}{{ _('Cancel') }}</a>
+                            </div>
+                        </td></tr>
+                    </tfoot>
+                {% endif %}
+            {% endblock %}
+        </table>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block crud_disallowed_table_cells %}
+    <td><span class="host_status" data-host-id="{{ item.id }}" id="host_status_{{ item.id }}"></span>&nbsp;{{ item }}</td>
+    <td>{{ item.room }}</td>
+    <td>
+        {% if not admin.isInLan() and item.sambaUser is not null %}
+            {{ _('Yes') }}
+        {% else %}
+            {{ admin.accountToUser(item.sambaUser) }}
+        {% endif %}
+    </td>
+{% endblock %}
+
+{% block javascripts %}
+    {{  parent() }}
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution.js -->
+    {% endif %}
+    <script type="text/javascript" src="{{ asset('js/file-distribution.js', 'stsbl_file_distribution') }}"></script>
+
+    {% if app.environment != 'prod' %}
+        <!-- file-distribution-autocomplete.js -->
+    {% endif %}
+    <script type="text/javascript" src="{{ asset('js/file-distribution-autcomplete.js', 'stsbl_file_distribution') }}"></script>
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => file-distribution-highlight.js -->
+    {% endif %}
+    <script type="text/javascript" src="{{ asset('js/file-distribution-highlight.js', 'stsbl_file_distribution') }}"></script>
+
+    {% if app.environment != 'prod' %}
+        <!-- {{ _self }} => host.js -->
+    {% endif %}
+    <script type="text/javascript" src="{{ asset('js/host.js', 'host') }}"></script>
+
+    {%  if app.environment != 'prod' %}
+        <!-- {{ _self }} => update.js -->
+    {%  endif %}
+    <script type="text/javascript" src="{{  path('fd_filedistribution_update') }}"></script>
+{% endblock %}

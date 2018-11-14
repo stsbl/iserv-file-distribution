@@ -1,0 +1,18 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/List/field_sambauser.html.twig #}
+{% extends admin.getTemplate('list_field_base') %}
+
+{% block field %}
+    {% if not admin.isInLan() and value is not null %}
+        {{ _('Yes') }}
+    {% else %}
+        {{ admin.accountToUser(value) }}
+    {% endif %}
+{% endblock %}
+
+{% block value %}
+    {% if not admin.isInLan() and value is not null %}
+        {{ _('Yes') }}
+    {% else %}
+        {{ admin.accountToUser(value)|lower }}
+    {% endif %}
+{% endblock %}

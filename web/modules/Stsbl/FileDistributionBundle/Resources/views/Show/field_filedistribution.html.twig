@@ -1,0 +1,10 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/Show/field_filedistribution.html.twig #}
+{% extends admin.getTemplate('show_field_base') %}
+
+{% block field %}
+    {% if value is not null %}
+        {{ value }}
+    {% else %}
+        ({{ _('none') }})
+    {% endif %}
+{% endblock %}

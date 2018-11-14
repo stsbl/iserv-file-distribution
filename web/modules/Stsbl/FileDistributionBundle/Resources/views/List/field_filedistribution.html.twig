@@ -1,0 +1,37 @@
+{# src/Stsbl/FileDistributionBundle/Resources/views/List/field_filedistribution.html.twig #}
+{% extends admin.getTemplate('list_field_base') %}
+
+{% block field %}
+    {% set fd = admin.getFileDistribution(object) %}
+    
+    {% if fd is not null %}
+        <span title="{{ __('By: %s', fd.user) }}"><strong>{{ fd.plainTitle }}</strong></span>
+        {% if fd.user == app.user %}
+            {% set path = 'Files/File-Distribution/' ~ fd.plainTitle %}
+            <a href="{{ path('file_list', {'path': path|base64_encode}) }}" title="{{ _('Open folder of this file distribution')  }}">&nbsp;{{ icon('legacy-folder') }}</a>
+        {% endif %}
+
+        {% if fd.isolation == true %}
+            <span title="{{ _('Host isolation activated') }}">&nbsp;{{ icon('fugue-arrow-stop') }}</span>
+        {% endif %}
+
+        {%  if fd.folderAvailability == 'readonly' %}
+            <span title="{{ _('Group folders and other Windows shares are only available for read only.') }}">&nbsp;{{ icon('fugue-lock--pencil') }}</span>
+        {%  elseif fd.folderAvailability == 'replace' %}
+            <span title="{{ _('Group folders and other Windows shares are replaced with empty folders.') }}">&nbsp;{{ icon('fugue-disk--minus') }}</span>
+        {%  endif %}
+    {% endif %}
+{% endblock %}
+
+{% block value %}
+    {% set fd = admin.getFileDistribution(object) %}
+
+    {%  spaceless %}
+        {# prefix file distributions with aaaa_ and all other hosts with zzzz_ to move file distributions to top #}
+        {% if fd is not null %}
+            aaaa{{ fd.plainTitle }}
+        {% else %}
+            zzzz
+        {% endif %}
+    {%  endspaceless %}
+{% endblock %}
