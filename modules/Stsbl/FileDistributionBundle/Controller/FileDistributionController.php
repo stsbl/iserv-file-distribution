@@ -7,6 +7,7 @@ use IServ\CoreBundle\Form\Type\BooleanType;
 use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Controller\CrudController;
 use IServ\CrudBundle\Table\ListHandler;
+use IServ\HostBundle\Entity\Host;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -98,13 +99,13 @@ class FileDistributionController extends CrudController
      * @param Request $request
      * @return JsonResponse
      * @Route("filedistribution/lookup", name="fd_filedistribution_lookup", options={"expose": true})
-     * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
+     * @Security("is_granted('PRIV_FILE_DISTRIBUTION')")
      */
     public function lookupAction(Request $request)
     {
         $query = $request->get('query');
         
-        if (empty($query)) {
+        if (0 === strlen($query)) {
             throw new \RuntimeException('query should not be empty.');
         }
         
@@ -245,22 +246,26 @@ class FileDistributionController extends CrudController
     public function lookupHostNameAction(Request $request)
     {
         try {
-            $host = $this->getDoctrine()->getManager()->getRepository('StsblFileDistributionBundle:Host')->findOneByIp($request->getClientIp());
+            /** @var Host $host */
+            $host = $this->getDoctrine()->getManager()->getRepository(Host::class)->findOneByIp($request->getClientIp());
         } catch (NoResultException $e) {
             $host = null;
         }
 
         $name = null;
-        if ($host != null) {
+        $id = null;
+
+        if ($host !== null) {
             $name = $host->getName();
+            $id = $host->getId();
         }
 
-        return new JsonResponse($name);
+        return new JsonResponse(['name ' => $name, 'id' => $id]);
     }
     
     /**
      * Get form for room inclusion mode
-     * 
+     *
      * @return \Symfony\Component\Form\Form
      */
     private function getRoomInclusionForm()

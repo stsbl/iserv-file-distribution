@@ -130,7 +130,7 @@ class SoundLockAction extends AbstractHostAction implements GroupableBatchAction
     /**
      * {@inheritdoc}
      */
-    public function getTemplate()/*: ?string*/
+    public function getConfirmationTemplate()/*: ?string*/
     {
         return 'StsblFileDistributionBundle:Crud:file_distribution_batch_confirm.html.twig';
     }

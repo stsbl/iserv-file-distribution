@@ -1,5 +1,6 @@
 {# src/Stsbl/FileDistirbutionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig #}
 {% extends "IServCrudBundle:Crud:batch_confirm.html.twig" %}
+{% import '@StsblJavaScriptLibrary/jquery.initialize.html.twig' as jqi %}
 
 {# @var batchAction \IServ\CrudBundle\Crud\Batch\AbstractBatchAction #}
 
@@ -28,6 +29,8 @@
             {{ _('Only hosts which are member of the Windows Domain are supported.') }}
         </div>
     {% endif %}
+
+    {% set items = items|psort('name') %}
     {{ parent() }}
 {% endblock %}
 
@@ -183,6 +186,8 @@
 {% block javascripts %}
     {{  parent() }}
 
+    {{ jqi.integrate() }}
+
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => file-distribution.js -->
     {% endif %}
@@ -191,7 +196,7 @@
     {% if app.environment != 'prod' %}
         <!-- file-distribution-autocomplete.js -->
     {% endif %}
-    <script type="text/javascript" src="{{ asset('js/file-distribution-autcomplete.js', 'stsbl_file_distribution') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/file-distribution-autocomplete.js', 'stsbl_file_distribution') }}"></script>
 
     {% if app.environment != 'prod' %}
         <!-- {{ _self }} => file-distribution-highlight.js -->

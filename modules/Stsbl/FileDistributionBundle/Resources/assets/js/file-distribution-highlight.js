@@ -34,10 +34,12 @@ IServ.FileDistribution.Highlight = IServ.register(function (IServ) {
         $.getJSON(IServ.Routing.generate('fd_filedistribution_lookup_hostname'), function (currentHostname)
         {
             IServ.Loading.off('filedistribution.highlight');
-            if (currentHostname != null) {
-                $.initialize('#host_status_' + currentHostname, function () {
+            console.log(currentHostname);
+            if (currentHostname.id !== null) {
+                $.initialize('#host_status_' + currentHostname.id, function () {
                     $(this).parent().parent().addClass('highlight');
-                })
+                });
+                $('#host_status_' + currentHostname.id).parent().parent().addClass('highlight');
             }
         });
     }

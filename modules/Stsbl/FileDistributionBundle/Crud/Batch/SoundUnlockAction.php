@@ -132,7 +132,7 @@ class SoundUnlockAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getTemplate()/*: ?string*/
+    public function getConfirmationTemplate()/*: ?string*/
     {
         return 'StsblFileDistributionBundle:Crud:file_distribution_batch_confirm.html.twig';
     }

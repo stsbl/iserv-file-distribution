@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types = 1);
 // src/Stsbl/FileDistributionBundle/Service/FileDistributionManager.php
 namespace Stsbl\FileDistributionBundle\Service;
 
+use IServ\CoreBundle\Exception\ShellExecException;
 use IServ\CoreBundle\Security\Core\SecurityHandler;
 use IServ\CoreBundle\Service\Shell;
 use IServ\CrudBundle\Entity\FlashMessageBag;
@@ -66,11 +67,6 @@ class FileDistributionManager
      */
     private $shell;
 
-    /**
-     * @param HostManager $hostManager
-     * @param SecurityHandler $securityHandler
-     * @param Shell $shell
-     */
     public function __construct(HostManager $hostManager, SecurityHandler $securityHandler, Shell $shell)
     {
         $this->hostManager = $hostManager;
@@ -84,33 +80,38 @@ class FileDistributionManager
      * @param string $cmd
      * @param array $args
      * @param string $arg
-     * @param boolean $isolation
-     * @param boolean $folderAvailability
+     * @param bool|null $isolation
+     * @param string|null $folderAvailability
      * @return FlashMessageBag
      */
-    public function fileDistributionRpc($cmd, array $args = array(), $arg = null, $isolation = null, $folderAvailability = null)
-    {
+    public function fileDistributionRpc(
+        string $cmd,
+        array $args = [],
+        string $arg = null,
+        bool $isolation = null,
+        string $folderAvailability = null
+    ): FlashMessageBag {
         $env = ['SESSPW' => $this->securityHandler->getSessionPassword()];
         
         if ($arg != null) {
             $env['ARG'] = $arg;
         }
         
-        if ($isolation != null) {
-            if ($isolation === true) {
+        if ($isolation !== null) {
+            if (true === $isolation) {
                 $env['FD_ISOLATION'] = 1;
-            } else if ($isolation === false) {
+            } elseif (false === $isolation) {
                 $env['FD_ISOLATION'] = 0;
             } else {
                 throw new \InvalidArgumentException('Isolation must be a boolean value!');
             }
         }
         
-        if ($folderAvailability != null) {
+        if ($folderAvailability !== null) {
             $env['FD_FOLDER_AVAILABILITY'] = $folderAvailability;
         }
         
-        return $this->shellMsgFilter(
+        return $this->shellMsg(
             'sudo',
             array_merge([self::FD_RPC, $this->securityHandler->getUser()->getUsername(), $cmd], $args),
             null,
@@ -120,70 +121,64 @@ class FileDistributionManager
     
     /**
      * Enable file distribution on hosts.
-     * 
+     *
      * @param Host|\ArrayAccess $hosts
      * @param string $title
-     * @param boolean $isolation
+     * @param bool|null $isolation
      * @param string $folderAvailability
      * @return FlashMessageBag
      */
-    public function enableFileDistribution($hosts, $title, $isolation, $folderAvailability)
-    {
-        return $this->fileDistributionRpc(self::FD_ON, $this->hostManager->getIpsForHosts($hosts), $title, $isolation, $folderAvailability);
+    public function enableFileDistribution(
+        $hosts,
+        string $title,
+        bool $isolation,
+        string $folderAvailability
+    ): FlashMessageBag {
+        return $this->fileDistributionRpc(
+            self::FD_ON,
+            $this->hostManager->getIpsForHosts($hosts),
+            $title,
+            $isolation,
+            $folderAvailability
+        );
     }
     
     /**
      * Disable file distribution on hosts.
-     * 
+     *
      * @param Host|\ArrayAccess $hosts
      * @return FlashMessageBag
      */
-    public function disableFileDistribution($hosts)
+    public function disableFileDistribution($hosts): FlashMessageBag
     {
         return $this->fileDistributionRpc(self::FD_OFF, $this->hostManager->getIpsForHosts($hosts));
     }
     
     /**
      * Disable sound on hosts.
-     * 
+     *
      * @param Host|\ArrayAccess $hosts
      * @return FlashMessageBag
      */
-    public function soundLock($hosts)
+    public function soundLock($hosts): FlashMessageBag
     {
         return $this->fileDistributionRpc(self::FD_SOUNDOFF, $this->hostManager->getIpsForHosts($hosts));
     }
     
     /**
      * Enable sound on hosts.
-     * 
+     *
      * @param Host|\ArrayAccess $hosts
      * @return FlashMessageBag
      */
-    public function soundUnlock($hosts)
+    public function soundUnlock($hosts): FlashMessageBag
     {
         return $this->fileDistributionRpc(self::FD_SOUNDON, $this->hostManager->getIpsForHosts($hosts));
     }
     
     /**
-     * Send message to hosts.
-     *
-     * @deprecated 
-     * @param Host|\ArrayAccess $hosts
-     * @param string $msg
-     * @return FlashMessageBag
-     */
-    public function msg($hosts, $msg)
-    {
-        @trigger_error('msg() is deprecated and will removed in future versions. Use sendMessage() from HostManager instead.',
-            E_USER_DEPRECATED);
-
-        return $this->hostManager->sendMessage($hosts, $msg);
-    }
-    
-    /**
      * Enable exam mode on hosts.
-     * 
+     *
      * @param Host|\ArrayAccess $hosts
      * @param string $title
      * @return FlashMessageBag
@@ -197,7 +192,7 @@ class FileDistributionManager
 
     /**
      * Disable exam mode on hosts.
-     * 
+     *
      * @param Host|\ArrayAccess $hosts
      * @return FlashMessageBag
      *
@@ -215,43 +210,34 @@ class FileDistributionManager
      * stdout lines.
      *
      * @param string $cmd
-     * @param mixed $args
-     * @param mixed $stdin
+     * @param mixed[] $args
+     * @param mixed $stdIn
      * @param array $env
      * @return FlashMessageBag STDOUT and STDERR contents as FlashMessageBag
-     * @throws \IServ\CoreBundle\Exception\ShellExecException
      */
-    protected function shellMsgFilter($cmd, $args = null, $stdin = null, $env = null)
-    {
-        $this->shell->exec($cmd, $args, $stdin, $env);
-
-        $messages = new FlashMessageBag();
-        foreach ($this->shell->getOutput() as $o) {
-            if (!empty($o)) $messages->addMessage('warning', $o);
+    private function shellMsg(
+        string $cmd,
+        array $args = null,
+        $stdIn = null,
+        array $env = null
+    ): FlashMessageBag {
+        try {
+            $this->shell->exec($cmd, $args, $stdIn, $env);
+        } catch (ShellExecException $error) {
+            throw new \RuntimeException('Could not execute shell command!', 0, $error);
         }
 
-        foreach ($this->shell->getError() as $e) {
-            $messages->addMessage('error', $e);
+        $messages = new FlashMessageBag();
+        foreach ($this->shell->getOutput() as $output) {
+            if (strlen($output) !== 0) {
+                $messages->addMessage('warning', $output);
+            }
+        }
+
+        foreach ($this->shell->getError() as $error) {
+            $messages->addMessage('error', $error);
         }
 
         return $messages;
-    }
-
-    /**
-     * Delegate old calls to HostManager and throw deprecation notice
-     *
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
-    public function __call($name, array $arguments)
-    {
-        if (method_exists($this->hostManager, $name) && is_callable([$this->hostManager, $name])) {
-            @trigger_error(sprintf('To call the method "%s" on "%s" and expect delegation to "%s" is deprecated and will be removed!',
-                $name, get_class($this), get_class($this->hostManager)), E_USER_DEPRECATED);
-            return call_user_func_array([$this->hostManager, $name], $arguments);
-        } else {
-            throw new \LogicException(sprintf('Unknown method `%s`!', $name));
-        }
     }
 }

@@ -20,20 +20,19 @@ services:
         tags:
             - { name: iserv.crud }
             
-    stsbl.filedistribution.menu:
-        class: Stsbl\FileDistributionBundle\EventListener\MenuListener
+    Stsbl\FileDistributionBundle\EventListener\MenuListener:
         tags:
           - { name: kernel.event_listener, event: iserv_portal.menu_main, method: onBuildMainMenu }
           - { name: kernel.event_listener, event: iserv_portal.menu_admin, method: onBuildAdminMenu }
 
     Stsbl\FileDistributionBundle\Crud\HostExtension: ~
 
+    Stsbl\FileDistributionBundle\Security\PrivilegeDetector: ~
+
     Stsbl\FileDistributionBundle\Service\FileDistributionManager: ~
 
-    stsbl.filedistribution.twig.extension.base64:
-        class: Stsbl\FileDistributionBundle\Twig\Extension\Base64
-        tags :
-          - { name: twig.extension }
+    Stsbl\FileDistributionBundle\Twig\:
+        resource: '../../Twig/*'
 
 imports:
     - { resource: legacy_aliases.yml }
