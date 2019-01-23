@@ -3,20 +3,25 @@
 namespace Stsbl\FileDistributionBundle\Crud;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use IServ\ComputerBundle\Crud\ListFilterEventSubscriber;
+use IServ\ComputerBundle\Service\Internet;
+use IServ\CoreBundle\Service\BundleDetector;
 use IServ\CoreBundle\Service\Config;
 use IServ\CoreBundle\Util\Format;
 use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
+use IServ\CrudBundle\Entity\CrudInterface;
+use IServ\CrudBundle\Mapper\ListMapper;
 use IServ\CrudBundle\Table\Filter;
 use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
-use IServ\CrudBundle\Entity\CrudInterface;
-use IServ\CrudBundle\Mapper\ListMapper;
-use IServ\ComputerBundle\Crud\ListFilterEventSubscriber;
 use IServ\HostBundle\Model\HostType;
+use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
+use IServ\LockBundle\Service\LockManager;
+use Psr\Container\ContainerInterface;
 use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
@@ -24,11 +29,13 @@ use Stsbl\FileDistributionBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 /*
  * The MIT License
@@ -60,9 +67,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterface
+class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInterface
 {
-    use ContainerAwareTrait;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     /**
      * @var EntityManager
@@ -103,116 +113,89 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
      * @var bool
      */
     private static $roomMode;
-    
+
+    public function __construct()
+    {
+        parent::__construct(Host::class);
+    }
+
     /* GETTERS */
-    
-    /**
-     * Get entity manager
-     * 
-     * @return EntityManager|null
-     */
-    public function getEntityManager()
+
+    public function getEntityManager(): EntityManagerInterface
     {
         if (null === $this->em) {
             /** @noinspection MissingService */
-            $this->em = $this->container->get('doctrine.orm.entity_manager');
+            $this->em = $this->container->get(EntityManagerInterface::class);
         }
 
         return $this->em;
     }
-    
-    /**
-     * Get session
-     * 
-     * @return Session|null
-     */
-    public function getSession()
+
+    public function getSession(): SessionInterface
     {
         if (null === $this->session) {
-            $this->session = $this->container->get('session');
+            $this->session = $this->container->get(SessionInterface::class);
         }
 
         return $this->session;
     }
-    
-    /**
-     * Get config
-     * 
-     * @return Config|config
-     */
-    public function getConfig()
+
+    public function getConfig(): Config
     {
         if (null === $this->config) {
-            $this->config = $this->container->get('iserv.config');
+            $this->config = $this->container->get(Config::class);
         }
 
         return $this->config;
     }
-    
-    /**
-     * Get request
-     * 
-     * @return Request|null
-     */
-    public function getRequest()
+
+    public function getRequest(): ?Request
     {
         if (null === $this->request) {
-            $this->request = $this->container->get('request_stack')->getCurrentRequest();
+            $this->request = $this->container->get(RequestStack::class)->getCurrentRequest();
         }
 
         return $this->request;
     }
-    
-    /**
-     * Get manager
-     * 
-     * @return FileDistributionManager|null
-     */
-    public function getFileDistributionManager()
+
+    public function getFileDistributionManager(): FileDistributionManager
     {
         if (null === $this->manager) {
-            $this->manager = $this->container->get('stsbl.filedistribution.manager');
+            $this->manager = $this->container->get(FileDistributionManager::class);
         }
 
         return $this->manager;
     }
 
-    /**
-     * Get lock manager
-     *
-     * @return \IServ\LockBundle\Service\LockManager|null
-     */
-    public function getLockManager()
+    public function getLockManager(): ?LockManager
     {
-        if (null === $this->lockManager && $this->container->has('iserv.lock.manager')) {
-            $this->lockManager = $this->container->get('iserv.lock.manager');
+        if (null === $this->lockManager && $this->container->has(LockManager::class)) {
+            $this->lockManager = $this->container->get(LockManager::class);
         }
 
         return $this->lockManager;
     }
 
-    /**
-     * Get the internet ;)
-     *
-     * @return \IServ\ComputerBundle\Service\Internet|null
-     */
-    public function getInternet()
+    public function getInternet(): ?Internet
     {
-        if (null === $this->internet && $this->container->has('iserv.host.internet')) {
-            $this->internet = $this->container->get('iserv.host.internet');
+        if (null === $this->internet && $this->container->has(Internet::class)) {
+            $this->internet = $this->container->get(Internet::class);
         }
 
         return $this->internet;
     }
 
-    /**
-     * Get container
-     * 
-     * @return \Symfony\Component\DependencyInjection\ContainerInterface
-     */
-    public function getContainer()
+    public function getContainer(): ContainerInterface
     {
         return $this->container;
+    }
+
+    /**
+     * @required
+     */
+    public function setContainer(ContainerInterface $container): void
+    {
+        $this->container = $container;
     }
 
     /**
@@ -515,7 +498,7 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
          * In this case the isGranted calls will not work and throw
          * an exception.
          */
-        $hasToken = $this->getContainer()->get('security.token_storage')->getToken() !== null;
+        $hasToken = $this->getContainer()->get(TokenStorageInterface::class)->getToken() !== null;
         
         // Lock
         if ((!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::LOCK)) && $this->isLockAvailable()) {
@@ -533,7 +516,8 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
             $this->batchActions->add(new Batch\MessageAction($this));
         }
         // Sound
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT) && $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::USE_FD)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT) &&
+            $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
             $this->batchActions->add(new Batch\SoundUnlockAction($this));
             $this->batchActions->add(new Batch\SoundLockAction($this));
         }
@@ -854,11 +838,10 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
      * Checks if a bundle is installed
      *
      * @param string $name A bundle name like 'IServFooBundle'
-     * @return bool
      */
-    public function hasBundle($name)
+    public function hasBundle(string $name): bool
     {
-        return array_key_exists($name, $this->getContainer()->getParameter('kernel.bundles'));
+        return $this->getContainer()->get(BundleDetector::class)->isLoaded($name);
     }
     
     /**
@@ -1118,5 +1101,23 @@ class FileDistributionCrud extends AbstractCrud implements ContainerAwareInterfa
         }
 
         return $this->getEntityManager()->getRepository('IServCoreBundle:User')->find($act);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedServices(): array
+    {
+        return [
+            BundleDetector::class,
+            Config::class,
+            EntityManagerInterface::class,
+            FileDistributionManager::class,
+            '?' . Internet::class,
+            '?' . LockManager::class,
+            RequestStack::class,
+            SessionInterface::class,
+            TokenStorageInterface::class,
+        ];
     }
 }

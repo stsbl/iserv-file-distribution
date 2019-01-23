@@ -8,6 +8,7 @@ use IServ\CoreBundle\Service\Logger;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\AbstractBaseMapper;
 use IServ\CrudBundle\Mapper\FormMapper;
+use Stsbl\FileDistributionBundle\Entity\FileDistributionRoom;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -47,11 +48,16 @@ class IncludeRoomAdmin extends AbstractAdmin
      * @var Logger
      */
     private $logger;
-    
+
+    public function __construct()
+    {
+        parent::__construct(FileDistributionRoom::class);
+    }
+
     /**
      * {@inheritdoc}
      */
-    protected function configure() 
+    protected function configure()
     {
         parent::configure();
         
@@ -63,11 +69,9 @@ class IncludeRoomAdmin extends AbstractAdmin
     }
     
     /**
-     * Set logger
-     * 
-     * @param Logger $logger
+     * @required
      */
-    public function setLogger(Logger $logger)
+    public function setLogger(Logger $logger): void
     {
         $this->logger = $logger;
     }

@@ -4,13 +4,14 @@ namespace Stsbl\FileDistributionBundle\Controller;
 
 use Doctrine\ORM\NoResultException;
 use IServ\CoreBundle\Form\Type\BooleanType;
+use IServ\CoreBundle\Service\Logger;
 use IServ\CoreBundle\Util\Sudo;
-use IServ\CrudBundle\Controller\CrudController;
-use IServ\CrudBundle\Table\ListHandler;
+use IServ\CrudBundle\Controller\StrictCrudController;
+use IServ\HostBundle\Service\HostStatus;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
+use Stsbl\FileDistributionBundle\Entity\Host;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,14 +48,14 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionController extends CrudController
+class FileDistributionController extends StrictCrudController
 {
     const ROOM_CONFIG_FILE = '/var/lib/stsbl/file-distribution/cfg/room-mode.json';
     
     /**
      * {@inheritdoc}
      */
-    public function indexAction(Request $request) 
+    public function indexAction(Request $request)
     {
         $ret = parent::indexAction($request);
         
@@ -94,7 +95,7 @@ class FileDistributionController extends CrudController
     
     /**
      * Looks up for existing file distributions owned by user
-     * 
+     *
      * @param Request $request
      * @return JsonResponse
      * @Route("filedistribution/lookup", name="fd_filedistribution_lookup", options={"expose": true})
@@ -108,7 +109,7 @@ class FileDistributionController extends CrudController
             throw new \RuntimeException('query should not be empty.');
         }
         
-        $this->get('iserv.sudo');
+        $this->get(\IServ\CoreBundle\Service\Sudo::class);
         
         $suggestions = [];
         $home = $this->getUser()->getHome();
@@ -181,7 +182,7 @@ class FileDistributionController extends CrudController
             throw new \RuntimeException('query should not be empty.');
         }
 
-        $this->get('iserv.sudo');
+        $this->get(\IServ\CoreBundle\Service\Sudo::class);
 
         $suggestions = [];
         $home = $this->getUser()->getHome();
@@ -211,7 +212,7 @@ class FileDistributionController extends CrudController
         $qb
             ->select('e')
             ->from('StsblFileDistributionBundle:Exam', 'e')
-            ->where($qb->expr()->eq('e.user',':user'))
+            ->where($qb->expr()->eq('e.user', ':user'))
             ->andWhere($qb->expr()->like('e.title', ':query'))
             ->setParameter(':user', $this->getUser())
             ->setParameter(':query', '%'.$query.'%')
@@ -244,11 +245,8 @@ class FileDistributionController extends CrudController
      */
     public function lookupHostNameAction(Request $request)
     {
-        try {
-            $host = $this->getDoctrine()->getManager()->getRepository('StsblFileDistributionBundle:Host')->findOneByIp($request->getClientIp());
-        } catch (NoResultException $e) {
-            $host = null;
-        }
+        /** @var Host $host */
+        $host = $this->getDoctrine()->getManager()->getRepository('StsblFileDistributionBundle:Host')->findOneByIp($request->getClientIp());
 
         $name = null;
         if ($host != null) {
@@ -260,7 +258,7 @@ class FileDistributionController extends CrudController
     
     /**
      * Get form for room inclusion mode
-     * 
+     *
      * @return \Symfony\Component\Form\Form
      */
     private function getRoomInclusionForm()
@@ -298,7 +296,7 @@ class FileDistributionController extends CrudController
     
     /**
      * index action for room admin
-     * 
+     *
      * @param Request $request
      * @return array
      */
@@ -318,13 +316,13 @@ class FileDistributionController extends CrudController
                 } else {
                     $text = 'Raumverfügbarkeit geändert auf "Folgende"';
                 }
-                $this->get('iserv.logger')->writeForModule($text, 'File distribution');
+                $this->get(Logger::class)->writeForModule($text, 'File distribution');
             }
             
             $content = json_encode(['invert' => $mode]);
             
             file_put_contents(self::ROOM_CONFIG_FILE, $content);
-            $this->get('iserv.flash')->success(_('Room settings updated successful.'));
+            $this->addFlash('success', _('Room settings updated successful.'));
         }
         
         $ret['room_inclusion_form'] = $form->createView();
@@ -333,20 +331,32 @@ class FileDistributionController extends CrudController
     }
 
     /**
-     * @param Request $request
      * @return Response
      * @Route("filedistribution/update.js", name="fd_filedistribution_update")
      * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
      */
-    public function updateAction(Request $request)
+    public function updateAction()
     {
         $params = [
-          'status' => $this->get('iserv.host.status')->get()
+            'status' => $this->get(HostStatus::class)->getAll(),
         ];
 
         $render = $this->renderView('StsblFileDistributionBundle:FileDistribution:update.js.twig', $params);
         $response = new Response($render);
         $response->headers->set('Content-Type', 'text/javascript');
         return $response;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedServices()
+    {
+        $deps = parent::getSubscribedServices();
+        $deps[] = \IServ\CoreBundle\Service\Sudo::class;
+        $deps[] = HostStatus::class;
+        $deps[] = Logger::class;
+
+        return $deps;
     }
 }
