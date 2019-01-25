@@ -32,15 +32,13 @@ use Stsbl\FileDistributionBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Service\ServiceSubscriberInterface;
 
 /*
  * The MIT License
@@ -118,122 +116,87 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
      * @var bool
      */
     private static $roomMode;
-    
+
+    public function __construct()
+    {
+        parent::__construct(Host::class);
+    }
+
     /* GETTERS */
-    
-    /**
-     * Get entity manager
-     *
-     * @return EntityManager|null
-     */
-    public function getEntityManager()
+
+    public function getEntityManager(): EntityManagerInterface
     {
         if (null === $this->em) {
             /** @noinspection MissingService */
-            $this->em = $this->container->get('doctrine.orm.entity_manager');
+            $this->em = $this->container->get(EntityManagerInterface::class);
         }
 
         return $this->em;
     }
-    
-    /**
-     * Get session
-     *
-     * @return Session|null
-     */
-    public function getSession()
+
+    public function getSession(): SessionInterface
     {
         if (null === $this->session) {
-            $this->session = $this->container->get('session');
+            $this->session = $this->container->get(SessionInterface::class);
         }
 
         return $this->session;
     }
-    
-    /**
-     * Get config
-     *
-     * @return Config|config
-     */
-    public function getConfig()
+
+    public function getConfig(): Config
     {
         if (null === $this->config) {
-            $this->config = $this->container->get('iserv.config');
+            $this->config = $this->container->get(Config::class);
         }
 
         return $this->config;
     }
-    
-    /**
-     * Get request
-     *
-     * @return Request|null
-     */
-    public function getRequest()
+
+    public function getRequest(): ?Request
     {
         if (null === $this->request) {
-            $this->request = $this->container->get('request_stack')->getCurrentRequest();
+            $this->request = $this->container->get(RequestStack::class)->getCurrentRequest();
         }
 
         return $this->request;
     }
-    
-    /**
-     * Get manager
-     *
-     * @return FileDistributionManager|null
-     */
-    public function getFileDistributionManager()
+
+    public function getFileDistributionManager(): FileDistributionManager
     {
         if (null === $this->manager) {
-            $this->manager = $this->container->get('stsbl.filedistribution.manager');
+            $this->manager = $this->container->get(FileDistributionManager::class);
         }
 
         return $this->manager;
     }
 
-    /**
-     * Get lock manager
-     *
-     * @return \IServ\LockBundle\Service\LockManager|null
-     */
-    public function getLockManager()
+    public function getLockManager(): ?LockManager
     {
-        if (null === $this->lockManager && $this->container->has('iserv.lock.manager')) {
-            $this->lockManager = $this->container->get('iserv.lock.manager');
+        if (null === $this->lockManager && $this->container->has(LockManager::class)) {
+            $this->lockManager = $this->container->get(LockManager::class);
         }
 
         return $this->lockManager;
     }
 
-    /**
-     * Get the internet ;)
-     *
-     * @return \IServ\ComputerBundle\Service\Internet|null
-     */
-    public function getInternet()
+    public function getInternet(): ?Internet
     {
-        if (null === $this->internet && $this->container->has('iserv.host.internet')) {
-            $this->internet = $this->container->get('iserv.host.internet');
+        if (null === $this->internet && $this->container->has(Internet::class)) {
+            $this->internet = $this->container->get(Internet::class);
         }
 
         return $this->internet;
     }
 
-    /**
-     * Get container
-     *
-     * @return ContainerInterface
-     */
     public function getContainer(): ContainerInterface
     {
         return $this->container;
     }
 
     /**
-     * @param ContainerInterface $container
+     * @required
      */
-    public function setContainer(ContainerInterface $container)/*: void*/
+    public function setContainer(ContainerInterface $container): void
     {
         $this->container = $container;
     }
@@ -538,7 +501,7 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
          * In this case the isGranted calls will not work and throw
          * an exception.
          */
-        $hasToken = $this->getContainer()->get('security.token_storage')->getToken() !== null;
+        $hasToken = $this->getContainer()->get(TokenStorageInterface::class)->getToken() !== null;
         
         // Lock
         if ((!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::LOCK)) && $this->isLockAvailable()) {
@@ -556,7 +519,8 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
             $this->batchActions->add(new Batch\MessageAction($this));
         }
         // Sound
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT) && $this->getContainer()->get('security.authorization_checker')->isGranted(Privilege::USE_FD)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT) &&
+            $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
             $this->batchActions->add(new Batch\SoundUnlockAction($this));
             $this->batchActions->add(new Batch\SoundLockAction($this));
         }
@@ -888,9 +852,8 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
      * Checks if a bundle is installed
      *
      * @param string $name A bundle name like 'IServFooBundle'
-     * @return bool
      */
-    public function hasBundle($name)
+    public function hasBundle(string $name): bool
     {
         return $this->container->get(BundleDetector::class)->isLoaded($name);
     }
@@ -1159,20 +1122,19 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         return [
-            'doctrine.orm.entity_manager' => EntityManagerInterface::class,
-            'iserv.config' => Config::class,
-            'iserv.host.internet' => '?' . Internet::class,
-            'iserv.lock.manager' => '?' . LockManager::class,
-            'request_stack' => RequestStack::class,
-            'security.authorization_checker' => AuthorizationCheckerInterface::class,
-            'security.token_storage' => TokenStorageInterface::class,
-            'session' => SessionInterface::class,
-            'stsbl.filedistribution.manager' => FileDistributionManager::class,
-            BundleDetector::class => BundleDetector::class,
+            BundleDetector::class,
+            Config::class,
+            EntityManagerInterface::class,
+            FileDistributionManager::class,
             HostExtension::class => HostExtension::class,
+            '?' . Internet::class,
+            '?' . LockManager::class,
+            RequestStack::class,
+            SessionInterface::class,
+            TokenStorageInterface::class,
         ];
     }
 }

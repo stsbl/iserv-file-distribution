@@ -2,9 +2,10 @@
 // src/Stsbl/FileDistributionBundle/Entity/Specification/FileDistributionSpecification.php
 namespace Stsbl\FileDistributionBundle\Entity\Specification;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use IServ\CrudBundle\Doctrine\Specification\AbstractSpecification;
+use Stsbl\FileDistributionBundle\Entity\Host;
 
 /*
  * The MIT License
@@ -44,17 +45,11 @@ class FileDistributionSpecification extends AbstractSpecification
     private $invert;
     
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
-    
-    /**
-     * The constructor
-     * 
-     * @param bool $invert
-     * @param EntityManager $em
-     */
-    public function __construct($invert, EntityManager $em) 
+
+    public function __construct(bool $invert, EntityManagerInterface $em)
     {
         $this->invert = $invert;
         $this->em = $em;
@@ -63,8 +58,9 @@ class FileDistributionSpecification extends AbstractSpecification
     /**
      * {@inheritdoc}
      */
-    public function match(QueryBuilder $qb, $dqlAlias) {
-        $subQb = $this->em->createQueryBuilder();           
+    public function match(QueryBuilder $qb, $dqlAlias)
+    {
+        $subQb = $this->em->createQueryBuilder();
         $subQb
             ->select('fr')
             ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
@@ -81,9 +77,9 @@ class FileDistributionSpecification extends AbstractSpecification
     /**
      * {@inheritdoc}
      */
-    public function supports($className) 
+    public function supports($className)
     {
-        return 'Stsbl\FileDistributionBundle\Entity\Host' === $className;
+        return Host::class === $className;
     }
 
 }

@@ -1,38 +1,9 @@
-# src/Stsbl/FileDistributionBundle/Resources/config/services.yml
 services:
     _defaults:
-        autowire: true
         autoconfigure: true
+        autowire: true
+        public: false
 
-    stsbl.filedistribution.crud.file_distribution:
-        class: Stsbl\FileDistributionBundle\Crud\FileDistributionCrud
-        arguments: [Stsbl\FileDistributionBundle\Entity\Host]
-        calls:
-            - [ setContainer, ["@service_container"]]
-        tags:
-            - { name: iserv.crud }
-            
-    stsbl.filedistribution.admin.rooms:
-        class: Stsbl\FileDistributionBundle\Admin\IncludeRoomAdmin
-        arguments: [Stsbl\FileDistributionBundle\Entity\FileDistributionRoom]
-        calls:
-            - [ setLogger, ["@iserv.logger"]]
-        tags:
-            - { name: iserv.crud }
-            
-    Stsbl\FileDistributionBundle\EventListener\MenuListener:
-        tags:
-          - { name: kernel.event_listener, event: iserv_portal.menu_main, method: onBuildMainMenu }
-          - { name: kernel.event_listener, event: iserv_portal.menu_admin, method: onBuildAdminMenu }
-
-    Stsbl\FileDistributionBundle\Crud\HostExtension: ~
-
-    Stsbl\FileDistributionBundle\Security\PrivilegeDetector: ~
-
-    Stsbl\FileDistributionBundle\Service\FileDistributionManager: ~
-
-    Stsbl\FileDistributionBundle\Twig\:
-        resource: '../../Twig/*'
-
-imports:
-    - { resource: legacy_aliases.yml }
+    Stsbl\FileDistributionBundle\:
+        resource: '../../*'
+        exclude: '../../{Entity,Resources,Tests}'

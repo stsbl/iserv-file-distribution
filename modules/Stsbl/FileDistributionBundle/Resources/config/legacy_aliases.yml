@@ -1,3 +1,0 @@
-# src/Stsbl/FileDistributionBundle/Resources/config/legacy_aliases.yml
-services:
-    stsbl.filedistribution.manager: '@Stsbl\FileDistributionBundle\Service\FileDistributionManager'

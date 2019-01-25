@@ -1,3 +1,15 @@
+stsbl-iserv-file-distribution (19.01.25-1) experimental; urgency=medium
+
+  * Hotfixed to work with future IServ changes
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Fri, 25 Jan 2019 02:52:33 +0100
+
+stsbl-iserv-file-distribution (18.11.25-1) experimental; urgency=medium
+
+  * Adapted module structure to web application move
+
+ -- Felix Jacobi <felix.jacobi@stsbl.de>  Sun, 25 Nov 2018 22:58:15 +0100
+
 stsbl-iserv-file-distribution (18.09.30-1) experimental; urgency=medium
 
   * First preparations to make bundle compatible to Symfony 4
