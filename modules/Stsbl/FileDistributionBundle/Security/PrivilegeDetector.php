@@ -1,16 +1,16 @@
 <?php declare(strict_types = 1);
-// src/Stsbl/FileDistributionBundle/Security/PrivilegeDetector.php
+
 namespace Stsbl\FileDistributionBundle\Security;
 
 use IServ\HostBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
-use Symfony\Bridge\Doctrine\RegistryInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Stsbl\FileDistributionBundle\Repository\FileDistributionRepository;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /*
  * The MIT License
  *
- * Copyright 2018 Felix Jacobi.
+ * Copyright 2019 Felix Jacobi.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,40 +38,25 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class PrivilegeDetector
 {
     /**
-     * @var RegistryInterface
+     * @var \Stsbl\FileDistributionBundle\Repository\FileDistributionRepository
      */
-    private $doctrine;
-
-    public function __construct(RegistryInterface $doctrine)
-    {
-        $this->doctrine = $doctrine;
-    }
+    private $fileDistributionRepo;
 
     /**
-     * @param Host $host
-     * @return FileDistribution|null
+     * @var TokenStorageInterface
      */
-    private function getFileDistributionForHost(Host $host)/*: ?FileDistribution*/
+    private $tokenStorage;
+
+    public function __construct(FileDistributionRepository $fileDistributionRepo, TokenStorageInterface $tokenStorage)
     {
-        $repository = $this->doctrine->getRepository(FileDistribution::class);
-
-        try {
-            $fileDistribution = $repository->findOneBy(['ip' => $host->getIp()]);
-
-            return $fileDistribution;
-        } catch (\Exception $e) {
-            return null;
-        }
+        $this->fileDistributionRepo = $fileDistributionRepo;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
      * Checks if user is allowed to stop a file distribution
-     *
-     * @param Host $host
-     * @param UserInterface $user
-     * @return bool
      */
-    public function isAllowedToStop(Host $host, UserInterface $user = null): bool
+    public function isAllowedToStop(Host $host): bool
     {
         $fileDistribution = $this->getFileDistributionForHost($host);
 
@@ -79,7 +64,7 @@ class PrivilegeDetector
             return false;
         }
 
-        if ($user !== $fileDistribution->getUser()) {
+        if ($this->tokenStorage->getToken()->getUser() !== $fileDistribution->getUser()) {
             return false;
         }
 
@@ -88,18 +73,28 @@ class PrivilegeDetector
 
     /**
      * Checks if user is allowed to enable a file distribution
-     *
-     * @param Host $host
-     * @return bool
      */
     public function isAllowedToEnable(Host $host): bool
     {
         $fileDistribution = $this->getFileDistributionForHost($host);
 
-        if ($fileDistribution === null) {
+        if (null === $fileDistribution) {
             return true;
-        } else {
-            return false;
+        }
+
+        return false;
+    }
+
+    public function getFileDistributionForHost(Host $object): ?FileDistribution
+    {
+        try {
+            /** @var FileDistribution $fileDistribution */
+            $fileDistribution = $this->fileDistributionRepo->findOneBy(['ip' => $object->getIp()]);
+
+            return $fileDistribution;
+        } catch (\Throwable $e) {
+            return null;
         }
     }
+
 }

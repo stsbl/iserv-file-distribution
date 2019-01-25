@@ -34,9 +34,6 @@ use Stsbl\FileDistributionBundle\Crud\HostExtension;
  */
 interface HostExtensionAwareInterface
 {
-    /**
-     * @param HostExtension $hostExtension
-     */
-    public function setHostExtension(HostExtension $hostExtension)/*: void*/;
+    public function setHostExtension(HostExtension $hostExtension): void;
 }
 

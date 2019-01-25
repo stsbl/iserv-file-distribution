@@ -39,9 +39,6 @@ trait HostExtensionAwareTrait
      */
     private $hostExtension;
 
-    /**
-     * @return HostExtension
-     */
     public function getHostExtension(): HostExtension
     {
         return $this->hostExtension;
@@ -49,10 +46,8 @@ trait HostExtensionAwareTrait
 
     /**
      * @required
-     *
-     * @param HostExtension $hostExtension
      */
-    public function setHostExtension(HostExtension $hostExtension)/*: void*/
+    public function setHostExtension(HostExtension $hostExtension): void
     {
         $this->hostExtension = $hostExtension;
     }

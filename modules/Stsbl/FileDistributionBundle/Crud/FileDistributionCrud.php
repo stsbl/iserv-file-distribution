@@ -27,7 +27,7 @@ use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareInterface;
 use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
-use Stsbl\FileDistributionBundle\Entity\FileDistributionRepository;
+use Stsbl\FileDistributionBundle\Repository\FileDistributionRepository;
 use Stsbl\FileDistributionBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\Security\Privilege;
@@ -695,7 +695,7 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
         }
 
         /** @noinspection PhpUndefinedMethodInspection */
-        /** @var FileDistributionRepository $er */
+        /** @var \Stsbl\FileDistributionBundle\Repository\FileDistributionRepository $er */
         $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
         
         $fileDistributionFilterHash = [];

@@ -157,10 +157,7 @@ class HostExtension extends AbstractHostExtension implements ManagerAwareInterfa
         return $this->privilegeDetector;
     }
 
-    /**
-     * @return Request|null
-     */
-    public function getRequest()/*: ?Request*/
+    public function getRequest(): ?Request
     {
         if (null === $this->request) {
             $this->request = $this->requestStack->getCurrentRequest();
@@ -169,10 +166,6 @@ class HostExtension extends AbstractHostExtension implements ManagerAwareInterfa
         return $this->request;
     }
 
-
-    /**
-     * @return SessionInterface
-     */
     public function getSession(): SessionInterface
     {
         return $this->session;
@@ -180,11 +173,8 @@ class HostExtension extends AbstractHostExtension implements ManagerAwareInterfa
 
     /**
      * Convert account to User entity
-     *
-     * @param string $account
-     * @return User
      */
-    public function accountToUser(string $account = null)/*: ?User*/
+    public function accountToUser(string $account = null): ?User
     {
         if ($account === null) {
             return null;
@@ -195,10 +185,8 @@ class HostExtension extends AbstractHostExtension implements ManagerAwareInterfa
 
     /**
      * Checks if current request comes from LAN
-     *
-     * @return bool
      */
-    public function isInLan()
+    public function isInLan(): bool
     {
         return Network::ipInLan(null, $this->getConfig()->get('LAN'), $this->getRequest());
     }

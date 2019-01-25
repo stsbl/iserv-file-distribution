@@ -2,12 +2,19 @@
 // src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
 namespace Stsbl\FileDistributionBundle\Controller;
 
+use IServ\CoreBundle\Form\Type\BooleanType;
+use IServ\CoreBundle\Service\Logger;
 use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Controller\StrictCrudController;
+use IServ\HostBundle\Service\HostStatus;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /*
  * The MIT License
@@ -236,17 +243,8 @@ class FileDistributionController extends StrictCrudController
      */
     public function lookupHostNameAction(Request $request)
     {
-<<<<<<< HEAD
-        try {
-            /** @var Host $host */
-            $host = $this->getDoctrine()->getManager()->getRepository(Host::class)->findOneByIp($request->getClientIp());
-        } catch (NoResultException $e) {
-            $host = null;
-        }
-=======
         /** @var Host $host */
         $host = $this->getDoctrine()->getManager()->getRepository('StsblFileDistributionBundle:Host')->findOneByIp($request->getClientIp());
->>>>>>> master
 
         $name = null;
         $id = null;

@@ -1,9 +1,12 @@
-<?php
-// src/Stsbl/FileDistributionBundle/Entity/FileDistributionRepository.php
-namespace Stsbl\FileDistributionBundle\Entity;
+<?php declare(strict_types = 1);
 
+namespace Stsbl\FileDistributionBundle\Repository;
+
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
+use IServ\CrudBundle\Doctrine\ORM\ServiceEntitySpecificationRepository;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 
 /*
  * The MIT License
@@ -30,19 +33,20 @@ use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
  */
 
 /**
- * Repository class for FileDistribution
- *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionRepository extends EntitySpecificationRepository
+class FileDistributionRepository extends ServiceEntitySpecificationRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, FileDistribution::class);
+    }
+
     /**
      * Checks if there's at least on file distribution.
-     * 
-     * @return boolean
      */
-    public function exists()
+    public function exists(): bool
     {
         $qb = $this->createQueryBuilder('c')
             ->select('1')
@@ -54,6 +58,8 @@ class FileDistributionRepository extends EntitySpecificationRepository
             return true;
         } catch (NoResultException $e) {
             return false;
+        } catch (NonUniqueResultException $e) {
+            return true;
         }
     }
 }
