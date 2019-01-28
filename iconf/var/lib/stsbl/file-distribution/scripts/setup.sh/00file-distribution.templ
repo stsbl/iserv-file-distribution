@@ -27,12 +27,12 @@ addMount()
   ## add new lines
   String="/Volume\\ definitions/a"
   String+="<\\!-- File Distribution BEGIN -->\\n"
-  String+="<volume uid=\\"10000-100000\\" fstype=\\"cifs\\" server=\\"$(hostname -d)\\" "
+  String+="<volume uid=\\"100000-199999\\" fstype=\\"cifs\\" server=\\"$(netquery -p ip | head -1)\\" "
   String+="path=\"file_assignment\" mountpoint=\"/home/\%(USER)/File Distribution-Assignment\" options=\""
-  String+="iocharset=utf8,dir_mode=0500\" \/>\n"
-  String+="<volume uid=\\"10000-100000\\" fstype=\\"cifs\\" server=\\"$(hostname -d)\\" "
+  String+="iocharset=utf8,dir_mode=0500,vers=1.0\" \/>\n"
+  String+="<volume uid=\\"100000-199999\\" fstype=\\"cifs\\" server=\\"$(netquery -p ip | head -1)\\" "
   String+="path=\"file_return\" mountpoint=\\"/home/\%(USER)/File Distribution-Return\\" options=\\""
-  String+="iocharset=utf8,dir_mode=0700\\" \\/>\\n"
+  String+="iocharset=utf8,dir_mode=0700,vers=1.0\\" \\/>\\n"
   String+="<\\!-- File Distribution END -->\\n"
 
   ## assume that the pam_mount.conf.xml is linked by iserv-client
@@ -55,6 +55,6 @@ then
   # delete old lines
   cleanMount
 else
-  echo "\$0 called with unknown mode!"
+  echo "\$0 called with unknown mode!" >&2
   exit 1
 fi
