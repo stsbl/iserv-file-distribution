@@ -1,3 +1,9 @@
+stsbl-iserv-file-distribution (19.01.28-1) experimental; urgency=medium
+
+  * Fixed support for Ubtuntu > 17.10
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Mon, 28 Jan 2019 02:51:52 +0100
+
 stsbl-iserv-file-distribution (19.01.25-1) experimental; urgency=medium
 
   * Hotfixed to work with future IServ changes
