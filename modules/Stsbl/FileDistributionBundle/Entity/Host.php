@@ -35,7 +35,7 @@ use IServ\HostBundle\Entity\Host as BaseHost;
  * 
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
- * @ORM\Entity(repositoryClass="Stsbl\FileDistributionBundle\Entity\HostRepository")
+ * @ORM\Entity(repositoryClass="Stsbl\FileDistributionBundle\Repository\HostRepository")
  * @ORM\Table(name="hosts")
  */
 class Host extends BaseHost implements CrudInterface

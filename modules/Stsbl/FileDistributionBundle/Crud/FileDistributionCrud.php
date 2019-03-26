@@ -822,7 +822,9 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
 
         /* @var $om \IServ\CrudBundle\Doctrine\ORM\ORMObjectManager */
         $om = $this->getObjectManager();
-        $listHandler->getFilterHandler()->addEventSubscriber(new ListFilterEventSubscriber($this->getRequest(), $om->getRepository('StsblFileDistributionBundle:Host')));
+        $listHandler->getFilterHandler()->addEventSubscriber(
+            new ListFilterEventSubscriber($this->getRequest(), $om->getRepository(\IServ\HostBundle\Entity\Host::class))
+        );
     }
     
     /**
