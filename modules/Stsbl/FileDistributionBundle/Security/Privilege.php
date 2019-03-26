@@ -41,4 +41,6 @@ final class Privilege
     const INET_ROOMS = 'PRIV_INET_ROOMS';
     
     const EXAM = 'PRIV_EXAM';
+
+    const LOCK = 'PRIV_LOCK';
 }

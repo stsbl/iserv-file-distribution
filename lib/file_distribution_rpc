@@ -8,6 +8,7 @@ use IServ::Conf;
 use IServ::DB;
 use IServ::Locale;
 use IServ::RPC;
+use IServ::Valid;
 use Parallel::ForkManager;
 use Stsbl::IServ::FileDistribution;
 use Stsbl::IServ::IO;
@@ -68,7 +69,9 @@ my $folder_availability;
 if (defined $ENV{FD_FOLDER_AVAILABILITY})
 {
   $folder_availability = $ENV{FD_FOLDER_AVAILABILITY} if $ENV{FD_FOLDER_AVAILABILITY} =~ /^(keep|readonly|replace)$/;
-} else {
+} 
+else
+{
   $folder_availability = 'keep';
 }
 
@@ -98,7 +101,8 @@ sub run_parallel(&@)
 {
   my ($func, @ips) = @_;
   IPS:
-  for (@ips) {
+  for (@ips)
+  {
     $pm->start and next IPS;
     &$func();
     $pm->finish;
@@ -125,6 +129,7 @@ IPC::Run::run ["nmap", "-n", "-sP", "-oG", "-", "--", @ips],
 
 if ($cmd eq "fdon")
 {
+  IServ::Valid::User $act;
   req_priv_or_root "file_distribution";
   req_priv_or_root "computer_boot";
   rpc_linux_req_nologin(keys %ips_online_lin);
@@ -144,7 +149,8 @@ if ($cmd eq "fdon")
   unlink $symlink if -l $symlink;
   symlink "../File-Distribution", $symlink or warn "Cannot create symlink $symlink: $!\n";
   
-  foreach (@ips) { 
+  for (@ips)
+  {
     my $exists = IServ::DB::Do "SELECT 1 FROM file_distribution WHERE ip = ?", $_;
     IServ::DB::Do "INSERT INTO file_distribution (Title, Act, IP, Isolation, FolderAvailability) VALUES (?, ?, ?, ?, ?)", $arg, $act, $_, $isolation, $folder_availability if not $exists;
     warn "Cannot enable file distribution for $_ twice!" if $exists;
@@ -171,6 +177,7 @@ elsif ($cmd eq "fdoff")
 }
 elsif ($cmd eq "soundoff")
 {
+  IServ::Valid::User $act;
   req_priv_or_root "computer_boot";
   req_priv_or_root "file_distribution";
   IServ::DB::Do "DELETE FROM computer_sound_lock WHERE IP = ?", $_ for @ips;
@@ -184,6 +191,7 @@ elsif ($cmd eq "soundon")
   IServ::DB::Do "DELETE FROM computer_sound_lock WHERE IP = ?", $_ for @ips;
   run_parallel { msg IServ::RPC::winexe $_, "cmd", "/c", "net", "start", "audiosrv", ">NUL", "2>&1"; } @ips_online_win;
 }
-else {
+else
+{
   die "Unknown command $cmd!";
 }

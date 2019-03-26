@@ -4,8 +4,11 @@ namespace Stsbl\FileDistributionBundle\Crud;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use IServ\ComputerBundle\Crud\ListFilterEventSubscriber;
+use IServ\ComputerBundle\Security\Privilege as ComputerPrivilege;
 use IServ\ComputerBundle\Service\Internet;
+use IServ\CoreBundle\Entity\User;
 use IServ\CoreBundle\Service\BundleDetector;
 use IServ\CoreBundle\Service\Config;
 use IServ\CoreBundle\Util\Format;
@@ -26,6 +29,7 @@ use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareInterface;
 use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
+use Stsbl\FileDistributionBundle\Entity\Exam;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Repository\FileDistributionRepository;
 use Stsbl\FileDistributionBundle\Entity\Host;
@@ -349,11 +353,15 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
     }
     
     /**
+<<<<<<< HEAD
      * Checks if current request comes from LAN
      *
      * @return bool
+=======
+     * Checks if current request comes from LAN.
+>>>>>>> master
      */
-    public function isInLan()
+    public function isInLan(): bool
     {
         return Network::ipInLan(null, $this->getConfig()->get('LAN'), $this->getRequest());
     }
@@ -450,13 +458,13 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
         // calculate sort order
         if ($activeFileDistributions && $activeExams && $activeSoundLocks) {
             $sortOrder = [7, 1];
-        } else if (($activeFileDistributions || $activeExams) && $activeSoundLocks) {
+        } elseif (($activeFileDistributions || $activeExams) && $activeSoundLocks) {
             // case: list with (file distributions or exams) and sound locks
             $sortOrder = [6, 1];
-        } else if ($activeExams && $activeFileDistributions) {
+        } elseif ($activeExams && $activeFileDistributions) {
             // case: list with file distributions and exams
             $sortOrder = [6, 1];
-        } else if ($activeFileDistributions || $activeSoundLocks || $activeExams) {
+        } elseif ($activeFileDistributions || $activeSoundLocks || $activeExams) {
             // case: only exams or file distributions or sound locks
             $sortOrder = [5, 1];
         } else {
@@ -504,7 +512,7 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
         $hasToken = $this->getContainer()->get(TokenStorageInterface::class)->getToken() !== null;
         
         // Lock
-        if ((!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::LOCK)) && $this->isLockAvailable()) {
+        if ((!$hasToken || $this->getAuthorizationChecker()->isGranted(Privilege::LOCK)) && $this->isLockAvailable()) {
             $this->batchActions->add(new Batch\LockAction($this));
             $this->batchActions->add(new Batch\UnlockAction($this));
         }
@@ -515,17 +523,17 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
             $this->batchActions->add(new Batch\ResetInternetAction($this));
         }
         // Communication
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(ComputerPrivilege::BOOT)) {
             $this->batchActions->add(new Batch\MessageAction($this));
         }
         // Sound
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT) &&
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(ComputerPrivilege::BOOT) &&
             $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
             $this->batchActions->add(new Batch\SoundUnlockAction($this));
             $this->batchActions->add(new Batch\SoundLockAction($this));
         }
         // Start & Shutdown
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(ComputerPrivilege::BOOT)) {
             $this->batchActions->add(new Batch\PowerOnAction($this));
             $this->batchActions->add(new Batch\LogOffAction($this));
             $this->batchActions->add(new Batch\RebootAction($this));
@@ -533,7 +541,7 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
             $this->batchActions->add(new Batch\ShutdownCancelAction($this));
         }
         // File Distribution
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT) && $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(ComputerPrivilege::BOOT) && $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
             $this->batchActions->add(new Batch\EnableAction($this));
             $this->batchActions->add(new Batch\StopAction($this));
         }
@@ -574,13 +582,13 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
      */
     public function isAuthorized()
     {
-        return $this->isGranted(Privilege::USE_FD) && $this->isGranted(HostPrivilege::BOOT);
+        return $this->isGranted(Privilege::USE_FD) && $this->isGranted(ComputerPrivilege::BOOT);
     }
     
     /**
      * {@inheritdoc}
      */
-    public function configureListFilter(ListHandler $listHandler) 
+    public function configureListFilter(ListHandler $listHandler)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
         $yesExpr = $qb->expr()->eq('parent.internet', 'true');
@@ -656,7 +664,7 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
             
         $listHandler->addListFilter($internetGrantedFilter);
         
-        $deniedExpr = $qb->expr()->eq('parent.overrideRoute','false');
+        $deniedExpr = $qb->expr()->eq('parent.overrideRoute', 'false');
 
         if ($this->isExamModeAvailable()) {
             $qb = $this->getEntityManager()->createQueryBuilder();
@@ -860,41 +868,53 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
     
     /**
      * Check if exam mode is installed on the IServ.
+<<<<<<< HEAD
      *
      * @return boolean
+=======
+>>>>>>> master
      */
-    public function isExamModeAvailable()
+    public function isExamModeAvailable(): bool
     {
         return $this->hasBundle('IServExamBundle');
     }
 
     /**
      * Check if lock module is installed on the IServ.
+<<<<<<< HEAD
      *
      * @return boolean
+=======
+>>>>>>> master
      */
-    public function isLockAvailable()
+    public function isLockAvailable(): bool
     {
         return $this->hasBundle('IServLockBundle');
     }
     
     /**
      * Check if Internet GUI is installed on the IServ.
+<<<<<<< HEAD
      *
      * @return boolean
+=======
+>>>>>>> master
      */
-    public function isInternetAvailable()
+    public function isInternetAvailable(): bool
     {
         return $this->hasBundle('StsblInternetBundle');
     }
     
     /**
      * Checks if internet is granted to an ip via a NAC.
+<<<<<<< HEAD
      *
      * @param Host $host
      * @return boolean
+=======
+>>>>>>> master
      */
-    private function isInternetGrantedViaNac(Host $host)
+    private function isInternetGrantedViaNac(Host $host): bool
     {
         $er = $this->getEntityManager()->getRepository('StsblInternetBundle:Nac');
         $nac = $er->findOneBy(['ip' => $host->getIp()]);
@@ -908,17 +928,18 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
 
     /**
      * Get current internet state (yes, no, allowed, forbidden) for Host by his ip address.
-     *
-     * @param Host $host
-     * @return string
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
+<<<<<<< HEAD
     public function getInternetState(Host $host)
     {
         if ($host === null) {
             return 'none';
         }
         
+=======
+    public function getInternetState(Host $host): ?string
+    {
+>>>>>>> master
         $overrideRoute = $host->getOverrideRoute();
         $internet = $host->getInternet();
         
@@ -934,12 +955,10 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
             }
         }
 
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
-        $qb = $this->getEntityManager()->createQueryBuilder($this->class);
+        $qb = $this->getEntityManager()->createQueryBuilder();
         $subQb = clone $qb;
         $subSubQb = clone $qb;
 
-        //$userCondition = '(SELECT MAX(s.act) FROM IServHostBundle:SambaUser s WHERE s.ip = :ip AND s.since=(SELECT MAX(v.since) FROM IServHostBundle:SambaUser v WHERE v.ip = :ip))';
         $subSubQb
             ->select($subSubQb->expr()->max('v.since'))
             ->from('IServHostBundle:SambaUser', 'v')
@@ -961,11 +980,16 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
         ;
         
         /* @var $currentUser \IServ\CoreBundle\Entity\User */
-        $currentUser = $qb->getQuery()->getOneOrNullResult();
+        try {
+            $currentUser = $qb->getQuery()->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            throw new \LogicException('Cannot happen!', 0, $e);
+        }
+
         $internetAlwaysDenied = false;
         $internetAlwaysGranted = false;
         
-        if (!is_null($currentUser)) {
+        if (null !== $currentUser) {
             foreach ($currentUser->getPrivileges() as $p) {
                 /* @var $p \IServ\CoreBundle\Entity\Privilege */
                 if ($p->getId() === 'inet_access') {
@@ -994,16 +1018,24 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
             return 'no';
         }
 
+<<<<<<< HEAD
         return 'yes';
+=======
+        return null;
+>>>>>>> master
     }
     
     /**
      * Get current internet lock explanation for Host by his ip address.
      *
+<<<<<<< HEAD
      * @param Host $host
      * @return array
+=======
+     * @return mixed[]|null
+>>>>>>> master
      */
-    public function getInternetExplanation(Host $host)
+    public function getInternetExplanation(Host $host): ?array
     {
         if ($host === null) {
             return null;
@@ -1052,6 +1084,7 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
         
         return null;
     }
+<<<<<<< HEAD
     
     /**
      * Get file distribution
@@ -1060,22 +1093,20 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
      * @return \Stsbl\FileDistributionBundle\Entity\FileDistribution
      */
     public function getFileDistribution(Host $host)
+=======
+
+    public function getFileDistribution(Host $host): ?FileDistribution
+>>>>>>> master
     {
         if ($host != null) {
             /** @noinspection PhpUndefinedMethodInspection */
             return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution')->findOneByIp($host->getIp());
-        } else {
-            return null;
         }
+
+        return null;
     }
 
-    /**
-     * Get exam
-     *
-     * @param Host $host
-     * @return \Stsbl\FileDistributionBundle\Entity\Exam
-     */
-    public function getExam(Host $host)
+    public function getExam(Host $host): ?Exam
     {
         if ($host != null) {
             /** @noinspection PhpUndefinedMethodInspection */
@@ -1087,11 +1118,16 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
     
     /**
      * Get user who locked the sound on a computer.
+<<<<<<< HEAD
      *
      * @param Host $host
      * @return \IServ\CoreBundle\Entity\User
      */
     public function getSoundLockUser(Host $host)
+=======
+     */
+    public function getSoundLockUser(Host $host): ?User
+>>>>>>> master
     {
         /* @var $lock \Stsbl\FileDistributionBundle\Entity\SoundLock */
         /** @noinspection PhpUndefinedMethodInspection */
@@ -1104,13 +1140,7 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
         return $lock->getUser();
     }
 
-    /**
-     * Convert account to User entity
-     *
-     * @param string $act
-     * @return \IServ\CoreBundle\Entity\User
-     */
-    public function accountToUser($act = null)
+    public function accountToUser(?string $act = null): ?User
     {
         if ($act === null) {
             return null;
