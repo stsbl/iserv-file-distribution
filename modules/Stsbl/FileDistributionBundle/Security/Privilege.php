@@ -43,4 +43,6 @@ final class Privilege
     const EXAM = 'PRIV_EXAM';
 
     const LOCK = 'PRIV_LOCK';
+
+    const BOOT = 'PRIV_COMPUTER_BOOT';
 }

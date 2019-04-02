@@ -4,7 +4,6 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
 /*
@@ -41,7 +40,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
 {
     use Traits\NoopFormTrait;
     
-    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    protected $privileges = [Privilege::USE_FD, Privilege::BOOT];
     
     /**
      * {@inheritdoc}

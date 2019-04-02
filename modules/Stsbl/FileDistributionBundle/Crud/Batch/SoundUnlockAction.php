@@ -4,7 +4,6 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
 /*
@@ -41,12 +40,12 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
 {
     use Traits\NoopFormTrait;
     
-    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    protected $privileges = [Privilege::USE_FD, Privilege::BOOT];
     
     /**
      * {@inheritdoc}
      */
-    public function execute(ArrayCollection $entities) 
+    public function execute(ArrayCollection $entities)
     {
         /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
         $messages = [];
@@ -67,14 +66,14 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     /**
      * {@inheritdoc}
      */
-    public function getName() 
+    public function getName()
     {
         return 'soundunlock';
     }
  /**
      * {@inheritodc}
      */
-    public function getLabel() 
+    public function getLabel()
     {
         return _('Enable');
     }
@@ -82,7 +81,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     /**
      * {@inheritdoc}
      */
-    public function getTooltip() 
+    public function getTooltip()
     {
         return _('Enable sound on the selected hosts.');
     }
@@ -106,7 +105,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     /**
      * {@inheritdoc}
      */
-    public function getGroup() 
+    public function getGroup()
     {
         return _('Sound');
     }

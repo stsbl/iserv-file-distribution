@@ -6,7 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -47,7 +46,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  */
 class EnableAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
 {
-    protected $privileges = [Privilege::USE_FD, HostPrivilege::BOOT];
+    protected $privileges = [Privilege::USE_FD, Privilege::BOOT];
     
     /**
      * @var string
