@@ -2,6 +2,7 @@
 
 namespace Stsbl\FileDistributionBundle\Repository;
 
+use IServ\CoreBundle\Service\BundleDetector;
 use IServ\CrudBundle\Entity\AbstractDecoratedServiceRepository;
 use Stsbl\FileDistributionBundle\Entity\Host;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -33,12 +34,21 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 /**
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
+ *
+ * @deprecated Just for transitional purposed. Do not use for any new code!
  */
 class HostRepository extends AbstractDecoratedServiceRepository
 {
-    public function __construct(RegistryInterface $registry)
+    /**
+     * @var BundleDetector
+     */
+    private $bundleDetector;
+
+    public function __construct(RegistryInterface $registry, BundleDetector $bundleDetector)
     {
         parent::__construct($registry, Host::class);
+
+        $this->bundleDetector = $bundleDetector;
     }
 
     /**
@@ -117,9 +127,12 @@ class HostRepository extends AbstractDecoratedServiceRepository
         $ret['fileDistribution'] = '(SELECT f.id FROM StsblFileDistributionBundle:FileDistribution f WHERE f.ip = parent.ip)';
         $ret['soundLock'] = '(SELECT sl.ip FROM StsblFileDistributionBundle:SoundLock sl WHERE sl.ip = parent.ip)';
 
-        // TODO ?
-        if (file_exists('/var/lib/dpkg/info/iserv-exam.list')) {
+        if ($this->bundleDetector->isLoaded('IServExamBundle')) {
             $ret['exam'] = '(SELECT e.title FROM StsblFileDistributionBundle:Exam e WHERE e.ip = parent.ip)';
+        }
+
+        if ($this->bundleDetector->isLoaded('IServLockBundle')) {
+            $ret['locker'] = '(SELECT IDENTITY(l.user) FROM IServLockBundle:Lock l WHERE l.ip = parent.ip)';
         }
 
         return $ret;

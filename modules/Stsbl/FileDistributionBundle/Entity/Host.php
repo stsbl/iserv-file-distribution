@@ -32,7 +32,7 @@ use IServ\HostBundle\Entity\Host as BaseHost;
 
 /**
  * StsblFileDistributionBundle:Host
- * 
+ *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  * @ORM\Entity(repositoryClass="Stsbl\FileDistributionBundle\Repository\HostRepository")
