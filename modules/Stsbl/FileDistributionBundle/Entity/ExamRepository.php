@@ -34,6 +34,8 @@ use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
+ *
+ * @deprecated Just for transitional purposes. Do not use for any new code!
  */
 class ExamRepository extends EntitySpecificationRepository
 {
