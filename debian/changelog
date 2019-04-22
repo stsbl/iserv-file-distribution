@@ -1,3 +1,12 @@
+stsbl-iserv-file-distribution (19.04.23-1) experimental; urgency=medium
+
+  * Fixed table draw if at least one host is locked
+
+  iserv: Das Sperren löst nun keinen Fehler beim nachfolgenden Öffnen der
+    Dateiverteilung mehr aus.
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Tue, 23 Apr 2019 00:00:30 +0200
+
 stsbl-iserv-file-distribution (19.04.03-1) experimental; urgency=medium
 
   * Removed hopefully last hardcoded constants
