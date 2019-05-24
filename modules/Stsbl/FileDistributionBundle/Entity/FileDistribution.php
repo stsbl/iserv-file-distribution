@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
- * @ORM\Entity(repositoryClass="FileDistributionRepository")
+ * @ORM\Entity(repositoryClass="Stsbl\FileDistributionBundle\Repository\FileDistributionRepository")
  * @ORM\Table(name="file_distribution")
  * @DoctrineAssert\UniqueEntity("ip", message="File distribution is already enabled for this host.")
  */
@@ -47,7 +47,7 @@ class FileDistribution implements CrudInterface
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * 
+     *
      * @var integer
      */
     private $id;
@@ -72,15 +72,15 @@ class FileDistribution implements CrudInterface
     
     /**
      * @ORM\Column(type="text", nullable=false)
-     * 
+     *
      * @var string
      */
     private $act;
     
     /**
      * @ORM\Column(type="boolean", nullable=false)
-     * 
-     * @var boolean
+     *
+     * @var bool
      */
     private $isolation;
     
@@ -88,7 +88,7 @@ class FileDistribution implements CrudInterface
      * @ORM\Column(type="inet", nullable=false)
      * @Assert\NotBlank()
      * @Assert\Ip()
-     * 
+     *
      * @var string
      */
     private $ip;
@@ -138,7 +138,7 @@ class FileDistribution implements CrudInterface
      */
     public function getIp()
     {
-        return $this->$ip;
+        return $this->ip;
     }
 
     /**
@@ -167,7 +167,7 @@ class FileDistribution implements CrudInterface
     
     /**
      * Get plain title
-     * 
+     *
      * @return string
      */
     public function getPlainTitle()
@@ -240,7 +240,7 @@ class FileDistribution implements CrudInterface
     /**
      * Get isolation
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsolation()
     {
@@ -269,29 +269,5 @@ class FileDistribution implements CrudInterface
     public function getFolderAvailability()
     {
         return $this->folderAvailability;
-    }
-
-    /**
-     * Set host
-     *
-     * @param \Stsbl\FileDistributionBundle\Entity\Host $host
-     *
-     * @return FileDistribution
-     */
-    public function setHost(\Stsbl\FileDistributionBundle\Entity\Host $host = null)
-    {
-        $this->host = $host;
-
-        return $this;
-    }
-
-    /**
-     * Get host
-     *
-     * @return \Stsbl\FileDistributionBundle\Entity\Host
-     */
-    public function getHost()
-    {
-        return $this->host;
     }
 }
