@@ -1,10 +1,13 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\ComputerBundle\Crud\Batch\AbstractHostAction;
 use IServ\ComputerBundle\Crud\HostControlCrud;
+use IServ\CoreBundle\Service\Config;
+use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Crud\Batch\FormExtendingBatchActionInterface;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
@@ -20,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -85,11 +89,23 @@ class EnableAction extends AbstractHostAction implements
      * @var string
      */
     private $folderAvailability;
-    
+
     /**
-     * {@inheritdoc}
+     * @var Request|null
      */
-    public function finalizeForm(FormInterface $form)
+    private $request;
+
+    public function __construct(AbstractCrud $crud, ?Request $request, bool $enabled = true)
+    {
+        parent::__construct($crud, $enabled);
+
+        $this->request = $request;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function finalizeForm(FormInterface $form): void
     {
         $form
             ->add('title', TextType::class, [
@@ -99,13 +115,14 @@ class EnableAction extends AbstractHostAction implements
                 ],
                 'attr' => [
                     'placeholder' => _('Title for this file distribution'),
-                    'help_text' => _('The folder path where you will find the assignment folder and the returns will ' .
+                    'help_text' => _('The folder path where you will find the assignment folder and the returns will '.
                         'be Files/File-Distribution/<Title>.'),
                     'required' => 'required'
                 ]
             ]);
         
         $isolationAttr = [];
+
         if ($this->getHostExtension()->getConfig()->get('FileDistributionHostIsolationDefault')) {
             $isolationAttr['checked'] = 'checked';
         }
@@ -126,7 +143,7 @@ class EnableAction extends AbstractHostAction implements
                 ],
                 'expanded' => true,
                 'required' => true,
-                'data' => $this->crud->getConfig()->get('FileDistributionFolderAvailabilityDefault'),
+                'data' => $this->getHostExtension()->getConfig()->get('FileDistributionFolderAvailabilityDefault'),
                 'constraints' => [
                     new NotBlank(['message' => _('Please choose availability of group folders and shares.')]),
                 ]
@@ -135,9 +152,9 @@ class EnableAction extends AbstractHostAction implements
     }
     
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function handleFormData(array $data)
+    public function handleFormData(array $data): FlashMessageBag
     {
         $this->title = $data['title'];
         if (empty($data['isolation'])) {
@@ -151,9 +168,9 @@ class EnableAction extends AbstractHostAction implements
     }
     
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function execute(ArrayCollection $entities)
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
         $user = $this->crud->getUser();
@@ -173,7 +190,7 @@ class EnableAction extends AbstractHostAction implements
                 break;
             }
             
-            if ($entity->getIp() === $this->crud->getRequest()->getClientIp() && count($entities) > 1) {
+            if ($this->request && $entity->getIp() === $this->request->getClientIp() && $entities->count() > 1) {
                 $messages[] = new FlashMessage('warning', _('Skipping own host!'));
                 unset($entities[$key]);
                 $skipOwnHost = true;
@@ -196,10 +213,12 @@ class EnableAction extends AbstractHostAction implements
         
         // only execute rpc, if we have no errors and at least one entity
         if (!$error && count($entities) > 0) {
-            $bag = $this
-                ->getFileDistributionManager()
-                ->enableFileDistribution($entities, $this->title, $this->isolation, $this->folderAvailability)
-            ;
+            $bag = $this->getFileDistributionManager()->enableFileDistribution(
+                $entities,
+                $this->title,
+                $this->isolation,
+                $this->folderAvailability
+            );
         } else {
             $bag = new FlashMessageBag();
         }
@@ -216,7 +235,7 @@ class EnableAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'enable';
     }
@@ -224,7 +243,7 @@ class EnableAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return _('Start');
     }
@@ -232,7 +251,7 @@ class EnableAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getTooltip()
+    public function getTooltip(): string
     {
         return _('Start a file distribution for the selected hosts.');
     }
@@ -240,7 +259,7 @@ class EnableAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getListIcon()
+    public function getListIcon(): string
     {
         return 'pro-disk-open';
     }
@@ -248,7 +267,7 @@ class EnableAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getConfirmClass()
+    public function getConfirmClass(): string
     {
         return 'primary';
     }
@@ -256,17 +275,15 @@ class EnableAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getGroup()
+    public function getGroup(): string
     {
         return _('File distribution');
     }
 
     /**
-     * @param CrudInterface $object
-     * @param UserInterface $user
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user)
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user): bool
     {
         /** @var $object Host */
         return $this->getHostExtension()->getPrivilegeDetector()->isAllowedToEnable($object);

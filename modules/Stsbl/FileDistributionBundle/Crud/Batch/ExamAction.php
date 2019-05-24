@@ -3,12 +3,14 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use IServ\CrudBundle\Crud\AbstractCrud;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -20,7 +22,19 @@ class ExamAction extends AbstractFileDistributionAction implements GroupableBatc
      * @var string
      */
     private $title;
-    
+
+    /**
+     * @var Request|null
+     */
+    private $request;
+
+    public function __construct(AbstractCrud $crud, ?Request $request, bool $enabled = true)
+    {
+        parent::__construct($crud, $enabled);
+
+        $this->request = $request;
+    }
+
     /**
      * Allows the batch action to manipulate the form.
      *
@@ -76,7 +90,7 @@ class ExamAction extends AbstractFileDistributionAction implements GroupableBatc
         return 'pro-disk-open';
     }
     
-    public function getGroup() 
+    public function getGroup()
     {
         return _('Exam Mode');
     }
@@ -90,19 +104,19 @@ class ExamAction extends AbstractFileDistributionAction implements GroupableBatc
             $skipOwnHost = false;
             
             if (empty($this->title)) {
-               $messages[] = $this->createFlashMessage('error', _('Title should not be empty!'));
-               $error = true;
-               break;
-            } 
+                $messages[] = $this->createFlashMessage('error', _('Title should not be empty!'));
+                $error = true;
+                break;
+            }
             
-            if ($entity->getIp() === $this->crud->getRequest()->getClientIp() && count($entities) > 1) {
+            if ($this->request && $entity->getIp() === $this->request->getClientIp() && $entities->count() > 1) {
                 $messages[] = $this->createFlashMessage('warning', _('Skipping own host!'));
                 unset($entities[$key]);
                 $skipOwnHost = true;
             }
             
             if (!$skipOwnHost) {
-                $messages[] = $this->createFlashMessage('success', __('Switched %s to exam mode.', (string)$entity->getName()));
+                $messages[] = $this->createFlashMessage('success', __('Switched %s to exam mode.', $entity->getName()));
             }
         }
         
@@ -124,7 +138,7 @@ class ExamAction extends AbstractFileDistributionAction implements GroupableBatc
      * @param UserInterface $user
      * @return boolean
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user)
     {
         return $this->crud->getAuthorizationChecker()->isGranted(Privilege::EXAM);
     }

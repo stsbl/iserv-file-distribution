@@ -540,13 +540,13 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
         }
         // File Distribution
         if (!$hasToken || $this->getAuthorizationChecker()->isGranted(Privilege::BOOT) && $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
-            $this->batchActions->add(new Batch\EnableAction($this));
+            $this->batchActions->add(new Batch\EnableAction($this, $this->getRequest()));
             $this->batchActions->add(new Batch\StopAction($this));
         }
         
         // Exam Mode
         if ((!$hasToken || $this->getAuthorizationChecker()->isGranted(Privilege::EXAM)) && $this->isExamModeAvailable()) {
-            $this->batchActions->add(new Batch\ExamAction($this));
+            $this->batchActions->add(new Batch\ExamAction($this, $this->getRequest()));
             $this->batchActions->add(new Batch\ExamOffAction($this));
         }
 
@@ -929,17 +929,8 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
     /**
      * Get current internet state (yes, no, allowed, forbidden) for Host by his ip address.
      */
-<<<<<<< HEAD
-    public function getInternetState(Host $host)
-    {
-        if ($host === null) {
-            return 'none';
-        }
-        
-=======
     public function getInternetState(Host $host): ?string
     {
->>>>>>> master
         $overrideRoute = $host->getOverrideRoute();
         $internet = $host->getInternet();
         
@@ -1018,22 +1009,14 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
             return 'no';
         }
 
-<<<<<<< HEAD
         return 'yes';
-=======
-        return null;
->>>>>>> master
+
     }
     
     /**
      * Get current internet lock explanation for Host by his ip address.
      *
-<<<<<<< HEAD
-     * @param Host $host
-     * @return array
-=======
      * @return mixed[]|null
->>>>>>> master
      */
     public function getInternetExplanation(Host $host): ?array
     {
@@ -1084,19 +1067,8 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
         
         return null;
     }
-<<<<<<< HEAD
-    
-    /**
-     * Get file distribution
-     *
-     * @param Host $host
-     * @return \Stsbl\FileDistributionBundle\Entity\FileDistribution
-     */
-    public function getFileDistribution(Host $host)
-=======
 
     public function getFileDistribution(Host $host): ?FileDistribution
->>>>>>> master
     {
         if ($host != null) {
             /** @noinspection PhpUndefinedMethodInspection */
@@ -1118,16 +1090,8 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
     
     /**
      * Get user who locked the sound on a computer.
-<<<<<<< HEAD
-     *
-     * @param Host $host
-     * @return \IServ\CoreBundle\Entity\User
-     */
-    public function getSoundLockUser(Host $host)
-=======
      */
     public function getSoundLockUser(Host $host): ?User
->>>>>>> master
     {
         /* @var $lock \Stsbl\FileDistributionBundle\Entity\SoundLock */
         /** @noinspection PhpUndefinedMethodInspection */

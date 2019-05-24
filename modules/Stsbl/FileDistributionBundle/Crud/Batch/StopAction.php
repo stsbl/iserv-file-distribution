@@ -1,5 +1,6 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -8,6 +9,7 @@ use IServ\ComputerBundle\Crud\HostControlCrud;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessage;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareInterface;
 use Stsbl\FileDistributionBundle\DependencyInjection\HostExtensionAwareTrait;
@@ -67,7 +69,7 @@ class StopAction extends AbstractHostAction implements
     /**
      * {@inheritodc}
      */
-    public function execute(ArrayCollection $entities)
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
         /* @var $entities FileDistribution[] */
         $user = $this->crud->getUser();
@@ -99,7 +101,7 @@ class StopAction extends AbstractHostAction implements
     /**
      * {@inheritodc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'stop';
     }
@@ -107,7 +109,7 @@ class StopAction extends AbstractHostAction implements
     /**
      * {@inheritodc}
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return _('Stop');
     }
@@ -115,7 +117,7 @@ class StopAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getTooltip()
+    public function getTooltip(): string
     {
         return _('Stop the running file distribution for the selected hosts.');
     }
@@ -123,7 +125,7 @@ class StopAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getListIcon()
+    public function getListIcon(): string
     {
         return 'pro-disk-save';
     }
@@ -131,7 +133,7 @@ class StopAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getConfirmClass()
+    public function getConfirmClass(): string
     {
         return 'danger';
     }
@@ -139,19 +141,17 @@ class StopAction extends AbstractHostAction implements
     /**
      * {@inheritdoc}
      */
-    public function getGroup()
+    public function getGroup(): string
     {
         return _('File distribution');
     }
     /**
-     * @param CrudInterface $object
-     * @param UserInterface $user
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user)
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user): bool
     {
         /** @var $object Host */
-        return $this->getHostExtension()->getPrivilegeDetector()->isAllowedToStop($object, $user);
+        return $this->getHostExtension()->getPrivilegeDetector()->isAllowedToStop($object);
     }
 
     /**
