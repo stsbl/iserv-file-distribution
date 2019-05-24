@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use IServ\ComputerBundle\Crud\ListFilterEventSubscriber;
-use IServ\ComputerBundle\Security\Privilege as ComputerPrivilege;
 use IServ\ComputerBundle\Service\Internet;
 use IServ\CoreBundle\Entity\User;
 use IServ\CoreBundle\Service\BundleDetector;
@@ -20,7 +19,6 @@ use IServ\CrudBundle\Table\Filter;
 use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\HostBundle\Model\HostType;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
 use IServ\LockBundle\Service\LockManager;
@@ -523,17 +521,17 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
             $this->batchActions->add(new Batch\ResetInternetAction($this));
         }
         // Communication
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(ComputerPrivilege::BOOT)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(Privilege::BOOT)) {
             $this->batchActions->add(new Batch\MessageAction($this));
         }
         // Sound
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(ComputerPrivilege::BOOT) &&
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(Privilege::BOOT) &&
             $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
             $this->batchActions->add(new Batch\SoundUnlockAction($this));
             $this->batchActions->add(new Batch\SoundLockAction($this));
         }
         // Start & Shutdown
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(ComputerPrivilege::BOOT)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(Privilege::BOOT)) {
             $this->batchActions->add(new Batch\PowerOnAction($this));
             $this->batchActions->add(new Batch\LogOffAction($this));
             $this->batchActions->add(new Batch\RebootAction($this));
@@ -541,7 +539,7 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
             $this->batchActions->add(new Batch\ShutdownCancelAction($this));
         }
         // File Distribution
-        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(ComputerPrivilege::BOOT) && $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
+        if (!$hasToken || $this->getAuthorizationChecker()->isGranted(Privilege::BOOT) && $this->getAuthorizationChecker()->isGranted(Privilege::USE_FD)) {
             $this->batchActions->add(new Batch\EnableAction($this));
             $this->batchActions->add(new Batch\StopAction($this));
         }
@@ -582,7 +580,7 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
      */
     public function isAuthorized()
     {
-        return $this->isGranted(Privilege::USE_FD) && $this->isGranted(ComputerPrivilege::BOOT);
+        return $this->isGranted(Privilege::USE_FD) && $this->isGranted(Privilege::BOOT);
     }
     
     /**
@@ -842,7 +840,9 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
 
         /* @var $om \IServ\CrudBundle\Doctrine\ORM\ORMObjectManager */
         $om = $this->getObjectManager();
-        $listHandler->getFilterHandler()->addEventSubscriber(new ListFilterEventSubscriber($this->getRequest(), $om->getRepository('StsblFileDistributionBundle:Host')));
+        $listHandler->getFilterHandler()->addEventSubscriber(
+            new ListFilterEventSubscriber($this->getRequest(), $om->getRepository(\IServ\HostBundle\Entity\Host::class))
+        );
     }
     
     /**

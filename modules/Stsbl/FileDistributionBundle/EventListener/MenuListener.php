@@ -6,7 +6,6 @@ use IServ\AdminBundle\EventListener\AdminMenuListenerInterface;
 use IServ\CoreBundle\Event\MenuEvent;
 use IServ\CoreBundle\EventListener\MainMenuListenerInterface;
 use IServ\CoreBundle\Menu\MenuBuilder;
-use IServ\HostBundle\Security\Privilege as HostPrivilege;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
 /*
@@ -44,7 +43,8 @@ class MenuListener implements MainMenuListenerInterface, AdminMenuListenerInterf
      */
     public function onBuildMainMenu(MenuEvent $event) 
     {
-        if ($event->getAuthorizationChecker()->isGranted(Privilege::USE_FD) && $event->getAuthorizationChecker()->isGranted(HostPrivilege::BOOT)) {
+        if ($event->getAuthorizationChecker()->isGranted(Privilege::USE_FD) &&
+            $event->getAuthorizationChecker()->isGranted(Privilege::BOOT)) {
             $menu = $event->getMenu(MenuBuilder::GROUP_EDUCATION);
             
             $item = $menu->addChild('file_distribution', [

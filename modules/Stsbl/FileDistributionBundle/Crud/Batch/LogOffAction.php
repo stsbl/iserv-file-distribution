@@ -4,7 +4,7 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
-use IServ\HostBundle\Security\Privilege;
+use Stsbl\FileDistributionBundle\Security\Privilege;
 
 class LogOffAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
 {

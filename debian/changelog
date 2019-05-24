@@ -1,3 +1,36 @@
+stsbl-iserv-file-distribution (19.04.23-1) experimental; urgency=medium
+
+  * Fixed table draw if at least one host is locked
+
+  iserv: Das Sperren löst nun keinen Fehler beim nachfolgenden Öffnen der
+    Dateiverteilung mehr aus.
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Tue, 23 Apr 2019 00:00:30 +0200
+
+stsbl-iserv-file-distribution (19.04.03-1) experimental; urgency=medium
+
+  * Removed hopefully last hardcoded constants
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Wed, 03 Apr 2019 01:59:31 +0200
+
+stsbl-iserv-file-distribution (19.04.02-1) experimental; urgency=medium
+
+  * Replaced computer privilege constant by custom one
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Tue, 02 Apr 2019 23:50:27 +0200
+
+stsbl-iserv-file-distribution (19.03.26-3) experimental; urgency=medium
+
+  * Scrapped host repository for workaround until removal of legacy UI
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Tue, 26 Mar 2019 21:22:15 +0100
+
+stsbl-iserv-file-distribution (19.03.26-2) experimental; urgency=medium
+
+  * Fixed further constant usage
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Tue, 26 Mar 2019 20:11:02 +0100
+
 stsbl-iserv-file-distribution (19.03.26-1) experimental; urgency=medium
 
   * Fixed constant usage
