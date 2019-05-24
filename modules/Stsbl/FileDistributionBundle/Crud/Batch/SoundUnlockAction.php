@@ -1,9 +1,11 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
 /*
@@ -45,7 +47,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     /**
      * {@inheritdoc}
      */
-    public function execute(ArrayCollection $entities)
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
         /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
         $messages = [];
@@ -66,14 +68,14 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'soundunlock';
     }
  /**
      * {@inheritodc}
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return _('Enable');
     }
@@ -81,7 +83,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     /**
      * {@inheritdoc}
      */
-    public function getTooltip()
+    public function getTooltip(): string
     {
         return _('Enable sound on the selected hosts.');
     }
@@ -89,7 +91,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     /**
      * {@inheritdoc}
      */
-    public function getListIcon()
+    public function getListIcon(): string
     {
         return 'pro-volume-up';
     }
@@ -97,7 +99,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     /**
      * {@inheritdoc}
      */
-    public function getConfirmClass()
+    public function getConfirmClass(): string
     {
         return 'primary';
     }
@@ -105,7 +107,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     /**
      * {@inheritdoc}
      */
-    public function getGroup()
+    public function getGroup(): string
     {
         return _('Sound');
     }

@@ -1,9 +1,11 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
 /*
@@ -45,13 +47,13 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritdoc}
      */
-    public function execute(ArrayCollection $entities) 
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
         /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
         $messages = [];
         
         foreach ($entities as $entity) {
-            $messages[] = $this->createFlashMessage('success', __('Disabled sound on %s.', (string)$entity->getName()));
+            $messages[] = $this->createFlashMessage('success', __('Disabled sound on %s.', $entity->getName()));
         }
         
         $bag = $this->getFileDistributionManager()->soundLock($entities);
@@ -66,7 +68,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritdoc}
      */
-    public function getName() 
+    public function getName(): string
     {
         return 'soundlock';
     }
@@ -74,7 +76,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritodc}
      */
-    public function getLabel() 
+    public function getLabel(): string
     {
         return _('Disable');
     }
@@ -82,7 +84,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritdoc}
      */
-    public function getTooltip() 
+    public function getTooltip(): string
     {
         return _('Disable sound on the selected hosts.');
     }
@@ -90,7 +92,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritdoc}
      */
-    public function getListIcon()
+    public function getListIcon(): string
     {
         return 'pro-mute';
     }
@@ -98,7 +100,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritdoc}
      */
-    public function getConfirmClass()
+    public function getConfirmClass(): string
     {
         return 'primary';
     }
@@ -106,7 +108,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     /**
      * {@inheritdoc}
      */
-    public function getGroup() 
+    public function getGroup(): string
     {
         return _('Sound');
     }

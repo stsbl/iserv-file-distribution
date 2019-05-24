@@ -1,10 +1,12 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -47,8 +49,8 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * {@inheritodc}
      */
-    public function execute(ArrayCollection $entities) 
-    { 
+    public function execute(ArrayCollection $entities): FlashMessageBag
+    {
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
         $user = $this->crud->getUser();
         $messages = [];
@@ -57,10 +59,16 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
             /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
             if (!$this->isAllowedToExecute($entity, $user)) {
                 // remove unallowed hosts
-                $messages[] = $this->createFlashMessage('error', __('You are not allowed to disable file distribution for %s.', (string)$entity->getName()));
+                $messages[] = $this->createFlashMessage(
+                    'error',
+                    __('You are not allowed to disable file distribution for %s.', $entity->getName())
+                );
                 unset($entities[$key]);
             } else {
-                $messages[] = $this->createFlashMessage('success', __('Disabled file distribution for %s.', (string)$entity->getName()));
+                $messages[] = $this->createFlashMessage(
+                    'success',
+                    __('Disabled file distribution for %s.', $entity->getName())
+                );
             }
         }
 
@@ -76,7 +84,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * {@inheritodc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'stop';
     }
@@ -84,7 +92,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * {@inheritodc}
      */
-    public function getLabel() 
+    public function getLabel(): string
     {
         return _('Stop');
     }
@@ -92,7 +100,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * {@inheritdoc}
      */
-    public function getTooltip() 
+    public function getTooltip(): string
     {
         return _('Stop the running file distribution for the selected hosts.');
     }
@@ -100,7 +108,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * {@inheritdoc}
      */
-    public function getListIcon()
+    public function getListIcon(): string
     {
         return 'pro-disk-save';
     }
@@ -108,7 +116,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * {@inheritdoc}
      */
-    public function getConfirmClass()
+    public function getConfirmClass(): string
     {
         return 'danger';
     }
@@ -116,16 +124,14 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     /**
      * {@inheritdoc}
      */
-    public function getGroup()
+    public function getGroup(): string
     {
         return _('File distribution');
     }
     /**
-     * @param CrudInterface $object
-     * @param UserInterface $user
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user): bool
     {
         return $this->crud->isAllowedToStop($object, $user);
     }

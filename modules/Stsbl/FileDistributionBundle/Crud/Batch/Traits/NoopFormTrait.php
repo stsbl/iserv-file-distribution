@@ -2,6 +2,8 @@
 // src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/NoopFormTrait.php
 namespace Stsbl\FileDistributionBundle\Crud\Batch\Traits;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use Symfony\Component\Form\FormInterface;
 
 /*
@@ -34,26 +36,24 @@ use Symfony\Component\Form\FormInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-trait NoopFormTrait 
+trait NoopFormTrait
 {
+    abstract public function execute(ArrayCollection $entities);
+
     /**
      * Allows the batch action to manipulate the form.
      *
      * This is called at the end of `prepareBatchActions`.
-     *
-     * @param FormInterface $form
      */
-    public function finalizeForm(FormInterface $form)
+    public function finalizeForm(FormInterface $form): void
     {
         // bypass
     }
     
     /**
      * Gets called with the full form data instead of `execute`.
-     *
-     * @param array $data
      */
-    public function handleFormData(array $data)
+    public function handleFormData(array $data): FlashMessageBag
     {
         // bypass
         return $this->execute($data['multi']);
