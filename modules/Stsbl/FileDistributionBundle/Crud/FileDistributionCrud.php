@@ -1010,7 +1010,6 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
         }
 
         return 'yes';
-
     }
     
     /**
