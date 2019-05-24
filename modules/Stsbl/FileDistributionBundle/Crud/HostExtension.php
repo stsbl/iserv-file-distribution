@@ -1,9 +1,9 @@
-<?php declare(strict_types = 1);
-// src/Stsbl/FileDistributionBundle/Crud/HostExtension.php
+<?php
+declare(strict_types = 1);
+
 namespace Stsbl\FileDistributionBundle\Crud;
 
 use IServ\ComputerBundle\Crud\HostControlExtensionInterface;
-use IServ\CoreBundle\Entity\User;
 use IServ\CoreBundle\Service\Config;
 use IServ\HostBundle\Util\Network;
 use IServ\HostExtensionBundle\Crud\AbstractHostExtension;
@@ -16,7 +16,6 @@ use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareInterface;
 use Stsbl\FileDistributionBundle\DependencyInjection\ManagerAwareTrait;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Security\PrivilegeDetector;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -85,15 +84,10 @@ class HostExtension extends AbstractHostExtension implements ManagerAwareInterfa
      */
     private $requestStack;
 
-    /**
-     * @var RegistryInterface
-     */
-    private $doctrine;
 
     public function __construct(
         Config $config,
         PrivilegeDetector $privilegeDetector,
-        RegistryInterface $doctrine,
         RequestStack $requestStack,
         SessionInterface $session
     ) {
@@ -101,7 +95,6 @@ class HostExtension extends AbstractHostExtension implements ManagerAwareInterfa
         $this->privilegeDetector = $privilegeDetector;
         $this->session = $session;
         $this->requestStack = $requestStack;
-        $this->doctrine = $doctrine;
     }
 
     /**
@@ -118,7 +111,7 @@ class HostExtension extends AbstractHostExtension implements ManagerAwareInterfa
     public function loadBatchActions()
     {
         $batchActions = [
-            new EnableAction($this->crud),
+            new EnableAction($this->crud, $this->getRequest()),
             new StopAction($this->crud),
             new SoundUnlockAction($this->crud),
             new SoundLockAction($this->crud),
@@ -141,23 +134,17 @@ class HostExtension extends AbstractHostExtension implements ManagerAwareInterfa
         return [];
     }
 
-    /**
-     * @return Config
-     */
     public function getConfig(): Config
     {
         return $this->config;
     }
 
-    /**
-     * @return PrivilegeDetector
-     */
     public function getPrivilegeDetector(): PrivilegeDetector
     {
         return $this->privilegeDetector;
     }
 
-    public function getRequest(): ?Request
+    protected function getRequest(): ?Request
     {
         if (null === $this->request) {
             $this->request = $this->requestStack->getCurrentRequest();
@@ -169,18 +156,6 @@ class HostExtension extends AbstractHostExtension implements ManagerAwareInterfa
     public function getSession(): SessionInterface
     {
         return $this->session;
-    }
-
-    /**
-     * Convert account to User entity
-     */
-    public function accountToUser(string $account = null): ?User
-    {
-        if ($account === null) {
-            return null;
-        }
-
-        return $this->doctrine->getRepository(User::class)->find($account);
     }
 
     /**
