@@ -8,6 +8,7 @@ use IServ\CoreBundle\Service\Logger;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\AbstractBaseMapper;
 use IServ\CrudBundle\Mapper\FormMapper;
+use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Entity\FileDistributionRoom;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -79,7 +80,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    public function isAllowedToView(CrudInterface $object = null, UserInterface $user = null) 
+    public function isAllowedToView(CrudInterface $object = null, UserInterface $user = null)
     {
         // disable show action, it is useless here
         return false;
@@ -88,7 +89,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    public function isAllowedToAdd(UserInterface $user = null) 
+    public function isAllowedToAdd(UserInterface $user = null)
     {
         return true;
     }
@@ -104,7 +105,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    public function isAllowedToDelete(CrudInterface $object = null, UserInterface $user = null) 
+    public function isAllowedToDelete(CrudInterface $object = null, UserInterface $user = null)
     {
         return true;
     }
@@ -112,7 +113,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    public function configureFields(AbstractBaseMapper $mapper) 
+    public function configureFields(AbstractBaseMapper $mapper)
     {
         $options = [
             'label' => _('Room'),
@@ -146,7 +147,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     {
         if ('index' === $action) {
             return sprintf('/%s%s', $this->routesPrefix, 'filedistribution/rooms');
-        } else if ('batch' === $action || 'batch/confirm' === $action) {
+        } elseif ('batch' === $action || 'batch/confirm' === $action) {
             return sprintf('/%s%s/%s', $this->routesPrefix, 'filedistribution/rooms', $action);
         } else {
             return sprintf('/%s%s/%s', $this->routesPrefix, 'filedistribution/room', $action);
@@ -156,27 +157,28 @@ class IncludeRoomAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    protected function buildRoutes() 
+    protected function buildRoutes()
     {
         parent::buildRoutes();
         
-        $this->routes[self::ACTION_INDEX]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:roomIndex';
+        $this->routes[self::ACTION_INDEX]['_controller'] = FileDistributionController::class . '::roomIndexAction';
     }
     
     /**
      * {@inheritdoc}
      */
-    public function prepareBreadcrumbs() 
+    public function prepareBreadcrumbs()
     {
         $ret = parent::prepareBreadcrumbs();
         $ret[_('File distribution')] = $this->router->generate('fd_filedistribution_index');
+
         return $ret;
     }
     
     /**
      * {@inheritdoc}
      */
-    public function isAuthorized() 
+    public function isAuthorized()
     {
         return $this->isGranted(Privilege::FD_ROOMS);
     }
@@ -186,7 +188,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    public function postPersist(CrudInterface $object) 
+    public function postPersist(CrudInterface $object)
     {
         $this->logger->writeForModule(sprintf('Raum "%s" zur Raumliste hinzugefügt', (string)$object->getRoom()), 'File distribution');
     }
@@ -194,7 +196,7 @@ class IncludeRoomAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    public function postRemove(CrudInterface $object) 
+    public function postRemove(CrudInterface $object)
     {
         $this->logger->writeForModule(sprintf('Raum "%s" aus der Raumliste entfernt', (string)$object->getRoom()), 'File distribution');
     }
