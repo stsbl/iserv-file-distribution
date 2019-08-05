@@ -225,9 +225,9 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
     {
         parent::buildRoutes();
         
-        $this->routes[self::ACTION_INDEX]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:index';
-        //$this->routes[self::ACTION_SHOW]['_controller'] = 'StsblFileDistributionBundle:FileDistribution:show';
-        $this->routes['batch_confirm']['_controller'] = 'StsblFileDistributionBundle:FileDistribution:confirmBatch';
+        $this->routes[self::ACTION_INDEX]['_controller'] = FileDistributionController::class . '::indexAction';
+        //$this->routes[self::ACTION_SHOW]['_controller'] = FileDistributionController::class . '::showAction';
+        $this->routes['batch_confirm']['_controller'] = FileDistributionController::class . '::confirmBatchAction';
     }
     
     /**
