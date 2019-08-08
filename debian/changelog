@@ -1,3 +1,11 @@
+stsbl-iserv-file-distribution (19.08.08-1) experimental; urgency=medium
+
+  * Improved CS of batch actions
+  * Fixed deprecations
+  * Deprecation fix up
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Thu, 08 Aug 2019 03:23:44 +0200
+
 stsbl-iserv-file-distribution (19.04.23-1) experimental; urgency=medium
 
   * Fixed table draw if at least one host is locked
