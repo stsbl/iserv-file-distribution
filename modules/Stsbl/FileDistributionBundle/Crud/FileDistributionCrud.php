@@ -308,11 +308,11 @@ class FileDistributionCrud extends AbstractCrud implements ServiceSubscriberInte
      *
      * @return bool
      */
-    public static function getRoomMode()
+    public static function getRoomMode(): bool
     {
         if (!is_bool(self::$roomMode)) {
             $content = file_get_contents(FileDistributionController::ROOM_CONFIG_FILE);
-            self::$roomMode = json_decode($content, true)['invert'];
+            self::$roomMode = json_decode($content, true)['invert'] ?? true;
         }
         
         return self::$roomMode;

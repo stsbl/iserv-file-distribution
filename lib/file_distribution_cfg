@@ -3,7 +3,7 @@
 use warnings;
 use strict;
 use IServ::DB;
-use IServ::IO;
+use Path::Tiny;
 
 my $m_ip = qr/\d{1,3}(?:\.\d{1,3}){3}/;
 my $m_title = qr/^([ !#&()*+,\-.0-9:<=>?\@A-Z\[\]^_a-z{|}~\P{ascii}]{1,64})$/;
@@ -78,9 +78,9 @@ for (@{ IServ::DB::DBH->selectall_arrayref("SELECT IP, Act, Home, Title, Isolati
   }
     
   delete $del{$ip};
-  unless (-f $ip and IServ::IO::getfile $ip eq $cfg)
+  unless (-f $ip and path($ip)->slurp_utf8 eq $cfg)
   {
-    IServ::IO::putfile $ip, $cfg;
+    path($ip)->spew_utf8($cfg);
     $reload{$ip} = 1;
   }
 }
