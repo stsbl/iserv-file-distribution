@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (20.02.14-1) stable; urgency=medium
+
+  * Removed IServ::IO
+  * Fixed default value for room mode
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Fri, 14 Feb 2020 01:17:39 +0100
+
 stsbl-iserv-file-distribution (19.08.08-1) experimental; urgency=medium
 
   * Improved CS of batch actions
