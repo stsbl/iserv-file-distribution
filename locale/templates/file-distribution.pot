@@ -1,0 +1,747 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-08-02 01:07+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php
+#, php-format
+msgid "%s unlocked successful."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
+msgid "All rooms except the following"
+msgstr ""
+
+#: config/80file-distribution
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "Allow only read access to group folders and other shares"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+msgid "Availability of group folders and shares"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_filedistribution.html.twig.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_soundlock.html.twig.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_exam.html.twig.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
+#, php-format
+msgid "By: %s"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid "Cancel"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php
+#, php-format
+msgid "Canceled schuelded actions for %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php
+msgid ""
+"Cancels a sent shutdown/reboot/log off command on the selected computers."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php
+msgid "Communication"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig.php
+msgctxt "file-distribution"
+msgid "Configuration required"
+msgstr ""
+
+#: config/80file-distribution
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "Default selection of \"Availability of group folders and shares\""
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php
+#, php-format
+msgid "Denied internet access for %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php
+msgid "Deny"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php
+msgid "Deny internet access for the selected hosts."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgctxt "file-distribution"
+msgid "Device"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
+msgid "Disable"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
+msgid "Disable exam mode on the selected computers."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+msgid "Disable sound on the selected hosts."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
+#, php-format
+msgid "Disabled exam mode on %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+#, php-format
+msgid "Disabled file distribution for %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+#, php-format
+msgid "Disabled sound on %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php
+msgid "Duration"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php
+msgid "Enable"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid "Enable host isolation"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid ""
+"Enable host isolation if you want to prevent that users can exchange files "
+"by sharing their accounts."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php
+msgid "Enable sound on the selected hosts."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#, php-format
+msgid "Enabled file distribution for %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php
+#, php-format
+msgid "Enabled sound on %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php
+msgid "Enter a message..."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Exam"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
+msgid "Exam Mode"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php
+msgid "Exam title"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+#, php-format
+msgid "Exam: %s"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
+msgid "Existing exam directory"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
+msgid "Existing file distribution directory"
+msgstr ""
+
+#: priv/file-distribution
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+#: modules/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php
+#: modules/Stsbl/FileDistributionBundle/EventListener/MenuListener.php
+msgid "File distribution"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "File distribution is already enabled for this host."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid ""
+"File distribution is not enabled for the following entries or are not are "
+"allowed to stop the file distribution there:"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+msgid "File distribution title"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+#, php-format
+msgid "File distribution: %s"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig.php
+#, php-format
+msgid "Files/File-Distribution/%s"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid ""
+"For the users who are logging in on this hosts, there will created two "
+"addtional network drives for file distribution assignment and return."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
+msgid "Forbidden"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php
+msgid "Forces users on the selected computers to log out."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php
+msgid "Grant"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php
+msgid "Grant internet access to the selected hosts."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
+msgid "Granted"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php
+#, php-format
+msgid "Granted internet access for %s."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_filedistribution.html.twig.php
+msgid ""
+"Group folders and other Windows shares are only available for read only."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_filedistribution.html.twig.php
+msgid "Group folders and other Windows shares are replaced with empty folders."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_rooms_index.html.twig.php
+msgid ""
+"Here you can change, which hosts filtered by room are available in the file "
+"distribution."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid "Host"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+msgid "Host isolation"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_filedistribution.html.twig.php
+msgid "Host isolation activated"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_rooms_index.html.twig.php
+msgid "Host management"
+msgstr ""
+
+#: config/80file-distribution
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid ""
+"If enabled, the checkbox \"host isolation\" will be selected by default if a "
+"new file distribution will be enabled."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php
+msgid "Internet"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Internet Access"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Internet: exam mode"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Internet: forbidden"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Internet: granted"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Internet: no"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Internet: yes"
+msgstr ""
+
+#: config/80file-distribution
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "Keep group folders and other shares available"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php
+msgid "Lock"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php
+#, php-format
+msgid "Locked %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Locked by"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php
+msgid ""
+"Locks the selected computers. The logged-in users cannot use the computers "
+"while they are locked."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php
+msgid "Log Off"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig.php
+msgid "Manage available rooms"
+msgstr ""
+
+#: priv/file-distribution
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "Manage available rooms for file distribution"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php
+msgid "Message"
+msgstr ""
+
+#: config/80file-distribution
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "Module: File Distribution"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Name"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
+msgid "No"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php
+#, php-format
+msgid "One hour"
+msgid_plural "%d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php
+#, php-format
+msgid "One minute"
+msgid_plural "%d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid "Only hosts which are member of the Windows Domain are supported."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_exam.html.twig.php
+msgid "Open folder of this exam"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_filedistribution.html.twig.php
+msgid "Open folder of this file distribution"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+msgid "Please choose availability of group folders and shares."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php
+msgid "Please enter a title for your exam."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+msgid "Please enter a title for your file distribution."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php
+msgid "Please select the duration."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php
+msgid "Power On"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
+msgid "Privilege"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php
+msgctxt "host"
+msgid "Reboot"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php
+msgid "Reboots the selected computers."
+msgstr ""
+
+#: config/80file-distribution
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "Replace group folders and other shares with empty folders"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php
+msgid "Reset"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php
+#, php-format
+msgid "Reset internet access for %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php
+msgid "Reset internet access of the selected hosts to the default value."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+#: modules/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid "Room"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_rooms_index.html.twig.php
+msgid "Room availability"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
+msgid "Room settings updated successful."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php
+msgid "Rooms"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
+msgid "Running exam"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
+msgid "Running file distribution"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
+msgid "Save"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Search"
+msgstr ""
+
+#: config/80file-distribution
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "Select host isolation by default"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_rooms_index.html.twig.php
+msgid ""
+"Select if all rooms except the one in the following list or only the rooms "
+"which are in the list are available."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid ""
+"Select if you want to grant access to the group folders and other file "
+"shares on the Portalserver."
+msgstr ""
+
+#: config/80file-distribution
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid ""
+"Select which option will selected for this option, if a new file "
+"distribution will enabled."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php
+msgid "Send message"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php
+msgid "Send message to the selected hosts."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php
+msgid "Sends Wake-on-LAN packets to the selected computers to wake them."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php
+#, php-format
+msgid "Sent log off command to %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/MessageAction.php
+#, php-format
+msgid "Sent message to %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php
+#, php-format
+msgid "Sent power on command to %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php
+#, php-format
+msgid "Sent reboot command to %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php
+#, php-format
+msgid "Sent shutdown command to %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php
+msgid "Shutdown"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php
+msgid "Shuts the selected computers down."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php
+msgid "Skipping own host!"
+msgstr ""
+
+#: lib/file_distribution_rpc
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid ""
+"Someone started a file distribution for your host. To access the files, "
+"click on the symbol \"Auf bereitgestellte Dateien zugreifen\" on the desktop."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundUnlockAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+msgid "Sound"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_soundlock.html.twig.php
+msgid "Sound is disabled on host"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+msgid "Start"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/PowerOnAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/RebootAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownCancelAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ShutdownAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/LogOffAction.php
+msgid "Start & Shutdown"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+msgid "Start a file distribution for the selected hosts."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+msgid "Stop"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+msgid "Stop the running file distribution for the selected hosts."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php
+msgid "Switch the selected computers into exam mode."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php
+#, php-format
+msgid "Switched %s to exam mode."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "The computer is already in exam mode."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "The computer is already locked."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig.php
+#, php-format
+msgid ""
+"The files for the distribution \"%s\" must resided in the following folder:"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid ""
+"The folder path where you will find the assignment folder and the returns "
+"will be Files/File-Distribution/<Title>."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
+msgid "The following rooms"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "The room is already in the list."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig.php
+msgid ""
+"This module needs addtional configuration. Please contact your IServ "
+"Administrator!"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php
+msgid "Title for this exam"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+msgid "Title for this file distribution"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamAction.php
+msgid "Title should not be empty!"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
+#, php-format
+msgid "Title: %s"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_rooms_index.html.twig.php
+#, php-format
+msgid ""
+"To exclude single hosts from the file distribution set the \"controllable\" "
+"setting in the %s to no."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php
+msgid "Today"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "Type"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php
+msgid "Unlock"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php
+msgid "Unlocks the selected computers."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
+#, php-format
+msgid "Until: %s"
+msgstr ""
+
+#: priv/file-distribution
+#: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
+msgid "Use file distribution"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid "User"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_sambauser.html.twig.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid "Yes"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+#, php-format
+msgid "You are not allowed to disable file distribution for %s."
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/EnableAction.php
+#, php-format
+msgid "You are not allowed to enable file distribution for %s."
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
+msgid ""
+"You can not enable file distributions for the following entries, because "
+"there it is already enabled:"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_index.html.twig.php
+msgid "You need to configure available rooms before you can use this module!"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "[With exam]"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "[With file distribution]"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "[Without exam]"
+msgstr ""
+
+#: modules/Stsbl/FileDistributionBundle/Crud/FileDistributionCrud.php
+msgid "[Without file distribution]"
+msgstr ""
+
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Show/field_filedistribution.html.twig.php
+msgid "none"
+msgstr ""
