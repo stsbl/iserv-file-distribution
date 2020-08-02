@@ -1,3 +1,9 @@
+stsbl-iserv-file-distribution (20.08.02-1) testing; urgency=medium
+
+  * Updated locale handling to use genpo
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Sun, 02 Aug 2020 06:41:34 +0200
+
 stsbl-iserv-file-distribution (20.02.14-1) stable; urgency=medium
 
   * Removed IServ::IO
