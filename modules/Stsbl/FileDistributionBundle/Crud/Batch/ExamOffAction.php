@@ -21,12 +21,12 @@ class ExamOffAction extends AbstractFileDistributionAction implements GroupableB
 
     public function getLabel()
     {
-        return _('Disable');
+        return _('Deactivate');
     }
 
     public function getTooltip()
     {
-        return _('Disable exam mode on the selected computers.');
+        return _('Deactivate exam mode on the selected computers.');
     }
 
     public function getListIcon()
@@ -44,7 +44,7 @@ class ExamOffAction extends AbstractFileDistributionAction implements GroupableB
         $messages = [];
         
         foreach ($entities as $key => $entity) {
-            $messages[] = $this->createFlashMessage('success', __('Disabled exam mode on %s.', (string)$entity->getName()));
+            $messages[] = $this->createFlashMessage('success', __('Deactivated exam mode on %s.', (string)$entity->getName()));
         }
             
         $bag = $this->getFileDistributionManager()->examOff($entities);

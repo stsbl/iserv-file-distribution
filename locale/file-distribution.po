@@ -1,9 +1,12 @@
+#, fuzzy
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-01-15 18:12+0100\n"
+"POT-Creation-Date: 2021-01-27 04:24+0100\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"#-#-#-#-#  file-distribution.po  #-#-#-#-#\n"
+"#-#-#-#-#  file-distribution.po  #-#-#-#-#\n"
 
 #: modules/Stsbl/FileDistributionBundle/Crud/Batch/UnlockAction.php
 #, php-format
@@ -25,8 +28,8 @@ msgid "Availability of group folders and shares"
 msgstr "Verfügbarkeit von Gruppenordnern und Freigaben"
 
 #: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_filedistribution.html.twig.php
-#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_soundlock.html.twig.php
 #: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_exam.html.twig.php
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_soundlock.html.twig.php
 #: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
 #, php-format
 msgid "By: %s"
@@ -58,6 +61,29 @@ msgctxt "file-distribution"
 msgid "Configuration required"
 msgstr "Konfiguration erforderlich"
 
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
+msgid "Deactivate"
+msgstr "Deaktivieren"
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
+msgid "Deactivate exam mode on the selected computers."
+msgstr "Klausurmodus auf den gewählten Rechnern deaktivieren."
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+msgid "Deactivate sound on the selected hosts."
+msgstr "Ton auf den gewählten Geräten deaktivieren."
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
+#, php-format
+msgid "Deactivated exam mode on %s."
+msgstr "Kluasurmodus auf %s deaktiviert."
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
+#, php-format
+msgid "Deactivated sound on %s."
+msgstr "Ton auf %s deaktiviert."
+
 #: config/80file-distribution
 #: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
 msgid "Default selection of \"Availability of group folders and shares\""
@@ -81,33 +107,10 @@ msgctxt "file-distribution"
 msgid "Device"
 msgstr "Gerät"
 
-#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
-#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
-msgid "Disable"
-msgstr "Deaktivieren"
-
-#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
-msgid "Disable exam mode on the selected computers."
-msgstr "Klausurmodus auf den gewählten Computern deaktivieren."
-
-#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
-msgid "Disable sound on the selected hosts."
-msgstr "Ton auf den gewählten Geräten deaktivieren."
-
-#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
-#, php-format
-msgid "Disabled exam mode on %s."
-msgstr "Klausurmodus auf %s deaktiviert."
-
 #: modules/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
 #, php-format
 msgid "Disabled file distribution for %s."
 msgstr "Dateiverteilung für %s deaktiviert."
-
-#: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
-#, php-format
-msgid "Disabled sound on %s."
-msgstr "Ton deaktiviert auf %s."
 
 #: modules/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php
 msgid "Duration"
@@ -721,9 +724,9 @@ msgstr "Dateiverteilung verwenden"
 msgid "User"
 msgstr "Benutzer"
 
+#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
 #: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_internet.html.twig.php
 #: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/List/field_sambauser.html.twig.php
-#: /tmp/twig2php-stsbl-iserv-file-distribution/modules/Stsbl/FileDistributionBundle/Resources/views/Crud/file_distribution_batch_confirm.html.twig.php
 msgid "Yes"
 msgstr "Ja"
 

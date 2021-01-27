@@ -53,7 +53,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
         $messages = [];
         
         foreach ($entities as $entity) {
-            $messages[] = $this->createFlashMessage('success', __('Disabled sound on %s.', $entity->getName()));
+            $messages[] = $this->createFlashMessage('success', __('Deactivated sound on %s.', $entity->getName()));
         }
         
         $bag = $this->getFileDistributionManager()->soundLock($entities);
@@ -78,7 +78,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
      */
     public function getLabel(): string
     {
-        return _('Disable');
+        return _('Deactivate');
     }
     
     /**
@@ -86,7 +86,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
      */
     public function getTooltip(): string
     {
-        return _('Disable sound on the selected hosts.');
+        return _('Deactivate sound on the selected hosts.');
     }
 
     /**
