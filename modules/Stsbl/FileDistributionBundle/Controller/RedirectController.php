@@ -15,6 +15,6 @@ final class RedirectController extends AbstractController
 {
     public function __invoke(): Response
     {
-        return $this->redirectToRoute('admin_fd_filedistribution_room_index', [], Response::HTTP_MOVED_PERMANENTLY);
+        return $this->redirectToRoute('admin_filedistribution_room_index', [], Response::HTTP_MOVED_PERMANENTLY);
     }
 }
