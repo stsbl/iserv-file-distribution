@@ -77,7 +77,7 @@ msgstr "Ton auf den gewählten Geräten deaktivieren."
 #: modules/Stsbl/FileDistributionBundle/Crud/Batch/ExamOffAction.php
 #, php-format
 msgid "Deactivated exam mode on %s."
-msgstr "Kluasurmodus auf %s deaktiviert."
+msgstr "Klausurmodus auf %s deaktiviert."
 
 #: modules/Stsbl/FileDistributionBundle/Crud/Batch/SoundLockAction.php
 #, php-format
@@ -330,6 +330,10 @@ msgstr "Gruppenordner und andere Freigaben verfügbar lassen"
 #: modules/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php
 msgid "Lock"
 msgstr "Sperren"
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php
+msgid "Lock manager not available."
+msgstr "Sperrverwaltung nicht verfügbar."
 
 #: modules/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php
 #, php-format
@@ -653,6 +657,12 @@ msgstr ""
 #: modules/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
 msgid "The following rooms"
 msgstr "Folgende Räume"
+
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/ResetInternetAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/DenyInternetAction.php
+#: modules/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php
+msgid "The internet is not available."
+msgstr "Das Internet is nicht verfügbar."
 
 #: modules/Stsbl/FileDistributionBundle/Resources/translations/messages.php
 msgid "The room is already in the list."
