@@ -1,13 +1,16 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Admin/IncludeRoomAdmin.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Admin;
 
 use Doctrine\ORM\EntityRepository;
-use IServ\AdminBundle\Admin\AbstractAdmin;
+use IServ\AdminBundle\Admin\AdminServiceCrud;
 use IServ\CoreBundle\Service\Logger;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\AbstractBaseMapper;
 use IServ\CrudBundle\Mapper\FormMapper;
+use IServ\CrudBundle\Routing\RoutingDefinition;
 use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Entity\FileDistributionRoom;
 use Stsbl\FileDistributionBundle\Security\Privilege;
@@ -43,161 +46,143 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class IncludeRoomAdmin extends AbstractAdmin
+final class IncludeRoomAdmin extends AdminServiceCrud
 {
     /**
-     * @var Logger
+     * {@inheritDoc}
      */
-    private $logger;
-
-    public function __construct()
-    {
-        parent::__construct(FileDistributionRoom::class);
-    }
+    protected static $entityClass = FileDistributionRoom::class;
 
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
-        parent::configure();
-        
         $this->title = _('Rooms');
         $this->itemTitle = _('Room');
         $this->id = 'filedistribution_rooms';
         $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';
-        $this->templates['crud_index'] = 'StsblFileDistributionBundle:Crud:file_distribution_rooms_index.html.twig';
+        $this->templates['crud_index'] = '@StsblFileDistribution/Crud/file_distribution_rooms_index.html.twig';
     }
-    
+
     /**
-     * @required
+     * {@inheritDoc}
      */
-    public function setLogger(Logger $logger): void
+    public function isAllowedTo(string $action, UserInterface $user, CrudInterface $object = null): bool
     {
-        $this->logger = $logger;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function isAllowedToView(CrudInterface $object = null, UserInterface $user = null)
-    {
-        // disable show action, it is useless here
-        return false;
+        return self::ACTION_ADD === $action;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isAllowedToAdd(UserInterface $user = null)
-    {
-        return true;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function isAllowedToEdit(CrudInterface $object = null, UserInterface $user = null)
-    {
-        return false;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function isAllowedToDelete(CrudInterface $object = null, UserInterface $user = null)
-    {
-        return true;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function configureFields(AbstractBaseMapper $mapper)
+    public function configureFields(AbstractBaseMapper $mapper): void
     {
         $options = [
             'label' => _('Room'),
         ];
-        
+
         if ($mapper instanceof FormMapper) {
-            $options['query_builder'] = function (EntityRepository $er) {
+            $options['query_builder'] = static function (EntityRepository $er) {
                 $subQb = $er->createQueryBuilder('fr');
-            
+
                 $subQb
                     ->resetDqlParts()
                     ->select('fr')
                     ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
                     ->where($subQb->expr()->eq('fr.room', 'r.id'))
                 ;
-                
+
                 return $er->createQueryBuilder('r')
                     ->where($subQb->expr()->not($subQb->expr()->exists($subQb)))
                     ->orderBy('r.name', 'ASC')
                 ;
             };
         }
-        
+
         $mapper->add('room', null, $options);
     }
-    
+
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    protected function getRoutePattern($action, $id, $entityBased = true)
+    public static function defineRoutes(): RoutingDefinition
     {
-        if ('index' === $action) {
-            return sprintf('/%s%s', $this->routesPrefix, 'filedistribution/rooms');
-        } elseif ('batch' === $action || 'batch/confirm' === $action) {
-            return sprintf('/%s%s/%s', $this->routesPrefix, 'filedistribution/rooms', $action);
-        } else {
-            return sprintf('/%s%s/%s', $this->routesPrefix, 'filedistribution/room', $action);
+        $definition = parent::defineRoutes()
+            ->useControllerForAction(self::ACTION_INDEX, FileDistributionController::class . '::roomIndexAction')
+            ->setPathPrefix('/admin/filedistribution/')
+            ->setNamePrefix('admin_filedistribution_')
+        ;
+
+        // FIXME: Remove, after CRUD allows proper access!
+        try {
+            $reflectionProperty = new \ReflectionProperty($definition, 'baseName');
+        } catch (\ReflectionException $e) {
+            throw new \RuntimeException('Could not reflect!', 0, $e);
         }
+
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($definition, 'rooms');
+
+        try {
+            $reflectionProperty = new \ReflectionProperty($definition, 'basePath');
+        } catch (\ReflectionException $e) {
+            throw new \RuntimeException('Could not reflect!', 0, $e);
+        }
+
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($definition, 'room');
+
+        return $definition;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function buildRoutes()
-    {
-        parent::buildRoutes();
-        
-        $this->routes[self::ACTION_INDEX]['_controller'] = FileDistributionController::class . '::roomIndexAction';
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function prepareBreadcrumbs()
+    public function prepareBreadcrumbs(): array
     {
         $ret = parent::prepareBreadcrumbs();
-        $ret[_('File distribution')] = $this->router->generate('fd_filedistribution_index');
+        $ret[_('File distribution')] = $this->router()->generate('fd_filedistribution_index');
 
         return $ret;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function isAuthorized()
+    public function isAuthorized(): bool
     {
         return $this->isGranted(Privilege::FD_ROOMS);
     }
-    
+
     /* LOGGING */
-    
+
     /**
      * {@inheritdoc}
      */
-    public function postPersist(CrudInterface $object)
+    public function postPersist(CrudInterface $object): void
     {
-        $this->logger->writeForModule(sprintf('Raum "%s" zur Raumliste hinzugefügt', (string)$object->getRoom()), 'File distribution');
+        $this->logger()->writeForModule(sprintf('Raum "%s" zur Raumliste hinzugefügt', (string)$object->getRoom()), 'File distribution');
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function postRemove(CrudInterface $object)
+    public function postRemove(CrudInterface $object): void
     {
-        $this->logger->writeForModule(sprintf('Raum "%s" aus der Raumliste entfernt', (string)$object->getRoom()), 'File distribution');
+        $this->logger()->writeForModule(sprintf('Raum "%s" aus der Raumliste entfernt', (string)$object->getRoom()), 'File distribution');
+    }
+
+    private function logger(): Logger
+    {
+        return $this->locator->get(Logger::class);
+    }
+
+    public static function getSubscribedServices(): array
+    {
+        $deps = parent::getSubscribedServices();
+        $deps[] = Logger::class;
+
+        return $deps;
     }
 }

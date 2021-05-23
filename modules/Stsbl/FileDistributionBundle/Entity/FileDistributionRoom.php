@@ -1,5 +1,7 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Entity/FileDistributionRoom.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -47,56 +49,47 @@ class FileDistributionRoom implements CrudInterface
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * 
-     * @var integer
+     *
+     * @var int
      */
     private $id;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="\IServ\RoomBundle\Entity\Room")
      * @ORM\JoinColumn(name="room_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotBlank()
-     * 
+     *
      * @var Room
      */
     private $room;
-    
+
     /**
      * {@inheritdoc}
      */
-    public function __toString() 
+    public function __toString(): string
     {
         return $this->room->getName();
     }
 
     /**
      * {@inheritdoc}
-     */    
-    public function getId()
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * Set room
-     *
-     * @param Room $room
-     *
-     * @return FileDistributionRoom
+     * @return $this
      */
-    public function setRoom(Room $room)
+    public function setRoom(Room $room): self
     {
         $this->room = $room;
 
         return $this;
     }
 
-    /**
-     * Get room
-     *
-     * @return Room
-     */
-    public function getRoom()
+    public function getRoom(): ?Room
     {
         return $this->room;
     }

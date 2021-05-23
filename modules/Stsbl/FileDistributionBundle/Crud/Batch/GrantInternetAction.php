@@ -1,5 +1,7 @@
 <?php
+
 // src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -39,16 +41,19 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensourc.org/licenses/MIT>
  */
-class GrantInternetAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class GrantInternetAction extends AbstractFileDistributionAction
 {
     use Traits\InternetTimeFormTrait;
-    
+
+    /**
+     * {@inheritDoc}
+     */
     protected $privileges = Privilege::INET_ROOMS;
-    
+
     /**
      * {@inheritdoc}
      */
-    public function execute(ArrayCollection $entities)
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\Host[] */
         $messages = [];
@@ -63,41 +68,51 @@ class GrantInternetAction extends AbstractFileDistributionAction implements Grou
             $overrideUntil = new \DateTime(sprintf('now + %d minutes', (int)$this->until));
         }
 
-        $this->crud->getInternet()->grant($entities, $overrideUntil);
+
+        $internet = $this->crud->internet();
+
+        if (null === $internet) {
+            $bag = new FlashMessageBag();
+            $bag->addError(_('The internet is not available.'));
+
+            return $bag;
+        }
+
+        $internet->grant($entities, $overrideUntil);
 
         foreach ($entities as $e) {
             $messages[] = $this->createFlashMessage('success', __('Granted internet access for %s.', (string)$e));
         }
-        
+
         $bag = new FlashMessageBag();
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         return $bag;
     }
-    
+
     /**
      * {@inheritodc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'inetgrant';
     }
-    
+
     /**
      * {@inheritodc}
      */
-    public function getLabel() 
+    public function getLabel(): string
     {
         return _('Grant');
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getTooltip() 
+    public function getTooltip(): string
     {
         return _('Grant internet access to the selected hosts.');
     }
@@ -105,15 +120,15 @@ class GrantInternetAction extends AbstractFileDistributionAction implements Grou
     /**
      * {@inheritdoc}
      */
-    public function getListIcon()
+    public function getListIcon(): string
     {
         return 'pro-ok-sign';
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getConfirmClass()
+    public function getConfirmClass(): string
     {
         return 'primary';
     }
@@ -121,18 +136,16 @@ class GrantInternetAction extends AbstractFileDistributionAction implements Grou
     /**
      * {@inheritdoc}
      */
-    public function getGroup()
+    public function getGroup(): string
     {
         return _('Internet');
     }
 
     /**
-     * @param CrudInterface $object
-     * @param UserInterface $user
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user): bool
     {
-        return $this->crud->getAuthorizationChecker()->isGranted(Privilege::INET_ROOMS);
+        return $this->crud->authorizationChecker()->isGranted(Privilege::INET_ROOMS);
     }
 }

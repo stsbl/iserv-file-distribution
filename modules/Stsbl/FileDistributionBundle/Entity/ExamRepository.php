@@ -1,5 +1,7 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Entity/ExamRepository.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\NoResultException;
@@ -37,20 +39,18 @@ use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
  *
  * @deprecated Just for transitional purposes. Do not use for any new code!
  */
-class ExamRepository extends EntitySpecificationRepository
+final class ExamRepository extends EntitySpecificationRepository
 {
     /**
-     * Checks if there's at least on file distribution.
-     * 
-     * @return boolean
+     * Checks if there's at least one exam.
      */
-    public function exists()
+    public function exists(): bool
     {
         $qb = $this->createQueryBuilder('c')
             ->select('1')
             ->setMaxResults(1)
         ;
-        
+
         try {
             $qb->getQuery()->getSingleScalarResult();
             return true;

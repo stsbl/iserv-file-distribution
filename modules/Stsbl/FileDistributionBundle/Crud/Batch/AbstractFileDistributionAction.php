@@ -1,8 +1,10 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/AbstractFileDistributionAction.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
-use IServ\CrudBundle\Crud\AbstractCrud;
+use IServ\CrudBundle\Contracts\CrudContract;
 use IServ\CrudBundle\Crud\Batch\AbstractBatchAction;
 use IServ\CrudBundle\Crud\Batch\FormExtendingBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessage;
@@ -47,12 +49,12 @@ abstract class AbstractFileDistributionAction extends AbstractBatchAction implem
      * @var FileDistributionCrud
      */
     protected $crud;
-    
+
     /**
      * @var string|array
      */
     protected $privileges;
-    
+
     /**
      * @var Session
      */
@@ -61,61 +63,55 @@ abstract class AbstractFileDistributionAction extends AbstractBatchAction implem
     /**
      * {@inheritdoc}
      */
-    public function __construct(AbstractCrud $crud, $enabled = true) {
+    public function __construct(CrudContract $crud, $enabled = true) {
         // check for valid crud
         if (!$crud instanceof FileDistributionCrud) {
             throw new \InvalidArgumentException(sprintf('This batch action only supports the CRUD %s or childs of it.', FileDistributionCrud::class));
         }
-        
-        $this->session = $crud->getSession();
+
+        $this->session = $crud->session();
         parent::__construct($crud, $enabled);
     }
-    
+
     /**
      * Gets the file distribution manager and validates the required privilege.
-     * 
-     * @return FileDistributionManager
      */
-    protected function getFileDistributionManager()
+    protected function getFileDistributionManager(): FileDistributionManager
     {
         if ($this->privileges && !$this->checkPrivileges()) {
-            throw new AccessDeniedException(sprintf('You need the %s privilege for this action!', $this->privilege));
+            throw new AccessDeniedException(sprintf('You need the %s privileges for this action!', (is_array($this->privileges) ? \implode(', ', $this->privileges) : $this->privileges)));
         }
-        
-        return $this->crud->getFileDistributionManager();
+
+        return $this->crud->fileDistributionManager();
     }
-    
+
     /**
      * Checks if required privileges are granted.
-     * 
-     * @return bool
      */
-    protected function checkPrivileges()
+    protected function checkPrivileges(): bool
     {
         if (is_string($this->privileges)) {
-            return $this->crud->getAuthorizationChecker()->isGranted($this->privileges);
-        } else if (is_array($this->privileges)) {
+            return $this->crud->authorizationChecker()->isGranted($this->privileges);
+        }
+
+        if (is_array($this->privileges)) {
             $granted = true;
             foreach ($this->privileges as $p) {
-                if (!$this->crud->getAuthorizationChecker()->isGranted($p)) {
+                if (!$this->crud->authorizationChecker()->isGranted($p)) {
                     $granted = false;
                     break;
                 }
             }
             return $granted;
-        } else {
-            throw new \InvalidArgumentException(sprintf('Unexpected type %s for privileges variable!', gettype($this->privileges)));
         }
+
+        throw new \InvalidArgumentException(sprintf('Unexpected type %s for privileges variable!', gettype($this->privileges)));
     }
-    
+
     /**
      * Create new flash message
-     * 
-     * @param string $type
-     * @param string $message
-     * @return FlashMessage
      */
-    protected function createFlashMessage($type, $message)
+    protected function createFlashMessage(string $type, string $message): FlashMessage
     {
         return new FlashMessage($type, $message);
     }

@@ -1,12 +1,13 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\HostBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -40,23 +41,30 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class StopAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class StopAction extends AbstractFileDistributionAction
 {
     use Traits\NoopFormTrait;
-    
-    protected $privileges = [Privilege::USE_FD, Privilege::BOOT];
-    
+
     /**
-     * {@inheritodc}
+     * {@inheritDoc}
+     */
+    protected $privileges = [Privilege::USE_FD, Privilege::BOOT];
+
+    /**
+     * {@inheritDoc}
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
-        /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
         $user = $this->crud->getUser();
+
+        if (null === $user) {
+            throw new \RuntimeException('No user available.');
+        }
+
         $messages = [];
-        
+
+        /* @var $entities Host[] */
         foreach ($entities as $key => $entity) {
-            /* @var $entity \Stsbl\FileDistributionBundle\Entity\Host */
             if (!$this->isAllowedToExecute($entity, $user)) {
                 // remove unallowed hosts
                 $messages[] = $this->createFlashMessage(
@@ -73,11 +81,11 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
         }
 
         $bag = $this->getFileDistributionManager()->disableFileDistribution($entities);
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         return $bag;
     }
 
@@ -88,7 +96,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     {
         return 'stop';
     }
-    
+
     /**
      * {@inheritodc}
      */
@@ -96,7 +104,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     {
         return _('Stop');
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -112,7 +120,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     {
         return 'pro-disk-save';
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -120,7 +128,7 @@ class StopAction extends AbstractFileDistributionAction implements GroupableBatc
     {
         return 'danger';
     }
-    
+
     /**
      * {@inheritdoc}
      */

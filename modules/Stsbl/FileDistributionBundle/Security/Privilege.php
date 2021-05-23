@@ -1,5 +1,7 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Security/Privilege.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Security;
 
 /*
@@ -32,17 +34,17 @@ namespace Stsbl\FileDistributionBundle\Security;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-final class Privilege 
+final class Privilege
 {
-    const USE_FD = 'PRIV_FILE_DISTRIBUTION';
-    
-    const FD_ROOMS = 'PRIV_FILE_DISTRIBUTION_ROOMS';
-    
-    const INET_ROOMS = 'PRIV_INET_ROOMS';
-    
-    const EXAM = 'PRIV_EXAM';
+    public const USE_FD = 'PRIV_FILE_DISTRIBUTION';
 
-    const LOCK = 'PRIV_LOCK';
+    public const FD_ROOMS = 'PRIV_FILE_DISTRIBUTION_ROOMS';
 
-    const BOOT = 'PRIV_COMPUTER_BOOT';
+    public const INET_ROOMS = 'PRIV_INET_ROOMS';
+
+    public const EXAM = 'PRIV_EXAM';
+
+    public const LOCK = 'PRIV_LOCK';
+
+    public const BOOT = 'PRIV_COMPUTER_BOOT';
 }

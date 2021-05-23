@@ -1,5 +1,7 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/NoopFormTrait.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch\Traits;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -49,7 +51,7 @@ trait NoopFormTrait
     {
         // bypass
     }
-    
+
     /**
      * Gets called with the full form data instead of `execute`.
      */

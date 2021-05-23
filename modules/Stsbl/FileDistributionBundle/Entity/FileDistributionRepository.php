@@ -1,5 +1,7 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Entity/FileDistributionRepository.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\NoResultException;
@@ -35,20 +37,18 @@ use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionRepository extends EntitySpecificationRepository
+final class FileDistributionRepository extends EntitySpecificationRepository
 {
     /**
-     * Checks if there's at least on file distribution.
-     * 
-     * @return boolean
+     * Checks if there's at least one file distribution.
      */
-    public function exists()
+    public function exists(): bool
     {
         $qb = $this->createQueryBuilder('c')
             ->select('1')
             ->setMaxResults(1)
         ;
-        
+
         try {
             $qb->getQuery()->getSingleScalarResult();
             return true;

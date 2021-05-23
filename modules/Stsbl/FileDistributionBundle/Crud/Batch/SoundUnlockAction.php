@@ -1,11 +1,12 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\HostBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
 /*
@@ -38,30 +39,30 @@ use Stsbl\FileDistributionBundle\Security\Privilege;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class SoundUnlockAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class SoundUnlockAction extends AbstractFileDistributionAction
 {
     use Traits\NoopFormTrait;
-    
+
     protected $privileges = [Privilege::USE_FD, Privilege::BOOT];
-    
+
     /**
      * {@inheritdoc}
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
-        /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
         $messages = [];
-        
+
+        /* @var $entities Host[] */
         foreach ($entities as $entity) {
             $messages[] = $this->createFlashMessage('success', __('Enabled sound on %s.', (string)$entity->getName()));
         }
-        
+
         $bag = $this->getFileDistributionManager()->soundUnlock($entities);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         return $bag;
     }
 
@@ -79,7 +80,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     {
         return _('Enable');
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -95,7 +96,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     {
         return 'pro-volume-up';
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -103,7 +104,7 @@ class SoundUnlockAction extends AbstractFileDistributionAction implements Groupa
     {
         return 'primary';
     }
-    
+
     /**
      * {@inheritdoc}
      */

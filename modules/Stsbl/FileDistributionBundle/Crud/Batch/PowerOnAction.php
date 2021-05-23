@@ -1,58 +1,79 @@
 <?php
-// src/IServ/Stsbl/FileDistributionBundle/Batch/PowerOnAction.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\ComputerBundle\Security\Privilege;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 
-class PowerOnAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class PowerOnAction extends AbstractFileDistributionAction
 {
     use Traits\NoopFormTrait;
-    
+
     protected $privileges = Privilege::BOOT;
 
-    public function getName()
+    /**
+     * {@inheritDoc}
+     */
+    public function getName(): string
     {
         return 'power_on';
     }
 
-    public function getLabel()
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
     {
         return _('Power On');
     }
 
-    public function getTooltip()
+    /**
+     * {@inheritDoc}
+     */
+    public function getTooltip(): string
     {
         return _('Sends Wake-on-LAN packets to the selected computers to wake them.');
     }
 
-    public function getListIcon()
+    /**
+     * {@inheritDoc}
+     */
+    public function getListIcon(): string
     {
         return 'pro-remote-control';
     }
 
-    public function getGroup()
+    /**
+     * {@inheritDoc}
+     */
+    public function getGroup(): string
     {
         return _('Start & Shutdown');
     }
 
-    public function execute(ArrayCollection $entities)
+    /**
+     * {@inheritDoc}
+     */
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
         $messages = [];
-        
-        foreach ($entities as $key => $entity) {
-            if ($entity->getMac() != null) {
+
+        foreach ($entities as $entity) {
+            if ($entity->getMac() !== null) {
                 $messages[] = $this->createFlashMessage('success', __('Sent power on command to %s.', (string)$entity->getName()));
             }
         }
-        
+
         $bag = $this->getFileDistributionManager()->wol($entities);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         return $bag;
     }
 }

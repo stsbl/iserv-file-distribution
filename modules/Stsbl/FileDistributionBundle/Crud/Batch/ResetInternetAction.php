@@ -1,11 +1,13 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/GrantInternetAction.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\HostBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -39,55 +41,64 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensourc.org/licenses/MIT>
  */
-class ResetInternetAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class ResetInternetAction extends AbstractFileDistributionAction
 {
     use Traits\NoopFormTrait;
-    
+
     protected $privileges = Privilege::INET_ROOMS;
-    
+
     /**
      * {@inheritdoc}
      */
-    public function execute(ArrayCollection $entities)
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
-        /* @var $entities \Stsbl\FileDistributionBundle\Entity\Host[] */
+        /* @var $entities Host[] */
         $messages = [];
 
-        $this->crud->getInternet()->reset($entities);
+        $internet = $this->crud->internet();
+
+        if (null === $internet) {
+            $bag = new FlashMessageBag();
+            $bag->addError(_('The internet is not available.'));
+
+            return $bag;
+        }
+
+        $internet->reset($entities);
 
         foreach ($entities as $e) {
             $messages[] = $this->createFlashMessage('success', __('Reset internet access for %s.', (string)$e));
         }
-        
+
         $bag = new FlashMessageBag();
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         return $bag;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return 'inetreset';
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getLabel() 
+    public function getLabel(): string
     {
         return _('Reset');
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getTooltip() 
+    public function getTooltip(): string
     {
         return _('Reset internet access of the selected hosts to the default value.');
     }
@@ -95,15 +106,15 @@ class ResetInternetAction extends AbstractFileDistributionAction implements Grou
     /**
      * {@inheritdoc}
      */
-    public function getListIcon()
+    public function getListIcon(): string
     {
         return 'repeat';
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getConfirmClass()
+    public function getConfirmClass(): string
     {
         return 'primary';
     }
@@ -111,18 +122,16 @@ class ResetInternetAction extends AbstractFileDistributionAction implements Grou
     /**
      * {@inheritdoc}
      */
-    public function getGroup()
+    public function getGroup(): string
     {
         return _('Internet');
     }
 
     /**
-     * @param CrudInterface $object
-     * @param UserInterface $user
-     * @return boolean
+     * {@inheritdoc}
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user): bool
     {
-        return $this->crud->getAuthorizationChecker()->isGranted(Privilege::INET_ROOMS);
+        return $this->crud->authorizationChecker()->isGranted(Privilege::INET_ROOMS);
     }
 }

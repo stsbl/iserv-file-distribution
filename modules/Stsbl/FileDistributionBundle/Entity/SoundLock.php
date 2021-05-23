@@ -1,5 +1,7 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Entity/SoundLock.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -34,7 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * StsblFileDistributionBundle:SoundLock
- * 
+ *
  * @license MIT license <https://opensource.org/licenses/MIT>
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @ORM\Entity
@@ -47,11 +49,11 @@ class SoundLock implements CrudInterface
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * 
-     * @var integer
+     *
+     * @var int
      */
     private $id;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="\IServ\CoreBundle\Entity\User")
      * @ORM\JoinColumn(name="act", referencedColumnName="act", onDelete="CASCADE")
@@ -60,105 +62,76 @@ class SoundLock implements CrudInterface
      * @var User
      */
     private $user;
-    
+
     /**
      * @ORM\Column(type="text", nullable=false)
-     * 
+     *
      * @var string
      */
     private $act;
-    
+
     /**
-     * DO NOT ADD ANY REFERENCES to Host here, because Symfony do not like it!
-     * 
+     * DO NOT ADD ANY REFERENCES to Host here, because Symfony does not like it!
+     *
      * //@ORM\OneToOne(targetEntity="\IServ\HostBundle\Entity\Host", fetch="EAGER")
      * //@ORM\JoinColumn(name="ip", referencedColumnName="ip", onDelete="CASCADE")
      * @ORM\Column(type="text", nullable=false)
      * @Assert\NotBlank()
      * @Assert\Ip()
-     * 
+     *
      * @var string
      */
     private $ip;
 
     /**
-     * Get id
-     *
-     * @return integer
+     * {@inheritDoc}
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * Set act
-     *
-     * @param string $act
-     *
-     * @return SoundLock
+     * @return $this
      */
-    public function setAct($act)
+    public function setAct(string $act): self
     {
         $this->act = $act;
 
         return $this;
     }
 
-    /**
-     * Get act
-     *
-     * @return string
-     */
-    public function getAct()
+    public function getAct(): string
     {
         return $this->act;
     }
 
     /**
-     * Set ip
-     *
-     * @param string $ip
-     *
-     * @return SoundLock
+     * @return $this
      */
-    public function setIp($ip)
+    public function setIp(string $ip): self
     {
         $this->ip = $ip;
 
         return $this;
     }
 
-    /**
-     * Get ip
-     *
-     * @return string
-     */
-    public function getIp()
+    public function getIp(): string
     {
         return $this->ip;
     }
 
     /**
-     * Set user
-     *
-     * @param \IServ\CoreBundle\Entity\User $user
-     *
-     * @return SoundLock
+     * @return $this
      */
-    public function setUser(User $user = null)
+    public function setUser(User $user = null): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * Get user
-     *
-     * @return \IServ\CoreBundle\Entity\User
-     */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -166,7 +139,7 @@ class SoundLock implements CrudInterface
     /**
      * {@inheritdoc}
      */
-    public function __toString() 
+    public function __toString(): string
     {
         return $this->ip;
     }

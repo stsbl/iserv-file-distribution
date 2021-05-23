@@ -1,63 +1,81 @@
 <?php
-// src/FileDistributionBundle/Crud/Batch/UnlockAction.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class UnlockAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class UnlockAction extends AbstractFileDistributionAction
 {
     use Traits\NoopFormTrait;
-    
-    protected $privileges = Privilege::LOCK; // FIXME
 
-    public function getName()
+    /**
+     * {@inheritDoc}
+     */
+    protected $privileges = Privilege::LOCK;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName(): string
     {
         return 'unlock';
     }
 
-    public function getLabel()
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
     {
         return _('Unlock');
     }
 
-    public function getTooltip()
+    /**
+     * {@inheritDoc}
+     */
+    public function getTooltip(): string
     {
         return _('Unlocks the selected computers.');
     }
 
-    public function getListIcon()
+    /**
+     * {@inheritDoc}
+     */
+    public function getListIcon(): string
     {
         return 'pro-unlock';
     }
 
-    public function execute(ArrayCollection $entities)
+    /**
+     * {@inheritDoc}
+     */
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
         $messages = [];
-        
+
         foreach ($entities as $key => $entity) {
             $messages[] = $this->createFlashMessage('success', __('%s unlocked successful.', (string)$entity->getName()));
         }
-        
-        $bag = $this->crud->getLockManager()->unlock($entities);
+
+        $bag = $this->crud->lockManager()->unlock($entities);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         return $bag;
     }
-    
+
     /**
-     * @param CrudInterface $object
-     * @param UserInterface $user
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user): bool
     {
-        return $this->crud->getAuthorizationChecker()->isGranted(Privilege::LOCK); // FIXME
+        return $this->crud->authorizationChecker()->isGranted(Privilege::LOCK);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
@@ -45,25 +46,28 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class EnableAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class EnableAction extends AbstractFileDistributionAction
 {
+    /**
+     * {@inheritDoc}
+     */
     protected $privileges = [Privilege::USE_FD, Privilege::BOOT];
-    
+
     /**
      * @var string
      */
     private $title;
-    
+
     /**
      * @var bool
      */
     private $isolation;
-    
+
     /**
      * @var string
      */
     private $folderAvailability;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -77,19 +81,19 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
                 ],
                 'attr' => [
                     'placeholder' => _('Title for this file distribution'),
-                    'help_text' => _('The folder path where you will find the assignment folder and the returns will '.
+                    'help_text' => _('The folder path where you will find the assignment folder and the returns will ' .
                         'be Files/File-Distribution/<Title>.'),
                     'required' => 'required'
                 ]
             ]);
-        
+
         $isolationAttr = [];
-        if ($this->crud->getConfig()->get('FileDistributionHostIsolationDefault')) {
+        if ($this->crud->config()->get('FileDistributionHostIsolationDefault')) {
             $isolationAttr['checked'] = 'checked';
         }
-        $isolationAttr['help_text'] = _('Enable host isolation if you want to prevent that users can exchange files '.
+        $isolationAttr['help_text'] = _('Enable host isolation if you want to prevent that users can exchange files ' .
             'by sharing their accounts.');
-        
+
         $form
             ->add('isolation', CheckboxType::class, [
                 'label' => _('Host isolation'),
@@ -104,14 +108,14 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
                 ],
                 'expanded' => true,
                 'required' => true,
-                'data' => $this->crud->getConfig()->get('FileDistributionFolderAvailabilityDefault'),
+                'data' => $this->crud->config()->get('FileDistributionFolderAvailabilityDefault'),
                 'constraints' => [
                     new NotBlank(['message' => _('Please choose availability of group folders and shares.')]),
                 ]
             ])
         ;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -121,13 +125,13 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
         if (empty($data['isolation'])) {
             $this->isolation = false;
         } else {
-            $this->isolation = (boolean)$data['isolation'];
+            $this->isolation = (bool)$data['isolation'];
         }
         $this->folderAvailability = $data['folder_availability'];
-        
+
         return $this->execute($data['multi']);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -135,28 +139,33 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     {
         /* @var $entities \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
         $user = $this->crud->getUser();
+
+        if (null === $user) {
+            throw new \RuntimeException('No user available');
+        }
+
         $messages = [];
         $error = false;
-        
+
         if ($this->isolation === null) {
             throw new \InvalidArgumentException('Parameter isolation is not set!');
         }
-        
+
         foreach ($entities as $key => $entity) {
             $skipOwnHost = false;
-            
+
             if (empty($this->title)) {
                 $messages[] = $this->createFlashMessage('error', _('Title should not be empty!'));
                 $error = true;
                 break;
             }
-            
-            if ($entity->getIp() === $this->crud->getRequest()->getClientIp() && count($entities) > 1) {
+
+            if ($entity->getIp() === $this->crud->request()->getClientIp() && count($entities) > 1) {
                 $messages[] = $this->createFlashMessage('warning', _('Skipping own host!'));
                 unset($entities[$key]);
                 $skipOwnHost = true;
             }
-            
+
             if (!$this->isAllowedToExecute($entity, $user)) {
                 // remove unallowed hosts
                 $messages[] = $this->createFlashMessage(
@@ -171,7 +180,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
                 );
             }
         }
-        
+
         // only execute rpc, if we have no errors and at least one entity
         if (!$error && count($entities) > 0) {
             $bag = $this->getFileDistributionManager()->enableFileDistribution(
@@ -183,13 +192,13 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
         } else {
             $bag = new FlashMessageBag();
         }
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         $this->session->set('fd_title', $this->title);
-        
+
         return $bag;
     }
 
@@ -200,7 +209,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     {
         return 'enable';
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -208,7 +217,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     {
         return _('Start');
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -224,7 +233,7 @@ class EnableAction extends AbstractFileDistributionAction implements GroupableBa
     {
         return 'pro-disk-open';
     }
-    
+
     /**
      * {@inheritdoc}
      */

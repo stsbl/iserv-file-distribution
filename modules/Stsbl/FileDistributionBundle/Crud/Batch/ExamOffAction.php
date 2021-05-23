@@ -1,68 +1,89 @@
 <?php
-// src/IServ/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ExamOffAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class ExamOffAction extends AbstractFileDistributionAction
 {
     use Traits\NoopFormTrait;
-    
+
+    /**
+     * {@inheritDoc}
+     */
     protected $privileges = Privilege::EXAM;
-    
-    public function getName()
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName(): string
     {
         return 'exam_off';
     }
 
-    public function getLabel()
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
     {
         return _('Deactivate');
     }
 
-    public function getTooltip()
+    /**
+     * {@inheritDoc}
+     */
+    public function getTooltip(): string
     {
         return _('Deactivate exam mode on the selected computers.');
     }
 
-    public function getListIcon()
+    /**
+     * {@inheritDoc}
+     */
+    public function getListIcon(): string
     {
         return 'pro-disk-save';
     }
-    
-    public function getGroup() 
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getGroup(): string
     {
         return _('Exam Mode');
     }
 
-    public function execute(ArrayCollection $entities)
+    /**
+     * {@inheritDoc}
+     */
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
         $messages = [];
-        
+
         foreach ($entities as $key => $entity) {
             $messages[] = $this->createFlashMessage('success', __('Deactivated exam mode on %s.', (string)$entity->getName()));
         }
-            
+
         $bag = $this->getFileDistributionManager()->examOff($entities);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         return $bag;
     }
-    
+
     /**
-     * @param CrudInterface $object
-     * @param UserInterface $user
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user): bool
     {
-        return $this->crud->getAuthorizationChecker()->isGranted(Privilege::EXAM);
+        return $this->crud->authorizationChecker()->isGranted(Privilege::EXAM);
     }
 }

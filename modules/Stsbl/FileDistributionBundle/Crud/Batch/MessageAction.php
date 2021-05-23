@@ -1,10 +1,13 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/Message.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\HostBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
@@ -40,23 +43,19 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class MessageAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class MessageAction extends AbstractFileDistributionAction
 {
     protected $privileges = Privilege::BOOT;
-    
+
     /**
      * @var string
      */
     private $message;
-    
+
     /**
-     * Allows the batch action to manipulate the form.
-     *
-     * This is called at the end of `prepareBatchActions`.
-     *
-     * @param FormInterface $form
+     * {@inheritDoc}
      */
-    public function finalizeForm(FormInterface $form)
+    public function finalizeForm(FormInterface $form): void
     {
         $form
             ->add('rpc_message', TextareaType::class, [
@@ -72,64 +71,62 @@ class MessageAction extends AbstractFileDistributionAction implements GroupableB
             ])
         ;
     }
-    
+
     /**
-     * Gets called with the full form data instead of `execute`.
-     *
-     * @param array $data
-     * @return FlashMessageBag
+     * {@inheritDoc}
      */
-    public function handleFormData(array $data)
+    public function handleFormData(array $data): FlashMessageBag
     {
         $this->message = $data['rpc_message'];
+
         return $this->execute($data['multi']);
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function execute(ArrayCollection $entities) 
-    {
-        if ($this->message === null) {
-            throw new \InvalidArgumentException('No message set!');
-        }
-        
-        /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
-        $messages = [];
-        
-        foreach ($entities as $entity) {
-            $messages[] = $this->createFlashMessage('success', __('Sent message to %s.', (string)$entity->getName()));
-        }
-        
-        $bag = $this->getFileDistributionManager()->msg($entities, $this->message);
-        // add messsages created during work
-        foreach ($messages as $message) {
-            $bag->add($message);
-        }        
-        
-        return $bag;        
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getName() 
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
-        return 'message';
+        if ($this->message === null) {
+            throw new \InvalidArgumentException('No message set!');
+        }
+
+        $messages = [];
+
+        /* @var Host[] $entities */
+        foreach ($entities as $entity) {
+            $messages[] = $this->createFlashMessage('success', __('Sent message to %s.', (string)$entity->getName()));
+        }
+
+        $bag = $this->getFileDistributionManager()->msg($entities, $this->message);
+        // add messsages created during work
+        foreach ($messages as $message) {
+            $bag->add($message);
+        }
+
+        return $bag;
     }
-    
-    /**
-     * {@inheritodc}
-     */
-    public function getLabel() 
-    {
-        return _('Send message');
-    }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getTooltip() 
+    public function getName(): string
+    {
+        return 'message';
+    }
+
+    /**
+     * {@inheritodc}
+     */
+    public function getLabel(): string
+    {
+        return _('Send message');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTooltip(): string
     {
         return _('Send message to the selected hosts.');
     }
@@ -137,23 +134,23 @@ class MessageAction extends AbstractFileDistributionAction implements GroupableB
     /**
      * {@inheritdoc}
      */
-    public function getListIcon()
+    public function getListIcon(): string
     {
         return 'pro-message-full';
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getConfirmClass()
+    public function getConfirmClass(): string
     {
         return 'primary';
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getGroup()
+    public function getGroup(): string
     {
         return _('Communication');
     }

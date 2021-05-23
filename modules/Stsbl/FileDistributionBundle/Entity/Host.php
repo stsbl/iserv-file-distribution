@@ -1,9 +1,10 @@
 <?php
-// src/Stsbl/MailRedirectionBundle/Entity/Host.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\HostBundle\Entity\Host as BaseHost;
 
 /*
@@ -36,12 +37,9 @@ use IServ\HostBundle\Entity\Host as BaseHost;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  *
- * @deprecated Just for transitional purposes. Do not use for any new code!
- *
  * @ORM\Entity(repositoryClass="Stsbl\FileDistributionBundle\Repository\HostRepository")
  * @ORM\Table(name="hosts")
  */
-class Host extends BaseHost implements CrudInterface
+class Host extends BaseHost
 {
-
 }

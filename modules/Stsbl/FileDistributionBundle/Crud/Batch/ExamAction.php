@@ -1,5 +1,7 @@
 <?php
-// src/IServ/Stsbl/FileDistributionBundle/Crud/Batch/LockAction.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,15 +14,18 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class ExamAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class ExamAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
 {
+    /**
+     * {@inheritDoc}
+     */
     protected $privileges = Privilege::EXAM;
-    
+
     /**
      * @var string
      */
     private $title;
-    
+
     /**
      * Allows the batch action to manipulate the form.
      *
@@ -43,89 +48,106 @@ class ExamAction extends AbstractFileDistributionAction implements GroupableBatc
             ])
         ;
     }
-    
+
     /**
-     * Gets called with the full form data instead of `execute`.
-     *
-     * @param array $data
-     * @return FlashMessageBag
+     * {@inheritDoc}
      */
-    public function handleFormData(array $data)
+    public function handleFormData(array $data): FlashMessageBag
     {
         $this->title = $data['exam_title'];
+
         return $this->execute($data['multi']);
     }
-    
-    public function getName()
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName(): string
     {
         return 'exam';
     }
 
-    public function getLabel()
+    /**
+     * {@inheritDoc}
+     */
+    public function getLabel(): string
     {
         return _('Enable');
     }
 
-    public function getTooltip()
+    /**
+     * {@inheritDoc}
+     */
+    public function getTooltip(): string
     {
         return _('Switch the selected computers into exam mode.');
     }
 
-    public function getListIcon()
+    /**
+     * {@inheritDoc}
+     */
+    public function getListIcon(): string
     {
         return 'pro-disk-open';
     }
-    
-    public function getGroup() 
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getGroup(): string
     {
         return _('Exam Mode');
     }
 
-    public function execute(ArrayCollection $entities)
+    /**
+     * {@inheritDoc}
+     */
+    public function execute(ArrayCollection $entities): FlashMessageBag
     {
         $messages = [];
         $error = false;
-        
+
         foreach ($entities as $key => $entity) {
             $skipOwnHost = false;
-            
-            if (empty($this->title)) {
-               $messages[] = $this->createFlashMessage('error', _('Title should not be empty!'));
-               $error = true;
-               break;
-            } 
-            
-            if ($entity->getIp() === $this->crud->getRequest()->getClientIp() && count($entities) > 1) {
+
+            if (null === $this->title || '' === $this->title) {
+                $messages[] = $this->createFlashMessage('error', _('Title should not be empty!'));
+                $error = true;
+                break;
+            }
+
+            $request = $this->crud->request();
+            $clientIp = $request ? $request->getClientIp() : null;
+
+            if (null === $clientIp || ($entity->getIp() === $clientIp && count($entities) > 1)) {
                 $messages[] = $this->createFlashMessage('warning', _('Skipping own host!'));
                 unset($entities[$key]);
                 $skipOwnHost = true;
             }
-            
+
             if (!$skipOwnHost) {
                 $messages[] = $this->createFlashMessage('success', __('Switched %s to exam mode.', (string)$entity->getName()));
             }
         }
-        
+
         if (!$error) {
             $bag = $this->getFileDistributionManager()->examOn($entities, $this->title);
         } else {
             $bag = new FlashMessageBag();
         }
-        // add messsages created during work
+        // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         return $bag;
     }
-    
+
     /**
-     * @param CrudInterface $object
-     * @param UserInterface $user
-     * @return boolean
+     * {@inheritDoc}
      */
-    public function isAllowedToExecute(CrudInterface $object, UserInterface $user) 
+    public function isAllowedToExecute(CrudInterface $object, UserInterface $user): bool
     {
-        return $this->crud->getAuthorizationChecker()->isGranted(Privilege::EXAM);
+        return $this->crud->authorizationChecker()->isGranted(Privilege::EXAM);
     }
 }

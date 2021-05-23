@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Repository;
 
+use Doctrine\Persistence\ManagerRegistry;
 use IServ\CoreBundle\Service\BundleDetector;
 use IServ\CrudBundle\Entity\AbstractDecoratedServiceRepository;
 use Stsbl\FileDistributionBundle\Entity\Host;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /*
  * The MIT License
@@ -34,17 +36,15 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 /**
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
- *
- * @deprecated Just for transitional purposes. Do not use for any new code!
  */
-class HostRepository extends AbstractDecoratedServiceRepository
+final class HostRepository extends AbstractDecoratedServiceRepository
 {
     /**
      * @var BundleDetector
      */
     private $bundleDetector;
 
-    public function __construct(RegistryInterface $registry, BundleDetector $bundleDetector)
+    public function __construct(ManagerRegistry $registry, BundleDetector $bundleDetector)
     {
         parent::__construct($registry, Host::class);
 
@@ -53,10 +53,8 @@ class HostRepository extends AbstractDecoratedServiceRepository
 
     /**
      * Resets the internet access for the given hosts
-     *
-     * @return mixed
      */
-    public function resetInternetAccess(\ArrayAccess $hosts)
+    public function resetInternetAccess(\ArrayAccess $hosts): void
     {
         $qb = $this->_em->createQueryBuilder();
 
@@ -69,7 +67,7 @@ class HostRepository extends AbstractDecoratedServiceRepository
             ->setParameter('hosts', $hosts)
         ;
 
-        return $qb->getQuery()->execute();
+        $qb->getQuery()->execute();
     }
 
     /**
@@ -115,7 +113,7 @@ class HostRepository extends AbstractDecoratedServiceRepository
     /**
      * {@inheritdoc}
      */
-    public function getDecoratorColumns()
+    public function getDecoratorColumns(): array
     {
         $ret = [
             'sambaUser' => '(SELECT u FROM IServCoreBundle:User u WHERE u.username = (SELECT MAX(s.act) FROM IServHostBundle:SambaUser s WHERE s.ip=parent.ip AND s.since=(SELECT MAX(v.since) FROM IServHostBundle:SambaUser v WHERE v.ip = parent.ip)))',

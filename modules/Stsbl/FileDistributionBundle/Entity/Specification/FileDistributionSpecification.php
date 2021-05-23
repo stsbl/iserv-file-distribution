@@ -1,5 +1,7 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Entity/Specification/FileDistributionSpecification.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Entity\Specification;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,13 +39,13 @@ use Stsbl\FileDistributionBundle\Entity\Host;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionSpecification extends AbstractSpecification
+final class FileDistributionSpecification extends AbstractSpecification
 {
     /**
      * @var bool
      */
     private $invert;
-    
+
     /**
      * @var EntityManagerInterface
      */
@@ -54,7 +56,7 @@ class FileDistributionSpecification extends AbstractSpecification
         $this->invert = $invert;
         $this->em = $em;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -64,16 +66,16 @@ class FileDistributionSpecification extends AbstractSpecification
         $subQb
             ->select('fr')
             ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
-            ->where('fr.room = '.$dqlAlias.'.room')
+            ->where('fr.room = ' . $dqlAlias . '.room')
         ;
-            
+
         if (true === $this->invert) {
-            return $qb->expr()->andX($qb->expr()->not($qb->expr()->exists($subQb)), $qb->expr()->eq($dqlAlias.'.controllable', 'true'));
-        } else {
-            return $qb->expr()->andX($qb->expr()->exists($subQb), $qb->expr()->eq($dqlAlias.'.controllable', 'true'));
+            return $qb->expr()->andX($qb->expr()->not($qb->expr()->exists($subQb)), $qb->expr()->eq($dqlAlias . '.controllable', 'true'));
         }
+
+        return $qb->expr()->andX($qb->expr()->exists($subQb), $qb->expr()->eq($dqlAlias . '.controllable', 'true'));
     }
-    
+
     /**
      * {@inheritdoc}
      */

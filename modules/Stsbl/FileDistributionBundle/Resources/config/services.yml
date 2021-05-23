@@ -1,4 +1,3 @@
-# src/Stsbl/FileDistributionBundle/Resources/config/services.yml
 services:
     _defaults:
         autoconfigure: true

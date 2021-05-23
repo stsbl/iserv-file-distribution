@@ -1,6 +1,12 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Twig/Extension/Base64.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Twig\Extension;
+
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+
 
 /*
  * The MIT License
@@ -33,23 +39,23 @@ namespace Stsbl\FileDistributionBundle\Twig\Extension;
  * @license MIT license <https://opensource.org/licenses/MIT>
  * @link https://gist.github.com/zburgermeiszter/afb9cb14b9a6f3f023e1 original source
  */
-class Base64 extends \Twig_Extension 
+final class Base64 extends AbstractExtension
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getFilters()
+    public function getFilters(): array
     {
-        return array(
-            new \Twig_SimpleFilter('base64_encode', 'base64_encode'),
-            new \Twig_SimpleFilter('base64_decode', 'base64_decode')
-        );
+        return [
+            new TwigFilter('base64_encode', 'base64_encode'),
+            new TwigFilter('base64_decode', 'base64_decode')
+        ];
     }
-    
+
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function getName()
+    public function getName(): string
     {
         return "base64";
     }

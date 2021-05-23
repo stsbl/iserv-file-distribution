@@ -1,21 +1,25 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Controller/FileDistributionController.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Controller;
 
 use Doctrine\ORM\NoResultException;
 use IServ\CoreBundle\Form\Type\BooleanType;
 use IServ\CoreBundle\Service\Logger;
+use IServ\CoreBundle\Service\User\UserStorageInterface;
 use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Controller\StrictCrudController;
 use IServ\HostBundle\Service\HostStatus;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
 use Stsbl\FileDistributionBundle\Entity\Host;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /*
@@ -48,22 +52,22 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionController extends StrictCrudController
+final class FileDistributionController extends StrictCrudController
 {
-    const ROOM_CONFIG_FILE = '/var/lib/stsbl/file-distribution/cfg/room-mode.json';
-    
+    public const ROOM_CONFIG_FILE = '/var/lib/stsbl/file-distribution/cfg/room-mode.json';
+
     /**
      * {@inheritdoc}
      */
     public function indexAction(Request $request)
     {
         $ret = parent::indexAction($request);
-        
+
         if (is_array($ret)) {
             $session = $request->getSession();
-            
+
             $ret['display_msg'] = $session->has('fd_title');
-            
+
             if ($ret['display_msg']) {
                 $title = $session->get('fd_title');
                 $ret['path'] = ['title' => $title, 'encoded' => base64_encode(sprintf('Files/File-Distribution/%s', $title))];
@@ -71,56 +75,54 @@ class FileDistributionController extends StrictCrudController
             } else {
                 $ret['title'] = null;
             }
-            
+
             $ret['ip'] = $request->getClientIp();
             $ret['room_available'] = $this->getDoctrine()->getRepository('StsblFileDistributionBundle:FileDistributionRoom')->isRoomAvailable();
         }
-        
+
         return $ret;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function confirmBatchAction(Request $request)
     {
         $ret = parent::confirmBatchAction($request);
-        
+
         if (is_array($ret)) {
             $ret['ip'] = $request->getClientIp();
         }
-        
+
         return $ret;
     }
-    
+
     /**
      * Looks up for existing file distributions owned by user
      *
-     * @param Request $request
-     * @return JsonResponse
      * @Route("filedistribution/lookup", name="fd_filedistribution_lookup", options={"expose": true})
      * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
      */
-    public function lookupAction(Request $request)
+    public function lookupAction(Request $request, UserStorageInterface $userStorage): JsonResponse
     {
         $query = $request->get('query');
-        
+
         if (empty($query)) {
             throw new \RuntimeException('query should not be empty.');
         }
-        
+
         $this->get(\IServ\CoreBundle\Service\Sudo::class);
-        
+
         $suggestions = [];
-        $home = $this->getUser()->getHome();
-        $directory = $home.'/File-Distribution/';
-        
-        $directories = Sudo::glob($directory.'*/');
-        
+        $home = $userStorage->getUser()->getHome();
+        $directory = $home . '/File-Distribution/';
+
+        $directories = Sudo::glob($directory . '*/');
+
         // add existing directories to suggestions
         foreach ($directories as $directory) {
             $basename = basename($directory);
-            if (Sudo::is_dir($directory.'Assignment') && Sudo::is_dir($directory.'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
+            if (Sudo::is_dir($directory . 'Assignment') && Sudo::is_dir($directory . 'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
                 $suggestions[$basename] = [
                     'type' => 'existing',
                     'label' => $basename,
@@ -129,12 +131,10 @@ class FileDistributionController extends StrictCrudController
                 ];
             }
         }
-        
+
         $em = $this->getDoctrine()->getManager();
-        
-        /* @var $qb \Doctrine\ORM\QueryBuilder */
-        $qb = $em->createQueryBuilder(self::class);
-        
+        $qb = $em->createQueryBuilder();
+
         // get current file distributions from database
         $qb
             ->select('f')
@@ -142,12 +142,12 @@ class FileDistributionController extends StrictCrudController
             ->where($qb->expr()->eq('f.user', ':user'))
             ->andWhere($qb->expr()->like('f.title', ':query'))
             ->setParameter(':user', $this->getUser())
-            ->setParameter(':query', '%'.$query.'%')
+            ->setParameter(':query', '%' . $query . '%')
         ;
-        
+
         /* @var $results \Stsbl\FileDistributionBundle\Entity\FileDistribution[] */
         $results = $qb->getQuery()->getResult();
-        
+
         foreach ($results as $result) {
             $suggestions[$result->getPlainTitle()] = [
                 'type' => 'running',
@@ -156,21 +156,19 @@ class FileDistributionController extends StrictCrudController
                 'extra' => _('Running file distribution')
             ];
         }
-        
+
         asort($suggestions);
-        
+
         return new JsonResponse($suggestions);
     }
 
     /**
      * Looks up for existing file distributions owned by user
      *
-     * @param Request $request
-     * @return JsonResponse
      * @Route("filedistribution/lookup/exam", name="fd_filedistribution_lookup_exam", options={"expose": true})
      * @Security("is_granted('PRIV_EXAM')")
      */
-    public function lookupExamAction(Request $request)
+    public function lookupExamAction(Request $request): JsonResponse
     {
         if (!file_exists('/var/lib/dpkg/info/iserv-exam.list')) {
             throw $this->createNotFoundException('iserv-exam is currently not installed.');
@@ -186,14 +184,14 @@ class FileDistributionController extends StrictCrudController
 
         $suggestions = [];
         $home = $this->getUser()->getHome();
-        $directory = $home.'/Exam/';
+        $directory = $home . '/Exam/';
 
-        $directories = Sudo::glob($directory.'*/');
+        $directories = Sudo::glob($directory . '*/');
 
         // add existing directories to suggestions
         foreach ($directories as $directory) {
             $basename = basename($directory);
-            if (Sudo::is_dir($directory.'Assignment') && Sudo::is_dir($directory.'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
+            if (Sudo::is_dir($directory . 'Assignment') && Sudo::is_dir($directory . 'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
                 $suggestions[$basename] = [
                     'type' => 'existing',
                     'label' => $basename,
@@ -204,9 +202,7 @@ class FileDistributionController extends StrictCrudController
         }
 
         $em = $this->getDoctrine()->getManager();
-
-        /* @var $qb \Doctrine\ORM\QueryBuilder */
-        $qb = $em->createQueryBuilder(self::class);
+        $qb = $em->createQueryBuilder();
 
         // get current file distributions from database
         $qb
@@ -215,7 +211,7 @@ class FileDistributionController extends StrictCrudController
             ->where($qb->expr()->eq('e.user', ':user'))
             ->andWhere($qb->expr()->like('e.title', ':query'))
             ->setParameter(':user', $this->getUser())
-            ->setParameter(':query', '%'.$query.'%')
+            ->setParameter(':query', '%' . $query . '%')
         ;
 
         /* @var $results \Stsbl\FileDistributionBundle\Entity\Exam[] */
@@ -240,32 +236,28 @@ class FileDistributionController extends StrictCrudController
      *
      * @Route("filedistribution/lookup/hostname", name="fd_filedistribution_lookup_hostname", options={"expose": true})
      * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
-     * @param Request $request
-     * @return JsonResponse
      */
-    public function lookupHostNameAction(Request $request)
+    public function lookupHostNameAction(Request $request): JsonResponse
     {
         /** @var Host $host */
         $host = $this->getDoctrine()->getManager()->getRepository('StsblFileDistributionBundle:Host')->findOneByIp($request->getClientIp());
 
         $name = null;
-        if ($host != null) {
+        if ($host !== null) {
             $name = $host->getName();
         }
 
         return new JsonResponse($name);
     }
-    
+
     /**
      * Get form for room inclusion mode
-     *
-     * @return \Symfony\Component\Form\Form
      */
-    private function getRoomInclusionForm()
+    private function getRoomInclusionForm(): FormInterface
     {
         /* @var $builder \Symfony\Component\Form\FormBuilder */
         $builder = $this->get('form.factory')->createNamedBuilder('file_distribution_room_inclusion');
-        
+
         $mode = FileDistributionCrud::getRoomMode();
 
         if ($mode === true) {
@@ -273,7 +265,7 @@ class FileDistributionController extends StrictCrudController
         } else {
             $mode = 0;
         }
-        
+
         $builder
             ->add('mode', BooleanType::class, [
                 'label' => false,
@@ -290,25 +282,22 @@ class FileDistributionController extends StrictCrudController
                 'icon' => 'pro-floppy-disk'
             ])
         ;
-        
+
         return $builder->getForm();
     }
-    
+
     /**
      * index action for room admin
-     *
-     * @param Request $request
-     * @return array
      */
-    public function roomIndexAction(Request $request)
+    public function roomIndexAction(Request $request): array
     {
         $ret = parent::indexAction($request);
         $form = $this->getRoomInclusionForm();
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $mode = (boolean)$form->getData()['mode'];
-            
+            $mode = (bool)$form->getData()['mode'];
+
             // log if mode is changed
             if ($mode !== FileDistributionCrud::getRoomMode()) {
                 if ($mode === true) {
@@ -318,24 +307,23 @@ class FileDistributionController extends StrictCrudController
                 }
                 $this->get(Logger::class)->writeForModule($text, 'File distribution');
             }
-            
+
             $content = json_encode(['invert' => $mode]);
-            
+
             file_put_contents(self::ROOM_CONFIG_FILE, $content);
             $this->addFlash('success', _('Room settings updated successful.'));
         }
-        
+
         $ret['room_inclusion_form'] = $form->createView();
-        
+
         return $ret;
     }
 
     /**
-     * @return Response
      * @Route("filedistribution/update.js", name="fd_filedistribution_update")
      * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
      */
-    public function updateAction()
+    public function updateAction(): Response
     {
         $params = [
             'status' => $this->get(HostStatus::class)->getAll(),
@@ -350,7 +338,7 @@ class FileDistributionController extends StrictCrudController
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedServices()
+    public static function getSubscribedServices(): array
     {
         $deps = parent::getSubscribedServices();
         $deps[] = \IServ\CoreBundle\Service\Sudo::class;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
@@ -38,12 +39,15 @@ use Stsbl\FileDistributionBundle\Security\Privilege;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class SoundLockAction extends AbstractFileDistributionAction implements GroupableBatchActionInterface
+final class SoundLockAction extends AbstractFileDistributionAction
 {
     use Traits\NoopFormTrait;
-    
+
+    /**
+     * {@inheritDoc}
+     */
     protected $privileges = [Privilege::USE_FD, Privilege::BOOT];
-    
+
     /**
      * {@inheritdoc}
      */
@@ -51,17 +55,17 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     {
         /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
         $messages = [];
-        
+
         foreach ($entities as $entity) {
             $messages[] = $this->createFlashMessage('success', __('Deactivated sound on %s.', $entity->getName()));
         }
-        
+
         $bag = $this->getFileDistributionManager()->soundLock($entities);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);
         }
-        
+
         return $bag;
     }
 
@@ -72,7 +76,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     {
         return 'soundlock';
     }
-    
+
     /**
      * {@inheritodc}
      */
@@ -80,7 +84,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     {
         return _('Deactivate');
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -96,7 +100,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     {
         return 'pro-mute';
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -104,7 +108,7 @@ class SoundLockAction extends AbstractFileDistributionAction implements Groupabl
     {
         return 'primary';
     }
-    
+
     /**
      * {@inheritdoc}
      */

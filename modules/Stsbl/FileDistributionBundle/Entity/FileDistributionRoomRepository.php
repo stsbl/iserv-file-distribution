@@ -1,5 +1,7 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Entity/FileDistributionBundle.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\NoResultException;
@@ -36,27 +38,25 @@ use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-class FileDistributionRoomRepository extends EntitySpecificationRepository
+final class FileDistributionRoomRepository extends EntitySpecificationRepository
 {
    /**
     * Checks if there is at least one room which is not excluded.
-    * 
-    * @return bool
     */
-    public function isRoomAvailable()
+    public function isRoomAvailable(): bool
     {
         $qb = $this->createQueryBuilder('c')
             ->resetDQLParts() // needed to clear
             ->select('1')
             ->from('IServRoomBundle:Room', 'r')
         ;
-        
+
         $subQb = $this->createQueryBuilder('c');
 
         $subQb
             ->where($subQb->expr()->eq('c.room', 'r.id'))
         ;
-        
+
         if (FileDistributionCrud::getRoomMode() === true) {
             $qb->where($qb->expr()->not($qb->expr()->exists($subQb)));
         } else {
@@ -65,8 +65,8 @@ class FileDistributionRoomRepository extends EntitySpecificationRepository
 
         if (count($qb->getQuery()->getResult()) > 0) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

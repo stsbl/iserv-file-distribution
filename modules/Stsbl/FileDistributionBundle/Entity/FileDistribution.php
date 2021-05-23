@@ -1,10 +1,13 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Enttiy/Set.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CoreBundle\Entity\User;
+use IServ\HostBundle\Entity\Host;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -41,17 +44,17 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="file_distribution")
  * @DoctrineAssert\UniqueEntity("ip", message="File distribution is already enabled for this host.")
  */
-class FileDistribution implements CrudInterface 
+class FileDistribution implements CrudInterface
 {
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * 
-     * @var integer
+     *
+     * @var int
      */
     private $id;
-    
+
     /**
      * @ORM\Column(type="text", nullable=false)
      * @Assert\NotBlank()
@@ -60,7 +63,7 @@ class FileDistribution implements CrudInterface
      * @var string
      */
     private $title;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="\IServ\CoreBundle\Entity\User")
      * @ORM\JoinColumn(name="act", referencedColumnName="act", onDelete="CASCADE")
@@ -69,30 +72,30 @@ class FileDistribution implements CrudInterface
      * @var User
      */
     private $user;
-    
+
     /**
      * @ORM\Column(type="text", nullable=false)
-     * 
+     *
      * @var string
      */
     private $act;
-    
+
     /**
      * @ORM\Column(type="boolean", nullable=false)
-     * 
+     *
      * @var boolean
      */
     private $isolation;
-    
+
     /**
      * @ORM\Column(type="inet", nullable=false)
      * @Assert\NotBlank()
      * @Assert\Ip()
-     * 
+     *
      * @var string
      */
     private $ip;
-    
+
     /**
      * @ORM\Column(name="FolderAvailability", type="text", nullable=false)
      * @Assert\Choice(choices = {"keep", "readonly", "replace"}, message = "Choose a valid folder availability.")
@@ -100,197 +103,134 @@ class FileDistribution implements CrudInterface
      * @var string
      */
     private $folderAvailability;
-    
+
+    /**
+     * @var Host
+     */
+    private $host;
+
     /**
      * {@inheritdoc}
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->title;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * Set host
-     *
-     * @param string $ip
-     *
-     * @return FileDistribution
+     * @return $this
      */
-    public function setIp($ip)
+    public function setIp(string $ip): self
     {
         $this->ip = $ip;
 
         return $this;
     }
 
-    /**
-     * Get ip
-     *
-     * @return string
-     */
-    public function getIp()
+    public function getIp(): string
     {
-        return $this->$ip;
+        return $this->ip;
     }
 
     /**
-     * Set title
-     *
-     * @param string $title
-     *
-     * @return FileDistribution
+     * @return $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return sprintf('%s - %s', $this->title, (string)$this->user);
     }
-    
-    /**
-     * Get plain title
-     * 
-     * @return string
-     */
-    public function getPlainTitle()
+
+    public function getPlainTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * Set user
-     *
-     * @param User $user
-     *
-     * @return FileDistribution
+     * @return $this
      */
-    public function setUser(User $user = null)
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * Get user
-     *
-     * @return User
-     */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }
 
     /**
-     * Set act
-     *
-     * @param string $act
-     *
-     * @return FileDistribution
+     * @return $this
      */
-    public function setAct($act)
+    public function setAct(string $act): self
     {
         $this->act = $act;
 
         return $this;
     }
 
-    /**
-     * Get act
-     *
-     * @return string
-     */
-    public function getAct()
+    public function getAct(): string
     {
         return $this->act;
     }
 
     /**
-     * Set isolation
-     *
-     * @param boolean $isolation
-     *
-     * @return FileDistribution
+     * @return $this
      */
-    public function setIsolation($isolation)
+    public function setIsolation(bool $isolation): self
     {
         $this->isolation = $isolation;
 
         return $this;
     }
 
-    /**
-     * Get isolation
-     *
-     * @return boolean
-     */
-    public function getIsolation()
+    public function getIsolation(): bool
     {
         return $this->isolation;
     }
 
     /**
-     * Set folderAvailability
-     *
-     * @param string $folderAvailability
-     *
-     * @return FileDistribution
+     * @return $this
      */
-    public function setFolderAvailability($folderAvailability)
+    public function setFolderAvailability(string $folderAvailability): self
     {
         $this->folderAvailability = $folderAvailability;
 
         return $this;
     }
 
-    /**
-     * Get folderAvailability
-     *
-     * @return string
-     */
-    public function getFolderAvailability()
+    public function getFolderAvailability(): string
     {
         return $this->folderAvailability;
     }
 
     /**
-     * Set host
-     *
-     * @param \Stsbl\FileDistributionBundle\Entity\Host $host
-     *
-     * @return FileDistribution
+     * @return $this
      */
-    public function setHost(\Stsbl\FileDistributionBundle\Entity\Host $host = null)
+    public function setHost(Host $host = null): self
     {
         $this->host = $host;
 
         return $this;
     }
 
-    /**
-     * Get host
-     *
-     * @return \Stsbl\FileDistributionBundle\Entity\Host
-     */
-    public function getHost()
+    public function getHost(): Host
     {
         return $this->host;
     }

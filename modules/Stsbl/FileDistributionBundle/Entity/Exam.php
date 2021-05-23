@@ -1,5 +1,7 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Entity/Exam.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -54,14 +56,14 @@ class Exam implements CrudInterface
      * @var User
      */
     private $user;
-    
+
     /**
      * @ORM\Column(type="text", nullable=false)
-     * 
+     *
      * @var string
      */
     private $act;
-    
+
     /**
      * @ORM\Column(type="text", nullable=false)
      * @Assert\NotBlank()
@@ -70,17 +72,17 @@ class Exam implements CrudInterface
      * @var string
      */
     private $title;
-    
+
     /**
      * DO NOT ADD ANY REFERENCES to Host here, because Symfony do not like it!
-     * 
+     *
      * //@ORM\OneToOne(targetEntity="\IServ\HostBundle\Entity\Host", fetch="EAGER")
      * //@ORM\JoinColumn(name="ip", referencedColumnName="ip", onDelete="CASCADE")
      * @ORM\Column(type="text", nullable=false)
      * @Assert\NotBlank()
      * @Assert\Ip()
      * @ORM\Id
-     * 
+     *
      * @var string
      */
     private $ip;
@@ -88,112 +90,76 @@ class Exam implements CrudInterface
     /**
      * {@inheritdoc}
      */
-    public function __toString() 
+    public function __toString(): string
     {
-        
+        return $this->ip;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    public function getId() 
+    public function getId(): string
     {
         return $this->ip;
     }
 
 
     /**
-     * Set act
-     *
-     * @param string $act
-     *
-     * @return Exam
+     * @return $this
      */
-    public function setAct($act)
+    public function setAct(string $act): self
     {
         $this->act = $act;
 
         return $this;
     }
 
-    /**
-     * Get act
-     *
-     * @return string
-     */
-    public function getAct()
+    public function getAct(): string
     {
         return $this->act;
     }
 
     /**
-     * Set title
-     *
-     * @param string $title
-     *
-     * @return Exam
+     * @return $this
      */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get title
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * Set ip
-     *
-     * @param string $ip
-     *
-     * @return Exam
+     * @return $this
      */
-    public function setIp($ip)
+    public function setIp(string $ip): self
     {
         $this->ip = $ip;
 
         return $this;
     }
 
-    /**
-     * Get ip
-     *
-     * @return string
-     */
-    public function getIp()
+    public function getIp(): string
     {
         return $this->ip;
     }
 
     /**
-     * Set user
-     *
-     * @param User $user
-     *
-     * @return Exam
+     * @return $this
      */
-    public function setUser(User $user = null)
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * Get user
-     *
-     * @return User
-     */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }

@@ -1,7 +1,10 @@
 <?php
-// src/Stsbl/FileDistributionBundle/Crud/Batch/Traits/InternetTimeFormTrait.php
+
+declare(strict_types=1);
+
 namespace Stsbl\FileDistributionBundle\Crud\Batch\Traits;
 
+use IServ\CrudBundle\Entity\FlashMessageBag;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -36,21 +39,17 @@ use Symfony\Component\Validator\Constraints\NotBlank;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensourc.org/licenses/MIT>
  */
-trait InternetTimeFormTrait 
+trait InternetTimeFormTrait
 {
     /**
-     * @var integer|string
+     * @var int|string
      */
     protected $until;
-    
+
     /**
-     * Allows the batch action to manipulate the form.
-     *
-     * This is called at the end of `prepareBatchActions`.
-     *
-     * @param FormInterface $form
+     * {@inheritDoc}
      */
-    public function finalizeForm(FormInterface $form)
+    public function finalizeForm(FormInterface $form): void
     {
         $form
             ->add('inet_duration', ChoiceType::class, [
@@ -73,15 +72,14 @@ trait InternetTimeFormTrait
             ])
         ;
     }
-    
+
     /**
      * Gets called with the full form data instead of `execute`.
-     *
-     * @param array $data
      */
-    public function handleFormData(array $data)
+    public function handleFormData(array $data): FlashMessageBag
     {
         $this->until = $data['inet_duration'];
+
         return $this->execute($data['multi']);
     }
 }
