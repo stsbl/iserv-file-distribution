@@ -11,6 +11,7 @@ Architecture: all
 Depends: iserv-computer,
          iserv-portal,
          iserv3-core,
+         iserv3-crud (>= 21.05.27),
          iserv3-host,
          iserv3-room (>= 17.11.23-1),
          iserv3-school,

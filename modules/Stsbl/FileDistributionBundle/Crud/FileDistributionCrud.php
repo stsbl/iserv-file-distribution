@@ -158,33 +158,11 @@ final class FileDistributionCrud extends ServiceCrud
      */
     public static function defineRoutes(): RoutingDefinition
     {
-        $definition = parent::defineRoutes()
+        return parent::createRoutes('filedistribution', 'filedistribution')
             ->useControllerForAction(self::ACTION_INDEX, FileDistributionController::class . '::indexAction')
             ->useControllerForAction('batch_confirm', FileDistributionController::class . '::confirmBatchAction')
             ->setNamePrefix('fd_')
         ;
-
-        // FIXME: Remove, after CRUD allows proper access!
-        try {
-            $reflectionProperty = new \ReflectionProperty($definition, 'baseName');
-        } catch (\ReflectionException $e) {
-            throw new \RuntimeException('Could not reflect!', 0, $e);
-        }
-
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($definition, 'filedistribution');
-
-        // FIXME: Remove, after CRUD allows proper access!
-        try {
-            $reflectionProperty = new \ReflectionProperty($definition, 'basePath');
-        } catch (\ReflectionException $e) {
-            throw new \RuntimeException('Could not reflect!', 0, $e);
-        }
-
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($definition, 'filedistribution');
-
-        return $definition;
     }
 
     /**

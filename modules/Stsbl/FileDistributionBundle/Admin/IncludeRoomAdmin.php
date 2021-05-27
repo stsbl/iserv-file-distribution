@@ -108,32 +108,11 @@ final class IncludeRoomAdmin extends AdminServiceCrud
      */
     public static function defineRoutes(): RoutingDefinition
     {
-        $definition = parent::defineRoutes()
+        return parent::createRoutes('rooms', 'room')
             ->useControllerForAction(self::ACTION_INDEX, FileDistributionController::class . '::roomIndexAction')
             ->setPathPrefix('/admin/filedistribution/')
             ->setNamePrefix('admin_filedistribution_')
         ;
-
-        // FIXME: Remove, after CRUD allows proper access!
-        try {
-            $reflectionProperty = new \ReflectionProperty($definition, 'baseName');
-        } catch (\ReflectionException $e) {
-            throw new \RuntimeException('Could not reflect!', 0, $e);
-        }
-
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($definition, 'rooms');
-
-        try {
-            $reflectionProperty = new \ReflectionProperty($definition, 'basePath');
-        } catch (\ReflectionException $e) {
-            throw new \RuntimeException('Could not reflect!', 0, $e);
-        }
-
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue($definition, 'room');
-
-        return $definition;
     }
 
     /**
