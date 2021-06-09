@@ -1,3 +1,15 @@
+stsbl-iserv-file-distribution (21.06.09.1) testing; urgency=medium
+
+  * Moved to iservinstall
+  * Updated copyright
+  * Turned source format to native
+  * Rectored code and fixed deprecations
+  * Updated locales
+  * Fixed redirect
+  * Removed CRUD hack of evilness
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Wed, 09 Jun 2021 22:59:20 +0200
+
 stsbl-iserv-file-distribution (21.01.27-2) stable; urgency=medium
 
   * Fixed Build-Depends
