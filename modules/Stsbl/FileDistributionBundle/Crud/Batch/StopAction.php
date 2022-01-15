@@ -102,7 +102,7 @@ final class StopAction extends AbstractFileDistributionAction
      */
     public function getLabel(): string
     {
-        return _('Stop');
+        return _p('file-distribution', 'Stop');
     }
 
     /**

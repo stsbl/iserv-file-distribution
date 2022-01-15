@@ -614,6 +614,7 @@ msgid "Start a file distribution for the selected hosts."
 msgstr "Eine Dateiverteilung für die gewählten Geräte beginnen."
 
 #: modules/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+msgctxt "file-distribution"
 msgid "Stop"
 msgstr "Beenden"
 

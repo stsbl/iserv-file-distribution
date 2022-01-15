@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-23 14:43+0200\n"
+"POT-Creation-Date: 2022-01-15 21:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -597,6 +597,7 @@ msgid "Start a file distribution for the selected hosts."
 msgstr ""
 
 #: modules/Stsbl/FileDistributionBundle/Crud/Batch/StopAction.php
+msgctxt "file-distribution"
 msgid "Stop"
 msgstr ""
 
