@@ -149,8 +149,8 @@ final class FileDistributionCrud extends ServiceCrud
         $this->options['help'] = 'https://it.stsbl.de/documentation/mods/stsbl-iserv-file-distribution';
         $this->options['json'] = true;
         $this->options['autoload'] = false;
-        $this->templates['crud_index'] = 'StsblFileDistributionBundle:Crud:file_distribution_index.html.twig';
-        $this->templates['crud_batch_confirm'] = 'StsblFileDistributionBundle:Crud:file_distribution_batch_confirm.html.twig';
+        $this->templates['crud_index'] = '@StsblFileDistribution/Crud/file_distribution_index.html.twig';
+        $this->templates['crud_batch_confirm'] = '@StsblFileDistribution/Crud/file_distribution_batch_confirm.html.twig';
     }
 
     /**
@@ -256,15 +256,15 @@ final class FileDistributionCrud extends ServiceCrud
                 'label' => _('Name'),
                 'responsive' => 'all',
                 'sortType' => 'natural',
-                'template' => 'IServHostBundle:Crud:list_field_name.html.twig',
+                'template' => '@IServHost/Crud/list_field_name.html.twig',
             ])
             ->add('sambaUser', null, [
                 'label' => _('User'),
-                'template' => 'StsblFileDistributionBundle:List:field_sambauser.html.twig',
+                'template' => '@StsblFileDistribution/List/field_sambauser.html.twig',
             ])
             ->add('type', null, [
                 'label' => _('Type'),
-                'template' => 'IServHostBundle:Crud:list_field_type.html.twig',
+                'template' => '@IServHost/Crud/list_field_type.html.twig',
                 'responsive' => 'desktop'
             ]);
 
@@ -282,7 +282,7 @@ final class FileDistributionCrud extends ServiceCrud
                     // sort in the following order: fileDistribution, name, room \o/
                     'sortOrder' => [4, 1],
                     'sortType' => 'natural',
-                    'template' => 'StsblFileDistributionBundle:List:field_filedistribution.html.twig',
+                    'template' => '@StsblFileDistribution/List/field_filedistribution.html.twig',
                 ]);
         }
 
@@ -303,7 +303,7 @@ final class FileDistributionCrud extends ServiceCrud
                     // sort in the following order: exam, name, room \o/
                     'sortOrder' => $sortOrder,
                     'sortType' => 'natural',
-                    'template' => 'StsblFileDistributionBundle:List:field_exam.html.twig'
+                    'template' => '@StsblFileDistribution/List/field_exam.html.twig'
                 ]);
         }
 
@@ -317,7 +317,7 @@ final class FileDistributionCrud extends ServiceCrud
 
             $listMapper->add('soundLock', null, [
                 'label' => '', // no title in table
-                'template' => 'StsblFileDistributionBundle:List:field_soundlock.html.twig',
+                'template' => '@StsblFileDistribution/List/field_soundlock.html.twig',
                 'responsive' => 'min-tablet',
             ]);
         }
@@ -349,7 +349,7 @@ final class FileDistributionCrud extends ServiceCrud
             ])
             ->add('ipInternet', null, [
                 'label' => _('Internet Access'),
-                'template' => 'StsblFileDistributionBundle:List:field_internet.html.twig',
+                'template' => '@StsblFileDistribution/List/field_internet.html.twig',
                 'sortType' => 'natural',
             ]);
 
@@ -358,7 +358,7 @@ final class FileDistributionCrud extends ServiceCrud
             $listMapper
                 ->add('locker', null, [
                     'label' => _('Locked by'),
-                    'template' => 'StsblFileDistributionBundle:List:field_locker.html.twig'
+                    'template' => '@StsblFileDistribution/List/field_locker.html.twig'
                 ]);
         }
     }

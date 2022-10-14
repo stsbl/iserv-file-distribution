@@ -329,7 +329,7 @@ final class FileDistributionController extends StrictCrudController
             'status' => $this->get(HostStatus::class)->getAll(),
         ];
 
-        $render = $this->renderView('StsblFileDistributionBundle:FileDistribution:update.js.twig', $params);
+        $render = $this->renderView('@StsblFileDistribution/FileDistribution/update.js.twig', $params);
         $response = new Response($render);
         $response->headers->set('Content-Type', 'text/javascript');
         return $response;
