@@ -77,9 +77,9 @@
 {% endblock %}
 
 {% block crud_table_row %}
-    {% spaceless %}
+    {% apply spaceless %}
         <tr{% if ip == item.ip %} class="highlight"{% endif %}>
             {{ block('crud_table_cells') }}
         </tr>
-    {% endspaceless %}
+    {% endapply spaceless %}
 {% endblock crud_table_row %}
