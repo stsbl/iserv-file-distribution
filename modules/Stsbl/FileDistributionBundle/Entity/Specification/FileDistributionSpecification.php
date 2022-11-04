@@ -41,20 +41,12 @@ use Stsbl\FileDistributionBundle\Entity\Host;
  */
 final class FileDistributionSpecification extends AbstractSpecification
 {
-    /**
-     * @var bool
-     */
-    private $invert;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    public function __construct(bool $invert, EntityManagerInterface $em)
+    public function __construct(
+        private readonly bool $invert,
+        private readonly EntityManagerInterface $em,
+    )
     {
-        $this->invert = $invert;
-        $this->em = $em;
     }
 
     /**

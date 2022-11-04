@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Stsbl\FileDistributionBundle\Entity;
 
-use Doctrine\ORM\NoResultException;
 use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
 
@@ -48,7 +47,7 @@ final class FileDistributionRoomRepository extends EntitySpecificationRepository
         $qb = $this->createQueryBuilder('c')
             ->resetDQLParts() // needed to clear
             ->select('1')
-            ->from('IServRoomBundle:Room', 'r')
+            ->from(\IServ\RoomBundle\Entity\Room::class, 'r')
         ;
 
         $subQb = $this->createQueryBuilder('c');

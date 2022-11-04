@@ -354,12 +354,15 @@ final class FileDistributionCrud extends ServiceCrud
             ]);
 
 
-        if ($this->isLockAvailable() && count($this->getObjectManager()->getRepository('IServLockBundle:Lock')->findAll()) > 0) {
+        if ($this->isLockAvailable() && count(
+                $this->getObjectManager()->getRepository(\IServ\LockBundle\Entity\Lock::class)->findAll()
+            ) > 0) {
             $listMapper
                 ->add('locker', null, [
                     'label' => _('Locked by'),
-                    'template' => '@StsblFileDistribution/List/field_locker.html.twig'
-                ]);
+                    'template' => '@StsblFileDistribution/List/field_locker.html.twig',
+                ])
+            ;
         }
     }
 
@@ -766,20 +769,20 @@ final class FileDistributionCrud extends ServiceCrud
 
         $subSubQb
             ->select($subSubQb->expr()->max('v.since'))
-            ->from('IServHostBundle:SambaUser', 'v')
+            ->from(\IServ\HostBundle\Entity\SambaUser::class, 'v')
             ->where($qb->expr()->eq('v.ip', ':ip'))
         ;
 
         $subQb
             ->select($subQb->expr()->max('s.act'))
-            ->from('IServHostBundle:SambaUser', 's')
+            ->from(\IServ\HostBundle\Entity\SambaUser::class, 's')
             ->where($qb->expr()->eq('s.ip', ':ip'))
             ->andWhere($qb->expr()->in('s.since', $subSubQb->getDQL()))
         ;
 
         $qb
             ->select('u')
-            ->from('IServCoreBundle:User', 'u')
+            ->from(\IServ\CoreBundle\Entity\User::class, 'u')
             ->where($qb->expr()->in('u.username', $subQb->getDQL()))
             ->setParameter('ip', $host->getIp())
         ;
@@ -868,7 +871,9 @@ final class FileDistributionCrud extends ServiceCrud
         if ($overrideRoute === false || $overrideRoute === true) {
             return [
                 'title' => null,
-                'user' => $this->entityManager()->getRepository('IServCoreBundle:User')->find($host->getOverrideBy()),
+                'user' => $this->entityManager()->getRepository(\IServ\CoreBundle\Entity\User::class)->find(
+                    $host->getOverrideBy()
+                ),
                 'until' => $host->getOverrideUntil(),
             ];
         }
@@ -929,7 +934,7 @@ final class FileDistributionCrud extends ServiceCrud
             return null;
         }
 
-        return $this->entityManager()->getRepository('IServCoreBundle:User')->find($act);
+        return $this->entityManager()->getRepository(\IServ\CoreBundle\Entity\User::class)->find($act);
     }
 
     private function bundleDetector(): BundleDetector

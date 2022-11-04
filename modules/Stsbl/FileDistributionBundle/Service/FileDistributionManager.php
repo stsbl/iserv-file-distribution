@@ -58,32 +58,17 @@ final class FileDistributionManager
     public const NETRPC_EXAM_ON = 'examon';
     public const NETRPC_EXAM_OFF = 'examoff';
 
-    /**
-     * @var HostManager
-     */
-    private $hostManager;
-
-    /**
-     * @var SecurityHandler
-     */
-    private $securityHandler;
-
-    /**
-     * @var Shell
-     */
-    private $shell;
-
-    public function __construct(HostManager $hostManager, SecurityHandler $securityHandler, Shell $shell)
-    {
-        $this->hostManager = $hostManager;
-        $this->securityHandler = $securityHandler;
-        $this->shell = $shell;
+    public function __construct(
+        private readonly HostManager $hostManager,
+        private readonly SecurityHandler $securityHandler,
+        private readonly Shell $shell,
+    ) {
     }
 
     /**
      * Execute file_distribution_rpc command.
      */
-    public function fileDistributionRpc(string $cmd, array $args = [], ?string $arg = null, ?bool $isolation = null, ?string $folderAvailability = null): FlashMessageBag
+    private function fileDistributionRpc(string $cmd, array $args = [], ?string $arg = null, ?bool $isolation = null, ?string $folderAvailability = null): FlashMessageBag
     {
         $env = ['SESSPW' => $this->securityHandler->getSessionPassword()];
 
@@ -118,7 +103,7 @@ final class FileDistributionManager
      *
      * @param Host|Host[] $hosts
      */
-    public function enableFileDistribution($hosts, string $title, bool $isolation, string $folderAvailability): FlashMessageBag
+    public function enableFileDistribution(array|Host $hosts, string $title, bool $isolation, string $folderAvailability): FlashMessageBag
     {
         return $this->fileDistributionRpc(self::FD_ON, $this->hostManager->getIpsForHosts($hosts), $title, $isolation, $folderAvailability);
     }
@@ -128,7 +113,7 @@ final class FileDistributionManager
      *
      * @param Host|Host[] $hosts
      */
-    public function disableFileDistribution($hosts): FlashMessageBag
+    public function disableFileDistribution(array|Host $hosts): FlashMessageBag
     {
         return $this->fileDistributionRpc(self::FD_OFF, $this->hostManager->getIpsForHosts($hosts));
     }
@@ -138,7 +123,7 @@ final class FileDistributionManager
      *
      * @param Host|Host[] $hosts
      */
-    public function soundLock($hosts): FlashMessageBag
+    public function soundLock(array|Host $hosts): FlashMessageBag
     {
         return $this->fileDistributionRpc(self::FD_SOUNDOFF, $this->hostManager->getIpsForHosts($hosts));
     }
@@ -148,7 +133,7 @@ final class FileDistributionManager
      *
      * @param Host|Host[] $hosts
      */
-    public function soundUnlock($hosts): FlashMessageBag
+    public function soundUnlock(array|Host $hosts): FlashMessageBag
     {
         return $this->fileDistributionRpc(self::FD_SOUNDON, $this->hostManager->getIpsForHosts($hosts));
     }
@@ -158,7 +143,7 @@ final class FileDistributionManager
      *
      * @param Host|Host[] $hosts
      */
-    public function msg($hosts, string $msg): FlashMessageBag
+    public function msg(array|Host $hosts, string $msg): FlashMessageBag
     {
         @trigger_error(
             'msg() is deprecated and will removed in future versions. Use sendMessage() from HostManager instead.',
@@ -173,7 +158,7 @@ final class FileDistributionManager
      *
      * @param Host|Host[] $hosts
      */
-    public function examOn($hosts, string $title): FlashMessageBag
+    public function examOn(array|Host $hosts, string $title): FlashMessageBag
     {
         return $this->hostManager->netrpc(self::NETRPC_EXAM_ON, $this->hostManager->getIpsForHosts($hosts), $title);
     }
@@ -183,7 +168,7 @@ final class FileDistributionManager
      *
      * @param Host|Host[] $hosts
      */
-    public function examOff($hosts): FlashMessageBag
+    public function examOff(array|Host $hosts): FlashMessageBag
     {
         return $this->hostManager->netrpc(self::NETRPC_EXAM_OFF, $this->hostManager->getIpsForHosts($hosts));
     }

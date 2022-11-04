@@ -79,7 +79,7 @@ final class HostRepository extends AbstractDecoratedServiceRepository
         $qb = $this->createDecoratedQueryBuilder($alias);
 
         foreach ($criteria as $key => $value) {
-            if ('name' === $key) { // Special casing case insensitive name
+            if ('name' === $key) { // Special casing case-insensitive name
                 $qb
                     ->andWhere("LOWER($alias.$key) = :$key")
                     ->setParameter($key, strtolower($value))
