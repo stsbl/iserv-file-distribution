@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Stsbl\FileDistributionBundle\Controller;
 
-use Doctrine\ORM\NoResultException;
-use IServ\CoreBundle\Form\Type\BooleanType;
+use IServ\Bundle\Form\Form\Type\BooleanType;
 use IServ\CoreBundle\Service\Logger;
 use IServ\CoreBundle\Service\User\UserStorageInterface;
-use IServ\CoreBundle\Util\Sudo;
 use IServ\CrudBundle\Controller\StrictCrudController;
+use IServ\HostBundle\Entity\Host;
 use IServ\HostBundle\Service\HostStatus;
+use IServ\Library\InstallationChecker\InstallationCheckerInterface;
+use IServ\Library\Sudo\SudoInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
-use Stsbl\FileDistributionBundle\Entity\Host;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -103,7 +103,7 @@ final class FileDistributionController extends StrictCrudController
      * @Route("filedistribution/lookup", name="fd_filedistribution_lookup", options={"expose": true})
      * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
      */
-    public function lookupAction(Request $request, UserStorageInterface $userStorage): JsonResponse
+    public function lookupAction(Request $request, UserStorageInterface $userStorage, SudoInterface $sudo): JsonResponse
     {
         $query = $request->get('query');
 
@@ -117,12 +117,14 @@ final class FileDistributionController extends StrictCrudController
         $home = $userStorage->getUser()->getHome();
         $directory = $home . '/File-Distribution/';
 
-        $directories = Sudo::glob($directory . '*/');
+        /** @noinspection PhpUndefinedMethodInspection */
+        $directories = $sudo->glob($directory . '*/');
 
         // add existing directories to suggestions
         foreach ($directories as $directory) {
             $basename = basename($directory);
-            if (Sudo::is_dir($directory . 'Assignment') && Sudo::is_dir($directory . 'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            if ($sudo->is_dir($directory . 'Assignment') && $sudo->is_dir($directory . 'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
                 $suggestions[$basename] = [
                     'type' => 'existing',
                     'label' => $basename,
@@ -168,9 +170,9 @@ final class FileDistributionController extends StrictCrudController
      * @Route("filedistribution/lookup/exam", name="fd_filedistribution_lookup_exam", options={"expose": true})
      * @Security("is_granted('PRIV_EXAM')")
      */
-    public function lookupExamAction(Request $request): JsonResponse
+    public function lookupExamAction(Request $request, SudoInterface $sudo, InstallationCheckerInterface $installationChecker): JsonResponse
     {
-        if (!file_exists('/var/lib/dpkg/info/iserv-exam.list')) {
+        if (!$installationChecker->isInstalled('iserv-exam')) {
             throw $this->createNotFoundException('iserv-exam is currently not installed.');
         }
 
@@ -186,12 +188,14 @@ final class FileDistributionController extends StrictCrudController
         $home = $this->getUser()->getHome();
         $directory = $home . '/Exam/';
 
-        $directories = Sudo::glob($directory . '*/');
+        /** @noinspection PhpUndefinedMethodInspection */
+        $directories = $sudo->glob($directory . '*/');
 
         // add existing directories to suggestions
         foreach ($directories as $directory) {
             $basename = basename($directory);
-            if (Sudo::is_dir($directory . 'Assignment') && Sudo::is_dir($directory . 'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            if ($sudo->is_dir($directory . 'Assignment') && $sudo->is_dir($directory . 'Return') && preg_match(sprintf('/^(.*)%s(.*)$/', $query), $basename)) {
                 $suggestions[$basename] = [
                     'type' => 'existing',
                     'label' => $basename,
@@ -240,7 +244,7 @@ final class FileDistributionController extends StrictCrudController
     public function lookupHostNameAction(Request $request): JsonResponse
     {
         /** @var Host $host */
-        $host = $this->getDoctrine()->getManager()->getRepository('StsblFileDistributionBundle:Host')->findOneByIp($request->getClientIp());
+        $host = $this->getDoctrine()->getManager()->getRepository(Host::class)->findOneByIp($request->getClientIp());
 
         $name = null;
         if ($host !== null) {

@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CoreBundle\Entity\User;
-use IServ\HostBundle\Entity\Host;
+use IServ\CrudBundle\Entity\CrudInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -103,11 +102,6 @@ class FileDistribution implements CrudInterface
      * @var string
      */
     private $folderAvailability;
-
-    /**
-     * @var Host
-     */
-    private $host;
 
     /**
      * {@inheritdoc}
@@ -218,20 +212,5 @@ class FileDistribution implements CrudInterface
     public function getFolderAvailability(): string
     {
         return $this->folderAvailability;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setHost(Host $host = null): self
-    {
-        $this->host = $host;
-
-        return $this;
-    }
-
-    public function getHost(): Host
-    {
-        return $this->host;
     }
 }

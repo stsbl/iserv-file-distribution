@@ -5,9 +5,9 @@
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -55,7 +55,13 @@ final class GrantInternetAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
-        /* @var $entities \Stsbl\FileDistributionBundle\Entity\Host[] */
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
+
         $messages = [];
 
         if ($this->until === null) {
@@ -78,9 +84,9 @@ final class GrantInternetAction extends AbstractFileDistributionAction
             return $bag;
         }
 
-        $internet->grant($entities, $overrideUntil);
+        $internet->grant(new ArrayCollection($hosts), $overrideUntil);
 
-        foreach ($entities as $e) {
+        foreach ($hosts as $e) {
             $messages[] = $this->createFlashMessage('success', __('Granted internet access for %s.', (string)$e));
         }
 

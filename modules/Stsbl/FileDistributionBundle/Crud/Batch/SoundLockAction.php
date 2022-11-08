@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\FileDistribution\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
 /*
@@ -53,14 +53,19 @@ final class SoundLockAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
-        /* @var $entities array<\Stsbl\FileDistributionBundle\Entity\Host> */
-        $messages = [];
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
 
         foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
+        $messages = [];
+
+        foreach ($hosts as $entity) {
             $messages[] = $this->createFlashMessage('success', __('Deactivated sound on %s.', $entity->getName()));
         }
 
-        $bag = $this->getFileDistributionManager()->soundLock($entities);
+        $bag = $this->getFileDistributionManager()->soundLock($hosts);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);

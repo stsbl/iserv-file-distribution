@@ -32,7 +32,6 @@ use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\Crud\ObjectManager\FileDistributionObjectManager;
 use Stsbl\FileDistributionBundle\Entity\Exam;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
-use Stsbl\FileDistributionBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\FileDistribution\FileDistribution as FileDistributionModel;
 use Stsbl\FileDistributionBundle\Security\Privilege;
@@ -79,7 +78,7 @@ final class FileDistributionCrud extends ServiceCrud
     /**
      * {@inheritDoc}
      */
-    protected static $entityClass = Host::class;
+    protected static $entityClass = HostEntity::class;
 
     private static ?bool $roomMode = null;
 
