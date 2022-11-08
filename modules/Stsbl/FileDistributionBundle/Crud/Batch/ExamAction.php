@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
@@ -104,10 +105,17 @@ final class ExamAction extends AbstractFileDistributionAction implements Groupab
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
+
         $messages = [];
         $error = false;
 
-        foreach ($entities as $key => $entity) {
+        foreach ($hosts as $key => $entity) {
             $skipOwnHost = false;
 
             if (null === $this->title || '' === $this->title) {
@@ -121,7 +129,7 @@ final class ExamAction extends AbstractFileDistributionAction implements Groupab
 
             if (null === $clientIp || ($entity->getIp() === $clientIp && count($entities) > 1)) {
                 $messages[] = $this->createFlashMessage('warning', _('Skipping own host!'));
-                unset($entities[$key]);
+                unset($hosts[$key]);
                 $skipOwnHost = true;
             }
 
@@ -131,7 +139,7 @@ final class ExamAction extends AbstractFileDistributionAction implements Groupab
         }
 
         if (!$error) {
-            $bag = $this->getFileDistributionManager()->examOn($entities, $this->title);
+            $bag = $this->getFileDistributionManager()->examOn($hosts, $this->title);
         } else {
             $bag = new FlashMessageBag();
         }

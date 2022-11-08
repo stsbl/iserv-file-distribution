@@ -86,8 +86,8 @@ final class GrantInternetAction extends AbstractFileDistributionAction
 
         $internet->grant(new ArrayCollection($hosts), $overrideUntil);
 
-        foreach ($hosts as $e) {
-            $messages[] = $this->createFlashMessage('success', __('Granted internet access for %s.', (string)$e));
+        foreach ($hosts as $entity) {
+            $messages[] = $this->createFlashMessage('success', __('Granted internet access for %s.', (string)$entity));
         }
 
         $bag = new FlashMessageBag();

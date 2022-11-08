@@ -900,7 +900,7 @@ final class FileDistributionCrud extends ServiceCrud
         return $this->getObjectManager()->getRepository(FileDistribution::class)->findOneByIp($host->getIp());
     }
 
-    public function getExam(FileDistribution $fileDistribution): ?Exam
+    public function getExam(FileDistributionModel $fileDistribution): ?Exam
     {
         $host = $fileDistribution->getHost();
 

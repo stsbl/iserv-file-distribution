@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -57,9 +58,15 @@ final class LockAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
         $messages = [];
 
-        foreach ($entities as $key => $entity) {
+        foreach ($hosts as $key => $entity) {
             $skipOwnHost = false;
 
             $request = $this->crud->request();
@@ -67,7 +74,7 @@ final class LockAction extends AbstractFileDistributionAction
 
             if (null === $clientIp || $entity->getIp() === $clientIp) {
                 $messages[] = $this->createFlashMessage('warning', _('Skipping own host!'));
-                unset($entities[$key]);
+                unset($hosts[$key]);
                 $skipOwnHost = true;
             }
 
@@ -76,7 +83,7 @@ final class LockAction extends AbstractFileDistributionAction
             }
         }
 
-        if (count($entities) > 0) {
+        if (count($hosts) > 0) {
             $lockManager = $this->crud->lockManager();
 
             if (null === $lockManager) {
@@ -86,7 +93,7 @@ final class LockAction extends AbstractFileDistributionAction
                 return $bag;
             }
 
-            $bag = $lockManager->lock($entities);
+            $bag = $lockManager->lock($hosts);
         } else {
             $bag = new FlashMessageBag();
         }

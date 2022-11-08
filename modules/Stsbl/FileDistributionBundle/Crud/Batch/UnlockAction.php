@@ -7,6 +7,7 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\FileDistribution\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -58,11 +59,17 @@ final class UnlockAction extends AbstractFileDistributionAction
     {
         $messages = [];
 
-        foreach ($entities as $key => $entity) {
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
+        foreach ($hosts as $entity) {
             $messages[] = $this->createFlashMessage('success', __('%s unlocked successful.', (string)$entity->getName()));
         }
 
-        $bag = $this->crud->lockManager()->unlock($entities);
+        $bag = $this->crud->lockManager()->unlock($hosts);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);

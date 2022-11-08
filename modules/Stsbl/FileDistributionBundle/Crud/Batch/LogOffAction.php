@@ -7,6 +7,7 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
 final class LogOffAction extends AbstractFileDistributionAction
@@ -63,13 +64,19 @@ final class LogOffAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
         $messages = [];
 
-        foreach ($entities as $key => $entity) {
+        foreach ($hosts as $entity) {
             $messages[] = $this->createFlashMessage('success', __('Sent log off command to %s.', (string)$entity->getName()));
         }
 
-        $bag = $this->getFileDistributionManager()->logoff($entities);
+        $bag = $this->getFileDistributionManager()->logoff($hosts);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);

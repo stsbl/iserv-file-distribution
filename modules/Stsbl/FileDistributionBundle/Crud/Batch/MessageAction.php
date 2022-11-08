@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Entity\Host;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormInterface;
@@ -87,18 +88,23 @@ final class MessageAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
         if ($this->message === null) {
             throw new \InvalidArgumentException('No message set!');
         }
 
         $messages = [];
 
-        /* @var Host[] $entities */
-        foreach ($entities as $entity) {
+        foreach ($hosts as $entity) {
             $messages[] = $this->createFlashMessage('success', __('Sent message to %s.', (string)$entity->getName()));
         }
 
-        $bag = $this->getFileDistributionManager()->msg($entities, $this->message);
+        $bag = $this->getFileDistributionManager()->msg($hosts, $this->message);
         // add messsages created during work
         foreach ($messages as $message) {
             $bag->add($message);

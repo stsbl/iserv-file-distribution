@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Entity\Host;
+use Stsbl\FileDistributionBundle\FileDistribution\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -61,10 +62,15 @@ final class StopAction extends AbstractFileDistributionAction
             throw new \RuntimeException('No user available.');
         }
 
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
         $messages = [];
 
-        /* @var $entities Host[] */
-        foreach ($entities as $key => $entity) {
+        foreach ($hosts as $key => $entity) {
             if (!$this->isAllowedToExecute($entity, $user)) {
                 // remove unallowed hosts
                 $messages[] = $this->createFlashMessage(
@@ -80,7 +86,7 @@ final class StopAction extends AbstractFileDistributionAction
             }
         }
 
-        $bag = $this->getFileDistributionManager()->disableFileDistribution($entities);
+        $bag = $this->getFileDistributionManager()->disableFileDistribution($hosts);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);

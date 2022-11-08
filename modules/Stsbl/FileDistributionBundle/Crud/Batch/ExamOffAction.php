@@ -7,6 +7,7 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -64,9 +65,15 @@ final class ExamOffAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
         $messages = [];
 
-        foreach ($entities as $key => $entity) {
+        foreach ($hosts as $entity) {
             $messages[] = $this->createFlashMessage('success', __('Deactivated exam mode on %s.', (string)$entity->getName()));
         }
 

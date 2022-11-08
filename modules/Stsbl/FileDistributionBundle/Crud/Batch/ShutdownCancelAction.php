@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\ComputerBundle\Security\Privilege;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 
 final class ShutdownCancelAction extends AbstractFileDistributionAction
 {
@@ -63,13 +64,19 @@ final class ShutdownCancelAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
         $messages = [];
 
-        foreach ($entities as $key => $entity) {
+        foreach ($hosts as $entity) {
             $messages[] = $this->createFlashMessage('success', __('Canceled schuelded actions for %s.', (string)$entity->getName()));
         }
 
-        $bag = $this->getFileDistributionManager()->cancelShutdown($entities);
+        $bag = $this->getFileDistributionManager()->cancelShutdown($hosts);
         // add messsages created during work
         foreach ($messages as $message) {
             $bag->add($message);

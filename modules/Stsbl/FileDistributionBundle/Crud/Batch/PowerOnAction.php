@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\ComputerBundle\Security\Privilege;
 use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 
 final class PowerOnAction extends AbstractFileDistributionAction
 {
@@ -60,15 +61,21 @@ final class PowerOnAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
-        $messages = [];
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
 
         foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
+        $messages = [];
+
+        foreach ($hosts as $entity) {
             if ($entity->getMac() !== null) {
                 $messages[] = $this->createFlashMessage('success', __('Sent power on command to %s.', (string)$entity->getName()));
             }
         }
 
-        $bag = $this->getFileDistributionManager()->wol($entities);
+        $bag = $this->getFileDistributionManager()->wol($hosts);
         // add messages created during work
         foreach ($messages as $message) {
             $bag->add($message);

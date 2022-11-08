@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Entity\Host;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -55,7 +56,12 @@ final class DenyInternetAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
-        /* @var $entities Host[] */
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
         $messages = [];
 
         if ($this->until === null) {
@@ -77,9 +83,9 @@ final class DenyInternetAction extends AbstractFileDistributionAction
             return $bag;
         }
 
-        $internet->deny($entities, $overrideUntil);
+        $internet->deny(new ArrayCollection($hosts), $overrideUntil);
 
-        foreach ($entities as $e) {
+        foreach ($hosts as $e) {
             $messages[] = $this->createFlashMessage('success', __('Denied internet access for %s.', (string)$e));
         }
 

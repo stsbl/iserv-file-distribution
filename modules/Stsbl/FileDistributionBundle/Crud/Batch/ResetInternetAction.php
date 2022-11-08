@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use IServ\HostBundle\Entity\Host;
+use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -52,6 +53,12 @@ final class ResetInternetAction extends AbstractFileDistributionAction
      */
     public function execute(ArrayCollection $entities): FlashMessageBag
     {
+        /** @var FileDistribution[] $entities */
+        $hosts = [];
+
+        foreach ($entities as $entity) {
+            $hosts[] = $entity->getHost();
+        }
         /* @var $entities Host[] */
         $messages = [];
 
@@ -64,10 +71,10 @@ final class ResetInternetAction extends AbstractFileDistributionAction
             return $bag;
         }
 
-        $internet->reset($entities);
+        $internet->reset(new ArrayCollection($hosts));
 
-        foreach ($entities as $e) {
-            $messages[] = $this->createFlashMessage('success', __('Reset internet access for %s.', (string)$e));
+        foreach ($hosts as $entity) {
+            $messages[] = $this->createFlashMessage('success', __('Reset internet access for %s.', (string)$entity));
         }
 
         $bag = new FlashMessageBag();

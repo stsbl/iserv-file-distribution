@@ -8,6 +8,7 @@ use IServ\CoreBundle\Exception\ShellExecException;
 use IServ\CoreBundle\Security\Core\SecurityHandler;
 use IServ\CoreBundle\Service\Shell;
 use IServ\CrudBundle\Entity\FlashMessageBag;
+use IServ\ExamBundle\Service\ExamManager;
 use IServ\HostBundle\Entity\Host;
 use IServ\HostBundle\Service\HostManager;
 
@@ -50,14 +51,12 @@ final class FileDistributionManager
     public const FD_OFF = 'fdoff';
     public const FD_SOUNDON = 'soundon';
     public const FD_SOUNDOFF = 'soundoff';
-    // Constants for netrpc
-    public const NETRPC_EXAM_ON = 'examon';
-    public const NETRPC_EXAM_OFF = 'examoff';
 
     public function __construct(
         private readonly HostManager $hostManager,
         private readonly SecurityHandler $securityHandler,
         private readonly Shell $shell,
+        private readonly ?ExamManager $examManager = null,
     ) {
     }
 
@@ -150,13 +149,77 @@ final class FileDistributionManager
     }
 
     /**
+     * Logoff user from user.
+     *
+     * @param Host|Host[] $hosts
+     */
+    public function logoff(array|Host $hosts): FlashMessageBag
+    {
+        @trigger_error(
+            'logoff() is deprecated and will removed in future versions. Use logoff() from HostManager instead.',
+            E_USER_DEPRECATED
+        );
+
+        return $this->hostManager->logoff($hosts);
+    }
+
+    /**
+     * @param Host[]|Host $hosts
+     */
+    public function wol(array|Host $hosts): FlashMessageBag
+    {
+        @trigger_error(
+            'wol() is deprecated and will removed in future versions. Use wol() from HostManager instead.',
+            E_USER_DEPRECATED
+        );
+
+        return $this->hostManager->wol($hosts);
+    }
+
+    /**
+     * @param Host[]|Host $hosts
+     */
+    public function reboot(array|Host $hosts): FlashMessageBag
+    {
+        @trigger_error(
+            'reboot() is deprecated and will removed in future versions. Use reboot() from HostManager instead.',
+            E_USER_DEPRECATED
+        );
+
+        return $this->hostManager->reboot($hosts);
+    }
+
+    public function shutdown(array|Host $hosts): FlashMessageBag
+    {
+        @trigger_error(
+            'shutdown() is deprecated and will removed in future versions. Use shutdown() from HostManager instead.',
+            E_USER_DEPRECATED
+        );
+
+        return $this->hostManager->shutdown($hosts);
+    }
+
+    /**
+     * @param Host[]|Host $hosts
+     */
+    public function cancelShutdown(array|Host $hosts): FlashMessageBag
+    {
+        @trigger_error(
+            'cancelShutdown() is deprecated and will removed in future versions. Use cancelShutdown() from HostManager instead.',
+            E_USER_DEPRECATED
+        );
+
+        return $this->hostManager->cancelShutdown($hosts);
+    }
+
+    /**
      * Enable exam mode on hosts.
      *
      * @param Host|Host[] $hosts
      */
     public function examOn(array|Host $hosts, string $title): FlashMessageBag
     {
-        return $this->hostManager->netrpc(self::NETRPC_EXAM_ON, $this->hostManager->getIpsForHosts($hosts), $title);
+        return $this->examManager?->activate($hosts, $title) ?? new FlashMessageBag();
     }
 
     /**
@@ -166,7 +229,7 @@ final class FileDistributionManager
      */
     public function examOff(array|Host $hosts): FlashMessageBag
     {
-        return $this->hostManager->netrpc(self::NETRPC_EXAM_OFF, $this->hostManager->getIpsForHosts($hosts));
+        return $this->examManager?->deactivate($hosts) ?? new FlashMessageBag();
     }
 
     /**
