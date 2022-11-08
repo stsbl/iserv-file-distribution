@@ -47,7 +47,7 @@ final class FileDistribution implements CrudInterface
 
     public function __construct(
         private readonly Host $host,
-        private readonly ?User $sambaUser,
+        private readonly ?string $sambaUser,
         private readonly ?\DateTimeInterface $lastSeenDhcp,
         private readonly ?\DateTimeImmutable $lastSeen,
         private readonly ?int $fileDistribution,
@@ -63,7 +63,7 @@ final class FileDistribution implements CrudInterface
         return $this->host;
     }
 
-    public function getSambaUser(): ?User
+    public function getSambaUser(): ?string
     {
         return $this->sambaUser;
     }
@@ -115,7 +115,7 @@ final class FileDistribution implements CrudInterface
         $locker = $row['locker'] ?? null;
 
         if (null !== $sambaUser) {
-            Assert::isInstanceOf($sambaUser, SambaUser::class);
+            Assert::string($sambaUser);
         }
         
         if (null !== $lastSeenDhcp) {
