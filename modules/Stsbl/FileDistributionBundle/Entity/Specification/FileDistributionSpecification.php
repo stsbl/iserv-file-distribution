@@ -7,7 +7,7 @@ namespace Stsbl\FileDistributionBundle\Entity\Specification;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use IServ\CrudBundle\Doctrine\Specification\AbstractSpecification;
-use Stsbl\FileDistributionBundle\Entity\Host;
+use IServ\HostBundle\Entity\Host;
 
 /*
  * The MIT License

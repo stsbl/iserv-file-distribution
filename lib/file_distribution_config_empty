@@ -5,5 +5,6 @@ size=$(stat -c%s /var/lib/iserv/config/file-distribution/0.0.0.0)
 if [ "$size" != "0" ]
 then
   echo -e "/var/lib/iserv/config/file-distribution/0.0.0.0 is not empty!\nTo fix that issue, remove the file and run iservchk." >&2
+  exit 1
 fi
-exit $size
+exit 0

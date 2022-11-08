@@ -7,3 +7,7 @@ services:
     Stsbl\FileDistributionBundle\:
         resource: '../../*'
         exclude: '../../{Entity,Resources,Tests}'
+
+    Stsbl\FileDistributionBundle\Crud\ObjectManager\FileDistributionObjectManager:
+        bind:
+            $inner: '@IServ\CrudBundle\Doctrine\ORM\ORMObjectManager'

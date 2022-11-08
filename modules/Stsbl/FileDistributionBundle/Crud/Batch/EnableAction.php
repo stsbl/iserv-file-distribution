@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Security\Privilege;
@@ -98,6 +97,7 @@ final class EnableAction extends AbstractFileDistributionAction
             ->add('isolation', CheckboxType::class, [
                 'label' => _('Host isolation'),
                 'attr' => $isolationAttr,
+                'required' => false,
             ])
             ->add('folder_availability', ChoiceType::class, [
                 'label' => _('Availability of group folders and shares'),
@@ -183,8 +183,14 @@ final class EnableAction extends AbstractFileDistributionAction
 
         // only execute rpc, if we have no errors and at least one entity
         if (!$error && count($entities) > 0) {
+            $hosts = [];
+
+            foreach ($entities as $entity) {
+                $hosts[] = $entity->getHost();
+            }
+
             $bag = $this->getFileDistributionManager()->enableFileDistribution(
-                $entities,
+                $hosts,
                 $this->title,
                 $this->isolation,
                 $this->folderAvailability

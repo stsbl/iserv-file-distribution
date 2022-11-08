@@ -11,6 +11,7 @@ use IServ\ComputerBundle\Service\Internet;
 use IServ\CoreBundle\Entity\User;
 use IServ\CoreBundle\Service\BundleDetector;
 use IServ\CoreBundle\Util\Format;
+use IServ\CrudBundle\Crud\ObjectManagerInterface;
 use IServ\CrudBundle\Crud\ServiceCrud;
 use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
 use IServ\CrudBundle\Doctrine\Specification\SpecificationInterface;
@@ -20,6 +21,7 @@ use IServ\CrudBundle\Routing\RoutingDefinition;
 use IServ\CrudBundle\Table\Filter;
 use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
+use IServ\HostBundle\Entity\Host as HostEntity;
 use IServ\HostBundle\Model\HostType;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
@@ -27,12 +29,15 @@ use IServ\Library\Config\Config;
 use IServ\LockBundle\Service\LockManager;
 use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
+use Stsbl\FileDistributionBundle\Crud\ObjectManager\FileDistributionObjectManager;
 use Stsbl\FileDistributionBundle\Entity\Exam;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
+use Stsbl\FileDistributionBundle\FileDistribution\FileDistribution as FileDistributionModel;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Stsbl\FileDistributionBundle\Service\FileDistributionManager;
+use Stsbl\InternetBundle\Entity\Nac;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -76,10 +81,7 @@ final class FileDistributionCrud extends ServiceCrud
      */
     protected static $entityClass = Host::class;
 
-    /**
-     * @var bool|null
-     */
-    private static $roomMode;
+    private static ?bool $roomMode = null;
 
     /* GETTERS */
 
@@ -665,7 +667,7 @@ final class FileDistributionCrud extends ServiceCrud
         $qb2 = $this->entityManager()->createQueryBuilder();
         $qb2
             ->select('h')
-            ->from('StsblFileDistributionBundle:Host', 'h')
+            ->from(HostEntity::class, 'h')
             ->where('h.room = filter.id')
             ->andWhere('h.controllable = true')
         ;
@@ -687,7 +689,7 @@ final class FileDistributionCrud extends ServiceCrud
         /* @var $om \IServ\CrudBundle\Doctrine\ORM\ORMObjectManager */
         $om = $this->getObjectManager();
         $listHandler->getFilterHandler()->addEventSubscriber(
-            new ListFilterEventSubscriber($this->request(), $om->getRepository(\IServ\HostBundle\Entity\Host::class))
+            new ListFilterEventSubscriber($this->request(), $om->getRepository(HostEntity::class))
         );
     }
 
@@ -736,10 +738,10 @@ final class FileDistributionCrud extends ServiceCrud
     /**
      * Checks if internet is granted to an ip via a NAC.
      */
-    private function isInternetGrantedViaNac(Host $host): bool
+    private function isInternetGrantedViaNac(FileDistributionModel $fileDistribution): bool
     {
-        $er = $this->entityManager()->getRepository('StsblInternetBundle:Nac');
-        $nac = $er->findOneBy(['ip' => $host->getIp()]);
+        $er = $this->entityManager()->getRepository(Nac::class);
+        $nac = $er->findOneBy(['ip' => $fileDistribution->getHost()->getIp()]);
 
         return $nac !== null;
     }
@@ -747,14 +749,15 @@ final class FileDistributionCrud extends ServiceCrud
     /**
      * Get current internet state (yes, no, allowed, forbidden) for Host by his ip address.
      */
-    public function getInternetState(Host $host): ?string
+    public function getInternetState(FileDistributionModel $fileDistribution): ?string
     {
+        $host = $fileDistribution->getHost();
         $overrideRoute = $host->getOverrideRoute();
         $internet = $host->getInternet();
 
         if ($this->isExamModeAvailable()) {
             /** @var EntitySpecificationRepository $examRepository */
-            $examRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam');
+            $examRepository = $this->getObjectManager()->getRepository(Exam::class);
 
             $examMode = $examRepository->find($host->getIp());
 
@@ -782,7 +785,7 @@ final class FileDistributionCrud extends ServiceCrud
 
         $qb
             ->select('u')
-            ->from(\IServ\CoreBundle\Entity\User::class, 'u')
+            ->from(User::class, 'u')
             ->where($qb->expr()->in('u.username', $subQb->getDQL()))
             ->setParameter('ip', $host->getIp())
         ;
@@ -822,7 +825,7 @@ final class FileDistributionCrud extends ServiceCrud
             return 'granted';
         }
 
-        if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($host) === true) {
+        if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($fileDistribution) === true) {
             return 'yes_nac';
         }
 
@@ -844,17 +847,15 @@ final class FileDistributionCrud extends ServiceCrud
     /**
      * Get current internet lock explanation for Host by his ip address.
      */
-    public function getInternetExplanation(Host $host): ?array
+    public function getInternetExplanation(FileDistributionModel $fileDistribution): ?array
     {
-        if ($host === null) {
-            return null;
-        }
+        $host = $fileDistribution->getHost();
 
         $overrideRoute = $host->getOverrideRoute();
 
         if ($this->isExamModeAvailable()) {
             /** @var EntitySpecificationRepository $examRepository */
-            $examRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam');
+            $examRepository = $this->getObjectManager()->getRepository(Exam::class);
 
             /* @var $examMode Exam */
             $examMode = $examRepository->find($host->getIp());
@@ -871,17 +872,15 @@ final class FileDistributionCrud extends ServiceCrud
         if ($overrideRoute === false || $overrideRoute === true) {
             return [
                 'title' => null,
-                'user' => $this->entityManager()->getRepository(\IServ\CoreBundle\Entity\User::class)->find(
+                'user' => $this->entityManager()->getRepository(User::class)->find(
                     $host->getOverrideBy()
                 ),
                 'until' => $host->getOverrideUntil(),
             ];
         }
 
-        if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($host)) {
-            /* @var $nac \Stsbl\InternetBundle\Entity\Nac */
-            /** @noinspection PhpUndefinedMethodInspection */
-            $nac = $this->entityManager()->getRepository('StsblInternetBundle:Nac')->findOneByIp($host->getIp());
+        if ($this->isInternetAvailable() && $this->isInternetGrantedViaNac($fileDistribution)) {
+            $nac = $this->entityManager()->getRepository(Nac::class)->findOneByIp($host->getIp());
             $user = $nac->getUser();
             $until = $nac->getTimer();
 
@@ -895,30 +894,27 @@ final class FileDistributionCrud extends ServiceCrud
         return null;
     }
 
-    public function getFileDistribution(Host $host): ?FileDistribution
+    public function getFileDistribution(FileDistributionModel $fileDistribution): ?FileDistribution
     {
-        if ($host !== null) {
-            return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution')->findOneByIp($host->getIp());
-        }
+        $host = $fileDistribution->getHost();
 
-        return null;
+        return $this->getObjectManager()->getRepository(FileDistribution::class)->findOneByIp($host->getIp());
     }
 
-    public function getExam(Host $host): ?Exam
+    public function getExam(FileDistribution $fileDistribution): ?Exam
     {
-        if ($host !== null) {
-            return $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam')->findOneByIp($host->getIp());
-        }
+        $host = $fileDistribution->getHost();
 
-        return null;
+        return $this->getObjectManager()->getRepository(Exam::class)->findOneByIp($host->getIp());
     }
 
     /**
      * Get user who locked the sound on a computer.
      */
-    public function getSoundLockUser(Host $host): ?User
+    public function getSoundLockUser(FileDistributionModel $fileDistribution): ?User
     {
-        /* @var $lock \Stsbl\FileDistributionBundle\Entity\SoundLock */
+        $host = $fileDistribution->getHost();
+
         $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock')->findOneByIp($host->getIp());
 
         if ($lock === null) {
@@ -934,7 +930,7 @@ final class FileDistributionCrud extends ServiceCrud
             return null;
         }
 
-        return $this->entityManager()->getRepository(\IServ\CoreBundle\Entity\User::class)->find($act);
+        return $this->entityManager()->getRepository(User::class)->find($act);
     }
 
     private function bundleDetector(): BundleDetector
@@ -956,6 +952,7 @@ final class FileDistributionCrud extends ServiceCrud
             '?' . LockManager::class,
             RequestStack::class,
             SessionInterface::class,
+            ObjectManagerInterface::class => FileDistributionObjectManager::class,
         ]);
     }
 }

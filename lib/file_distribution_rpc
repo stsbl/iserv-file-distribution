@@ -40,7 +40,7 @@ for (@ARGV)
 if (Stsbl::IServ::Security::sudo_context)
 {
   # run as unprivileged user
-  my ($sesspw) = $ENV{SESSPW} =~ /^(\w{1,256})$/ or die "SESSPW invalid!\n";
+  my $sesspw = IServ::Valid::Passwd $ENV{SESSPW};
   Stsbl::IServ::Security::verify_uid $act;
 
   Stsbl::IServ::Security::set_credentials $act, $sesspw;
