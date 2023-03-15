@@ -221,7 +221,7 @@ final class FileDistributionCrud extends ServiceCrud
     public function getFileDistributionForHost(CrudInterface $object): ?FileDistribution
     {
         /* @var $object Host */
-        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
+        $er = $this->getObjectManager()->getRepository(\Stsbl\FileDistributionBundle\Entity\FileDistribution::class);
         try {
             return $er->findOneBy(['ip' => $object->getIp()]);
         } catch (\Exception $e) {
@@ -242,7 +242,7 @@ final class FileDistributionCrud extends ServiceCrud
      */
     public function configureListFields(ListMapper $listMapper): void
     {
-        //if ($this->em->getRepository('StsblFileDistributionBundle:FileDistribution')->exists()) {
+        //if ($this->em->getRepository(\Stsbl\FileDistributionBundle\Entity\FileDistribution::class)->exists()) {
         //    $this->options['sort'] = 'fileDistribution';
         //} else {
         $this->options['sort'] = 'room';
@@ -270,7 +270,7 @@ final class FileDistributionCrud extends ServiceCrud
             ]);
 
         // check for existing file distribution
-        $fileDistributionRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
+        $fileDistributionRepository = $this->getObjectManager()->getRepository(\Stsbl\FileDistributionBundle\Entity\FileDistribution::class);
 
         // only add columns if we have file distributions
         if ($fileDistributionRepository->exists()) {
@@ -288,7 +288,7 @@ final class FileDistributionCrud extends ServiceCrud
         }
 
         // TODO Switch to ExamBundle
-        if ($this->isExamModeAvailable() && $this->getObjectManager()->getRepository('StsblFileDistributionBundle:Exam')->exists()) {
+        if ($this->isExamModeAvailable() && $this->getObjectManager()->getRepository(\Stsbl\FileDistributionBundle\Entity\Exam::class)->exists()) {
             $activeExams = true;
 
             if ($activeFileDistributions) {
@@ -310,7 +310,7 @@ final class FileDistributionCrud extends ServiceCrud
 
         // check for existing sound locks
         /** @var \IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository $soundLockRepository */
-        $soundLockRepository = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock');
+        $soundLockRepository = $this->getObjectManager()->getRepository(\Stsbl\FileDistributionBundle\Entity\SoundLock::class);
 
         // only add soundlock column if we have a sound lock
         if (count($soundLockRepository->findAll()) > 0) {
@@ -356,8 +356,8 @@ final class FileDistributionCrud extends ServiceCrud
 
 
         if ($this->isLockAvailable() && count(
-                $this->getObjectManager()->getRepository(\IServ\LockBundle\Entity\Lock::class)->findAll()
-            ) > 0) {
+            $this->getObjectManager()->getRepository(\IServ\LockBundle\Entity\Lock::class)->findAll()
+        ) > 0) {
             $listMapper
                 ->add('locker', null, [
                     'label' => _('Locked by'),
@@ -443,7 +443,7 @@ final class FileDistributionCrud extends ServiceCrud
         if ($this->isInternetAvailable()) {
             $qb
                 ->select('n')
-                ->from('StsblInternetBundle:Nac', 'n')
+                ->from(\Stsbl\InternetBundle\Entity\Nac::class, 'n')
                 ->where('n.ip = parent.ip')
             ;
 
@@ -456,7 +456,7 @@ final class FileDistributionCrud extends ServiceCrud
             $qb = $this->entityManager()->createQueryBuilder();
             $qb
                 ->select('ex')
-                ->from('StsblFileDistributionBundle:Exam', 'ex')
+                ->from(\Stsbl\FileDistributionBundle\Entity\Exam::class, 'ex')
                 ->where($qb->expr()->eq('ex.ip', 'parent.ip'))
             ;
 
@@ -476,7 +476,7 @@ final class FileDistributionCrud extends ServiceCrud
             $qb = $this->entityManager()->createQueryBuilder();
             $qb
                 ->select('ex2')
-                ->from('StsblFileDistributionBundle:Exam', 'ex2')
+                ->from(\Stsbl\FileDistributionBundle\Entity\Exam::class, 'ex2')
                 ->where($qb->expr()->eq('ex2.ip', 'parent.ip'))
             ;
 
@@ -496,7 +496,7 @@ final class FileDistributionCrud extends ServiceCrud
             $qb = $this->entityManager()->createQueryBuilder();
             $qb
                 ->select('ex3')
-                ->from('StsblFileDistributionBundle:Exam', 'ex3')
+                ->from(\Stsbl\FileDistributionBundle\Entity\Exam::class, 'ex3')
                 ->where($qb->expr()->eq('ex3.ip', 'parent.ip'))
             ;
 
@@ -516,7 +516,7 @@ final class FileDistributionCrud extends ServiceCrud
             $qb = $this->entityManager()->createQueryBuilder();
             $qb
                 ->select('ex4')
-                ->from('StsblFileDistributionBundle:Exam', 'ex4')
+                ->from(\Stsbl\FileDistributionBundle\Entity\Exam::class, 'ex4')
                 ->where($qb->expr()->eq('ex4.ip', 'parent.ip'))
             ;
 
@@ -534,7 +534,7 @@ final class FileDistributionCrud extends ServiceCrud
             $qb = $this->entityManager()->createQueryBuilder();
             $qb
                 ->select('e')
-                ->from('StsblFileDistributionBundle:Exam', 'e')
+                ->from(\Stsbl\FileDistributionBundle\Entity\Exam::class, 'e')
                 ->where($qb->expr()->eq('e.ip', 'parent.ip'))
             ;
 
@@ -548,7 +548,7 @@ final class FileDistributionCrud extends ServiceCrud
             $listHandler->addListFilter($examFilter);
         }
 
-        $er = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:FileDistribution');
+        $er = $this->getObjectManager()->getRepository(\Stsbl\FileDistributionBundle\Entity\FileDistribution::class);
 
         $fileDistributionFilterHash = [];
         foreach ($er->findAll() as $f) {
@@ -563,7 +563,7 @@ final class FileDistributionCrud extends ServiceCrud
             $qb = $this->entityManager()->createQueryBuilder();
             $qb
                 ->select('f2')
-                ->from('StsblFileDistributionBundle:FileDistribution', 'f2')
+                ->from(\Stsbl\FileDistributionBundle\Entity\FileDistribution::class, 'f2')
                 ->where($qb->expr()->eq('f2.ip', 'parent.ip'))
                 ->andWhere($qb->expr()->eq('f2.title', ':title'))
             ;
@@ -582,7 +582,7 @@ final class FileDistributionCrud extends ServiceCrud
         $qb = $this->entityManager()->createQueryBuilder();
         $qb
             ->select('f3')
-            ->from('StsblFileDistributionBundle:FileDistribution', 'f3')
+            ->from(\Stsbl\FileDistributionBundle\Entity\FileDistribution::class, 'f3')
             ->where($qb->expr()->eq('f3.ip', 'parent.ip'))
         ;
 
@@ -601,7 +601,7 @@ final class FileDistributionCrud extends ServiceCrud
         $listHandler->addListFilter($withoutFilter);
 
         if ($this->isExamModeAvailable()) {
-            $examRepository = $this->entityManager()->getRepository('StsblFileDistributionBundle:Exam');
+            $examRepository = $this->entityManager()->getRepository(\Stsbl\FileDistributionBundle\Entity\Exam::class);
             $examFilterHash = [];
             foreach ($examRepository->findAll() as $f) {
                 if (isset($examFilterHash[$f->getTitle()])) {
@@ -614,7 +614,7 @@ final class FileDistributionCrud extends ServiceCrud
                 $qb = $this->entityManager()->createQueryBuilder();
                 $qb
                     ->select('ex5')
-                    ->from('StsblFileDistributionBundle:Exam', 'ex5')
+                    ->from(\Stsbl\FileDistributionBundle\Entity\Exam::class, 'ex5')
                     ->where($qb->expr()->eq('ex5.ip', 'parent.ip'))
                     ->andWhere($qb->expr()->eq('ex5.title', ':title'))
                 ;
@@ -633,7 +633,7 @@ final class FileDistributionCrud extends ServiceCrud
             $qb = $this->entityManager()->createQueryBuilder();
             $qb
                 ->select('ex6')
-                ->from('StsblFileDistributionBundle:Exam', 'ex6')
+                ->from(\Stsbl\FileDistributionBundle\Entity\Exam::class, 'ex6')
                 ->where($qb->expr()->eq('ex6.ip', 'parent.ip'))
             ;
 
@@ -655,7 +655,7 @@ final class FileDistributionCrud extends ServiceCrud
         $qb = $this->entityManager()->createQueryBuilder();
         $qb
             ->select('fr')
-            ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
+            ->from(\Stsbl\FileDistributionBundle\Entity\FileDistributionRoom::class, 'fr')
             ->where($qb->expr()->eq('fr.room', 'filter.id'))
         ;
         $roomCondition = $qb->expr()->exists($qb);
@@ -914,7 +914,7 @@ final class FileDistributionCrud extends ServiceCrud
     {
         $host = $fileDistribution->getHost();
 
-        $lock = $this->getObjectManager()->getRepository('StsblFileDistributionBundle:SoundLock')->findOneByIp($host->getIp());
+        $lock = $this->getObjectManager()->getRepository(\Stsbl\FileDistributionBundle\Entity\SoundLock::class)->findOneByIp($host->getIp());
 
         if ($lock === null) {
             return null;

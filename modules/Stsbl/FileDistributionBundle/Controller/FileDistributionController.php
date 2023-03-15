@@ -77,7 +77,7 @@ final class FileDistributionController extends StrictCrudController
             }
 
             $ret['ip'] = $request->getClientIp();
-            $ret['room_available'] = $this->getDoctrine()->getRepository('StsblFileDistributionBundle:FileDistributionRoom')->isRoomAvailable();
+            $ret['room_available'] = $this->getDoctrine()->getRepository(\Stsbl\FileDistributionBundle\Entity\FileDistributionRoom::class)->isRoomAvailable();
         }
 
         return $ret;
@@ -140,7 +140,7 @@ final class FileDistributionController extends StrictCrudController
         // get current file distributions from database
         $qb
             ->select('f')
-            ->from('StsblFileDistributionBundle:FileDistribution', 'f')
+            ->from(\Stsbl\FileDistributionBundle\Entity\FileDistribution::class, 'f')
             ->where($qb->expr()->eq('f.user', ':user'))
             ->andWhere($qb->expr()->like('f.title', ':query'))
             ->setParameter(':user', $this->getUser())
@@ -211,7 +211,7 @@ final class FileDistributionController extends StrictCrudController
         // get current file distributions from database
         $qb
             ->select('e')
-            ->from('StsblFileDistributionBundle:Exam', 'e')
+            ->from(\Stsbl\FileDistributionBundle\Entity\Exam::class, 'e')
             ->where($qb->expr()->eq('e.user', ':user'))
             ->andWhere($qb->expr()->like('e.title', ':query'))
             ->setParameter(':user', $this->getUser())

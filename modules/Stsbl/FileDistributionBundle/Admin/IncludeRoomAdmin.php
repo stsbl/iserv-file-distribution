@@ -89,7 +89,7 @@ final class IncludeRoomAdmin extends AdminServiceCrud
                 $subQb
                     ->resetDqlParts()
                     ->select('fr')
-                    ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
+                    ->from(\Stsbl\FileDistributionBundle\Entity\FileDistributionRoom::class, 'fr')
                     ->where($subQb->expr()->eq('fr.room', 'r.id'))
                 ;
 

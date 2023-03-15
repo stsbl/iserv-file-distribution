@@ -41,7 +41,6 @@ use IServ\HostBundle\Entity\Host;
  */
 final class FileDistributionSpecification extends AbstractSpecification
 {
-
     public function __construct(
         private readonly bool $invert,
         private readonly EntityManagerInterface $em,
@@ -57,7 +56,7 @@ final class FileDistributionSpecification extends AbstractSpecification
         $subQb = $this->em->createQueryBuilder();
         $subQb
             ->select('fr')
-            ->from('StsblFileDistributionBundle:FileDistributionRoom', 'fr')
+            ->from(\Stsbl\FileDistributionBundle\Entity\FileDistributionRoom::class, 'fr')
             ->where('fr.room = ' . $dqlAlias . '.room')
         ;
 
