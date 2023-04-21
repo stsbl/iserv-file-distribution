@@ -28,6 +28,7 @@ use IServ\Library\Config\Config;
 use IServ\Library\Translation\Date\Format;
 use IServ\LockBundle\Entity\Lock;
 use IServ\LockBundle\Service\LockManager;
+use IServ\RoomBundle\Entity\Room;
 use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\Crud\ObjectManager\FileDistributionObjectManager;
@@ -680,7 +681,7 @@ final class FileDistributionCrud extends ServiceCrud
 
         $listHandler
             ->addListFilter(
-                (new Filter\ListPropertyFilter(_('Room'), 'room', 'IServRoomBundle:Room', 'name', 'id'))->setName('room')
+                (new Filter\ListPropertyFilter(_('Room'), 'room', Room::class, 'name', 'id'))->setName('room')
                     ->allowAnyAndNone()
                     ->setPickerOptions(['data-live-search' => 'true'])
                     ->setWhereCondition($qb->expr()->andX($roomCondition, $hostCondition))
