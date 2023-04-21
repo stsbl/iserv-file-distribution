@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Stsbl\FileDistributionBundle\Controller;
 
+use Doctrine\ORM\EntityManagerInterface;
 use IServ\Bundle\Form\Form\Type\BooleanType;
 use IServ\CoreBundle\Service\Logger;
 use IServ\CoreBundle\Service\User\UserStorageInterface;
@@ -14,6 +15,8 @@ use IServ\Library\InstallationChecker\InstallationCheckerInterface;
 use IServ\Library\Sudo\SudoInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
+use Stsbl\FileDistributionBundle\Entity\Exam;
+use Stsbl\FileDistributionBundle\Entity\FileDistributionRoom;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -77,7 +80,7 @@ final class FileDistributionController extends StrictCrudController
             }
 
             $ret['ip'] = $request->getClientIp();
-            $ret['room_available'] = $this->getDoctrine()->getRepository(\Stsbl\FileDistributionBundle\Entity\FileDistributionRoom::class)->isRoomAvailable();
+            $ret['room_available'] = $this->container->get(EntityManagerInterface::class)->getRepository(FileDistributionRoom::class)->isRoomAvailable();
         }
 
         return $ret;
@@ -111,8 +114,6 @@ final class FileDistributionController extends StrictCrudController
             throw new \RuntimeException('query should not be empty.');
         }
 
-        $this->get(\IServ\CoreBundle\Service\Sudo::class);
-
         $suggestions = [];
         $home = $userStorage->getUser()->getHome();
         $directory = $home . '/File-Distribution/';
@@ -134,7 +135,7 @@ final class FileDistributionController extends StrictCrudController
             }
         }
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->container->get(EntityManagerInterface::class);
         $qb = $em->createQueryBuilder();
 
         // get current file distributions from database
@@ -170,7 +171,7 @@ final class FileDistributionController extends StrictCrudController
      * @Route("filedistribution/lookup/exam", name="fd_filedistribution_lookup_exam", options={"expose": true})
      * @Security("is_granted('PRIV_EXAM')")
      */
-    public function lookupExamAction(Request $request, SudoInterface $sudo, InstallationCheckerInterface $installationChecker): JsonResponse
+    public function lookupExamAction(Request $request, SudoInterface $sudo, InstallationCheckerInterface $installationChecker, EntityManagerInterface $em): JsonResponse
     {
         if (!$installationChecker->isInstalled('iserv-exam')) {
             throw $this->createNotFoundException('iserv-exam is currently not installed.');
@@ -181,8 +182,6 @@ final class FileDistributionController extends StrictCrudController
         if (empty($query)) {
             throw new \RuntimeException('query should not be empty.');
         }
-
-        $this->get(\IServ\CoreBundle\Service\Sudo::class);
 
         $suggestions = [];
         $home = $this->getUser()->getHome();
@@ -205,20 +204,19 @@ final class FileDistributionController extends StrictCrudController
             }
         }
 
-        $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
 
         // get current file distributions from database
         $qb
             ->select('e')
-            ->from(\Stsbl\FileDistributionBundle\Entity\Exam::class, 'e')
+            ->from(Exam::class, 'e')
             ->where($qb->expr()->eq('e.user', ':user'))
             ->andWhere($qb->expr()->like('e.title', ':query'))
             ->setParameter(':user', $this->getUser())
             ->setParameter(':query', '%' . $query . '%')
         ;
 
-        /* @var $results \Stsbl\FileDistributionBundle\Entity\Exam[] */
+        /* @var $results Exam[] */
         $results = $qb->getQuery()->getResult();
 
         foreach ($results as $result) {
@@ -241,10 +239,10 @@ final class FileDistributionController extends StrictCrudController
      * @Route("filedistribution/lookup/hostname", name="fd_filedistribution_lookup_hostname", options={"expose": true})
      * @Security("is_granted('PRIV_FILE_DISTRIBUTION') and is_granted('PRIV_COMPUTER_BOOT')")
      */
-    public function lookupHostNameAction(Request $request): JsonResponse
+    public function lookupHostNameAction(Request $request, EntityManagerInterface $em): JsonResponse
     {
         /** @var Host $host */
-        $host = $this->getDoctrine()->getManager()->getRepository(Host::class)->findOneByIp($request->getClientIp());
+        $host = $em->getRepository(Host::class)->findOneByIp($request->getClientIp());
 
         $name = null;
         if ($host !== null) {
@@ -259,8 +257,7 @@ final class FileDistributionController extends StrictCrudController
      */
     private function getRoomInclusionForm(): FormInterface
     {
-        /* @var $builder \Symfony\Component\Form\FormBuilder */
-        $builder = $this->get('form.factory')->createNamedBuilder('file_distribution_room_inclusion');
+        $builder = $this->container->get('form.factory')->createNamedBuilder('file_distribution_room_inclusion');
 
         $mode = FileDistributionCrud::getRoomMode();
 
@@ -309,7 +306,7 @@ final class FileDistributionController extends StrictCrudController
                 } else {
                     $text = 'Raumverfügbarkeit geändert auf "Folgende"';
                 }
-                $this->get(Logger::class)->writeForModule($text, 'File distribution');
+                $this->container->get(Logger::class)->writeForModule($text, 'File distribution');
             }
 
             $content = json_encode(['invert' => $mode]);
@@ -345,7 +342,7 @@ final class FileDistributionController extends StrictCrudController
     public static function getSubscribedServices(): array
     {
         $deps = parent::getSubscribedServices();
-        $deps[] = \IServ\CoreBundle\Service\Sudo::class;
+        $deps[] = EntityManagerInterface::class;
         $deps[] = HostStatus::class;
         $deps[] = Logger::class;
 

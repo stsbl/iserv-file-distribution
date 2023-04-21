@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Stsbl\FileDistributionBundle\Entity;
 
 use Doctrine\ORM\NoResultException;
-use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use IServ\CrudBundle\Doctrine\ORM\ServiceEntitySpecificationRepository;
 
 /*
  * The MIT License
@@ -39,8 +40,13 @@ use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
  *
  * @deprecated Just for transitional purposes. Do not use for any new code!
  */
-final class ExamRepository extends EntitySpecificationRepository
+final class ExamRepository extends ServiceEntitySpecificationRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Exam::class);
+    }
+
     /**
      * Checks if there's at least one exam.
      */

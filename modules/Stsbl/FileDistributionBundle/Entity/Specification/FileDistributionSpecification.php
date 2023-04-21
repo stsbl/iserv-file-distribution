@@ -44,8 +44,7 @@ final class FileDistributionSpecification extends AbstractSpecification
     public function __construct(
         private readonly bool $invert,
         private readonly EntityManagerInterface $em,
-    )
-    {
+    ) {
     }
 
     /**

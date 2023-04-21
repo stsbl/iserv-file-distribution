@@ -10,10 +10,8 @@ use IServ\ComputerBundle\Crud\ListFilterEventSubscriber;
 use IServ\ComputerBundle\Service\Internet;
 use IServ\CoreBundle\Entity\User;
 use IServ\CoreBundle\Service\BundleDetector;
-use IServ\CoreBundle\Util\Format;
 use IServ\CrudBundle\Crud\ObjectManagerInterface;
 use IServ\CrudBundle\Crud\ServiceCrud;
-use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
 use IServ\CrudBundle\Doctrine\Specification\SpecificationInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Mapper\ListMapper;
@@ -22,16 +20,20 @@ use IServ\CrudBundle\Table\Filter;
 use IServ\CrudBundle\Table\ListHandler;
 use IServ\CrudBundle\Table\Specification\FilterSearch;
 use IServ\HostBundle\Entity\Host as HostEntity;
+use IServ\HostBundle\Entity\SambaUser;
 use IServ\HostBundle\Model\HostType;
 use IServ\HostBundle\Util\Config as HostConfig;
 use IServ\HostBundle\Util\Network;
 use IServ\Library\Config\Config;
+use IServ\Library\Translation\Date\Format;
+use IServ\LockBundle\Entity\Lock;
 use IServ\LockBundle\Service\LockManager;
 use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
 use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\Crud\ObjectManager\FileDistributionObjectManager;
 use Stsbl\FileDistributionBundle\Entity\Exam;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
+use Stsbl\FileDistributionBundle\Entity\SoundLock;
 use Stsbl\FileDistributionBundle\Entity\Specification\FileDistributionSpecification;
 use Stsbl\FileDistributionBundle\FileDistribution\FileDistribution as FileDistributionModel;
 use Stsbl\FileDistributionBundle\Security\Privilege;
@@ -309,8 +311,7 @@ final class FileDistributionCrud extends ServiceCrud
         }
 
         // check for existing sound locks
-        /** @var \IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository $soundLockRepository */
-        $soundLockRepository = $this->getObjectManager()->getRepository(\Stsbl\FileDistributionBundle\Entity\SoundLock::class);
+        $soundLockRepository = $this->getObjectManager()->getRepository(SoundLock::class);
 
         // only add soundlock column if we have a sound lock
         if (count($soundLockRepository->findAll()) > 0) {
@@ -355,9 +356,11 @@ final class FileDistributionCrud extends ServiceCrud
             ]);
 
 
-        if ($this->isLockAvailable() && count(
-            $this->getObjectManager()->getRepository(\IServ\LockBundle\Entity\Lock::class)->findAll()
-        ) > 0) {
+        if (
+            $this->isLockAvailable() && count(
+                $this->getObjectManager()->getRepository(Lock::class)->findAll()
+            ) > 0
+        ) {
             $listMapper
                 ->add('locker', null, [
                     'label' => _('Locked by'),
@@ -397,8 +400,10 @@ final class FileDistributionCrud extends ServiceCrud
             $this->batchActions->add(new Batch\MessageAction($this));
         }
         // Sound
-        if (!$hasToken || ($this->authorizationChecker()->isGranted(Privilege::BOOT) &&
-                $this->authorizationChecker()->isGranted(Privilege::USE_FD))) {
+        if (
+            !$hasToken || ($this->authorizationChecker()->isGranted(Privilege::BOOT) &&
+                $this->authorizationChecker()->isGranted(Privilege::USE_FD))
+        ) {
             $this->batchActions->add(new Batch\SoundUnlockAction($this));
             $this->batchActions->add(new Batch\SoundLockAction($this));
         }
@@ -755,7 +760,6 @@ final class FileDistributionCrud extends ServiceCrud
         $internet = $host->getInternet();
 
         if ($this->isExamModeAvailable()) {
-            /** @var EntitySpecificationRepository $examRepository */
             $examRepository = $this->getObjectManager()->getRepository(Exam::class);
 
             $examMode = $examRepository->find($host->getIp());
@@ -771,13 +775,13 @@ final class FileDistributionCrud extends ServiceCrud
 
         $subSubQb
             ->select($subSubQb->expr()->max('v.since'))
-            ->from(\IServ\HostBundle\Entity\SambaUser::class, 'v')
+            ->from(SambaUser::class, 'v')
             ->where($qb->expr()->eq('v.ip', ':ip'))
         ;
 
         $subQb
             ->select($subQb->expr()->max('s.act'))
-            ->from(\IServ\HostBundle\Entity\SambaUser::class, 's')
+            ->from(SambaUser::class, 's')
             ->where($qb->expr()->eq('s.ip', ':ip'))
             ->andWhere($qb->expr()->in('s.since', $subSubQb->getDQL()))
         ;
@@ -853,7 +857,6 @@ final class FileDistributionCrud extends ServiceCrud
         $overrideRoute = $host->getOverrideRoute();
 
         if ($this->isExamModeAvailable()) {
-            /** @var EntitySpecificationRepository $examRepository */
             $examRepository = $this->getObjectManager()->getRepository(Exam::class);
 
             /* @var $examMode Exam */
@@ -914,7 +917,7 @@ final class FileDistributionCrud extends ServiceCrud
     {
         $host = $fileDistribution->getHost();
 
-        $lock = $this->getObjectManager()->getRepository(\Stsbl\FileDistributionBundle\Entity\SoundLock::class)->findOneByIp($host->getIp());
+        $lock = $this->getObjectManager()->getRepository(SoundLock::class)->findOneByIp($host->getIp());
 
         if ($lock === null) {
             return null;
