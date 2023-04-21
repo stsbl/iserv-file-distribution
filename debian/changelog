@@ -1,3 +1,10 @@
+stsbl-iserv-file-distribution (23.04.21.1) stable; urgency=medium
+
+  * Fixed references to entities
+  * Fixed deprecations
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Fri, 21 Apr 2023 05:43:03 +0200
+
 stsbl-iserv-file-distribution (22.11.08.2) stable; urgency=medium
 
   * Fixed sambaUser type
