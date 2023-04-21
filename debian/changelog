@@ -1,3 +1,9 @@
+stsbl-iserv-file-distribution (23.04.21.4) stable; urgency=medium
+
+  * Fixed entity reference
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Fri, 21 Apr 2023 06:23:44 +0200
+
 stsbl-iserv-file-distribution (23.04.21.3) stable; urgency=medium
 
   * Fixed services.yml
