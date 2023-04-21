@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
- * @ORM\Entity(repositoryClass="FileDistributionRepository")
+ * @ORM\Entity(repositoryClass="\Stsbl\FileDistributionBundle\Repository\FileDistributionRepository")
  * @ORM\Table(name="file_distribution")
  * @DoctrineAssert\UniqueEntity("ip", message="File distribution is already enabled for this host.")
  */

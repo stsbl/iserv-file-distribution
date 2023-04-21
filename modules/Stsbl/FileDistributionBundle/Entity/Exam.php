@@ -42,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @deprecated Just for transitional purposes. Do not use for any new code!
  *
- * @ORM\Entity(repositoryClass="ExamRepository")
+ * @ORM\Entity(repositoryClass="\Stsbl\FileDistributionBundle\Repository\ExamRepository")
  * @ORM\Table(name="exam")
  * @DoctrineAssert\UniqueEntity("ip", message="The computer is already in exam mode.")
  */

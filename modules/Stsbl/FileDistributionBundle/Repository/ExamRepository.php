@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Stsbl\FileDistributionBundle\Entity;
+namespace Stsbl\FileDistributionBundle\Repository;
 
 use Doctrine\ORM\NoResultException;
-use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use IServ\CrudBundle\Doctrine\ORM\ServiceEntitySpecificationRepository;
+use Stsbl\FileDistributionBundle\Entity\Exam;
 
 /*
  * The MIT License
@@ -36,11 +38,18 @@ use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
  *
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
+ *
+ * @deprecated Just for transitional purposes. Do not use for any new code!
  */
-final class FileDistributionRepository extends EntitySpecificationRepository
+final class ExamRepository extends ServiceEntitySpecificationRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Exam::class);
+    }
+
     /**
-     * Checks if there's at least one file distribution.
+     * Checks if there's at least one exam.
      */
     public function exists(): bool
     {

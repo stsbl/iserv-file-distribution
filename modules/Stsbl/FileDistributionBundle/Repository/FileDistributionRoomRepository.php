@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Stsbl\FileDistributionBundle\Entity;
+namespace Stsbl\FileDistributionBundle\Repository;
 
-use IServ\CrudBundle\Doctrine\ORM\EntitySpecificationRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use IServ\CrudBundle\Doctrine\ORM\ServiceEntitySpecificationRepository;
 use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
+use Stsbl\FileDistributionBundle\Entity\FileDistributionRoom;
 
 /*
  * The MIT License
@@ -37,9 +39,14 @@ use Stsbl\FileDistributionBundle\Crud\FileDistributionCrud;
  * @author Felix Jacobi <felix.jacobi@stsbl.de>
  * @license MIT license <https://opensource.org/licenses/MIT>
  */
-final class FileDistributionRoomRepository extends EntitySpecificationRepository
+final class FileDistributionRoomRepository extends ServiceEntitySpecificationRepository
 {
-   /**
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, FileDistributionRoom::class);
+    }
+
+    /**
     * Checks if there is at least one room which is not excluded.
     */
     public function isRoomAvailable(): bool
