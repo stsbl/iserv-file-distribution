@@ -30,7 +30,6 @@ use IServ\LockBundle\Entity\Lock;
 use IServ\LockBundle\Service\LockManager;
 use IServ\RoomBundle\Entity\Room;
 use Stsbl\FileDistributionBundle\Controller\FileDistributionController;
-use Stsbl\FileDistributionBundle\Crud\Batch;
 use Stsbl\FileDistributionBundle\Crud\ObjectManager\FileDistributionObjectManager;
 use Stsbl\FileDistributionBundle\Entity\Exam;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;

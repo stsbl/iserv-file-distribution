@@ -63,7 +63,8 @@ abstract class AbstractFileDistributionAction extends AbstractBatchAction implem
     /**
      * {@inheritdoc}
      */
-    public function __construct(CrudContract $crud, $enabled = true) {
+    public function __construct(CrudContract $crud, $enabled = true)
+    {
         // check for valid crud
         if (!$crud instanceof FileDistributionCrud) {
             throw new \InvalidArgumentException(sprintf('This batch action only supports the CRUD %s or childs of it.', FileDistributionCrud::class));

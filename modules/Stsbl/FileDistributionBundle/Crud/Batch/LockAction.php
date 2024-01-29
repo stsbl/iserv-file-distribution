@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;

@@ -6,7 +6,6 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\FlashMessageBag;
-use IServ\HostBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\FileDistribution\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 
@@ -79,9 +78,9 @@ final class SoundUnlockAction extends AbstractFileDistributionAction
     {
         return 'soundunlock';
     }
- /**
-     * {@inheritodc}
-     */
+    /**
+        * {@inheritodc}
+        */
     public function getLabel(): string
     {
         return _('Enable');

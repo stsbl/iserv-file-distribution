@@ -7,7 +7,6 @@ namespace Stsbl\FileDistributionBundle\Twig\Extension;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
-
 /*
  * The MIT License
  *

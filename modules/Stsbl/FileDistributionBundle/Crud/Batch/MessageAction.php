@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Stsbl\FileDistributionBundle\Crud\Batch;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use IServ\CrudBundle\Crud\Batch\GroupableBatchActionInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
-use IServ\HostBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

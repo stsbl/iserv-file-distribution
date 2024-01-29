@@ -7,7 +7,6 @@ namespace Stsbl\FileDistributionBundle\Crud\Batch;
 use Doctrine\Common\Collections\ArrayCollection;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\CrudBundle\Entity\FlashMessageBag;
-use IServ\HostBundle\Entity\Host;
 use Stsbl\FileDistributionBundle\Entity\FileDistribution;
 use Stsbl\FileDistributionBundle\Security\Privilege;
 use Symfony\Component\Security\Core\User\UserInterface;

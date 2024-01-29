@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Stsbl\FileDistributionBundle\FileDistribution;
 
-use IServ\CoreBundle\Entity\User;
 use IServ\CrudBundle\Entity\CrudInterface;
 use IServ\HostBundle\Entity\Host;
-use IServ\HostBundle\Entity\SambaUser;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -54,7 +52,6 @@ final class FileDistribution implements CrudInterface
         private readonly ?string $soundLock,
         private readonly ?string $exam,
         private readonly ?string $locker,
-
     ) {
     }
 
@@ -117,7 +114,7 @@ final class FileDistribution implements CrudInterface
         if (null !== $sambaUser) {
             Assert::string($sambaUser);
         }
-        
+
         if (null !== $lastSeenDhcp) {
             if (is_string($lastSeenDhcp)) {
                 $lastSeenDhcp = \DateTimeImmutable::createFromFormat('Y-m-d H:i:sT', $lastSeenDhcp);
