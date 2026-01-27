@@ -1,3 +1,15 @@
+stsbl-iserv-file-distribution (26.01.27.1) stable; urgency=medium
+
+  * Renamed locale templates
+  * Renamed pot files
+  * Updated .gitignore
+  * Updated CS to PSR-12
+  * iservmake: Disabled Pootle download
+  * Updated locales
+  * Fixed compatibility with new CRUD ORMObjectManagerInterface
+
+ -- Felix Jacobi <Felix@jacobi-hamburg.net>  Tue, 27 Jan 2026 22:17:52 +0100
+
 stsbl-iserv-file-distribution (23.04.28.1) stable; urgency=medium
 
   * Fixed entity mapping
