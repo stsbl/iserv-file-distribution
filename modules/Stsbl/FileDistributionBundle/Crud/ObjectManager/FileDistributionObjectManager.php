@@ -155,6 +155,14 @@ final class FileDistributionObjectManager implements DoctrineObjectManagerInterf
         return $this->inner->delete($object->getHost());
     }
 
+    public function detach(object $object): void
+    {
+        Assert::isInstanceOf($object, FileDistribution::class);
+        /** @var FileDistribution $object */
+
+        $this->inner->detach($object->getHost());
+    }
+
     public function getNewInstance($class)
     {
         return new FileDistribution(
